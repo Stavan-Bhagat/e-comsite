@@ -2,6 +2,8 @@ const userService = require("../service/userService");
 const sendVerificationEmail = require("../config/emailConfig");
 const jwt = require("jsonwebtoken");
 const User=require("../model/user");
+const TempUser = require("../model/TempUser");;
+
 const userController = {
   register: async (req, res) => {
     try {

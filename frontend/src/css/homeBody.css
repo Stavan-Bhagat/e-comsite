@@ -8,7 +8,7 @@
 }
 
 .carousel-container img {
-  object-fit: cover; /* Ensure the image covers the entire item space */
+  object-fit: cover;
   height: 50%;
   width: 100%;
 }

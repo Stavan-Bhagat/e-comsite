@@ -12,6 +12,7 @@ const Login = () => {
     setEmail(event.target.value);
   };
 
+  
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };

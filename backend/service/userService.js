@@ -1,4 +1,7 @@
 const TempUser = require("../model/TempUser");
+const User = require("../model/user");
+const CryptoJS = require("crypto-js");
+const secretKey = process.env.CRYPTO_PASSWORD;
 const userService = {
   register: async (userData) => {
     try {
@@ -13,6 +16,33 @@ const userService = {
       return createUser;
     } catch (error) {
       console.log("user service register error ", error);
+      throw error;
+    }
+  },
+  login: async (userData) => {
+    try {
+      const user = await User.findOne({ email: userData.email });
+      if (!user) {
+        return { success: false, message: "Login failed" };
+      }
+      const decryptedPassword = CryptoJS.AES.decrypt(
+        user.password,
+        secretKey
+      ).toString(CryptoJS.enc.Utf8);
+console.log("hello");
+      if (decryptedPassword === userData.password) {
+        console.log("Login successful");
+        return {
+          success: true,
+          message: "Login successful",
+          user: user,
+        };
+      } else {
+        console.log("Invalid credentials");
+        return { success: false, message: "invalid credential" };
+      }
+    } catch (error) {
+      console.log("userService login error:", error);
       throw error;
     }
   },

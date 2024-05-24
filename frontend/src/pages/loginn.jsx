@@ -6,6 +6,7 @@ import {
   Container,
   Card,
   CardMedia,
+  IconButton,
 } from "@mui/material";
 import { Row, Col, Image } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -18,16 +19,18 @@ import { useNavigate } from "react-router";
 import axiosInstance from "../utils/axios";
 import { VisuallyHiddenInput } from ".././utils/style";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginSuccess, loginFailure } from "../redux/authSlice";
-import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+
 const Login = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [verificationSent, setVerificationSent] = useState(false);
   const dispatch = useDispatch();
+  const errorMessage = useSelector((state) => state.auth.error);
   const {
     register,
     handleSubmit,
@@ -50,13 +53,15 @@ const Login = () => {
   };
 
   const handleFileChange = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
-  const handleLogin = (data) => {
+  const handleLogin = async (data) => {
     console.log("Login Data:", data);
     try {
-      const response = axiosInstance.post(`/submit/login`, data);
+      const response = await axiosInstance.post(`/submit/login`, data);
 
       const { success, message, accessToken, refreshToken, user } =
         response.data;
@@ -196,6 +201,42 @@ const Login = () => {
                           errors.password ? errors.password.message : ""
                         }
                       />
+                      {/* Profile Picture Upload */}
+                      <div style={{ position: "relative", marginTop: "16px" }}>
+                        {preview ? (
+                          <img
+                            src={preview}
+                            alt="Profile Preview"
+                            style={{ maxWidth: "100%", height: "auto" }}
+                          />
+                        ) : (
+                          <Image
+                            src={shoppingImage}
+                            alt="Default Profile"
+                          />
+                        )}
+                        <IconButton
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            backgroundColor: "#ffffff",
+                          }}
+                          component="label"
+                          htmlFor="profile-image-input"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          style={{ display: "none" }}
+                          id="profile-image-input"
+                        />
+                      </div>
+                      {/* End of Profile Picture Upload */}
                       <Button
                         type="submit"
                         variant="contained"
@@ -207,6 +248,11 @@ const Login = () => {
                         Sign In
                       </Button>
                     </form>
+                    {errorMessage && (
+                      <Typography variant="body1" align="center" color="error">
+                        {errorMessage}
+                      </Typography>
+                    )}
                     <Typography variant="body1" align="center">
                       Don't have an account?{" "}
                       <Button color="secondary" onClick={handleToggle}>
@@ -290,40 +336,42 @@ const Login = () => {
                             : ""
                         }
                       />
-                      {/* <Button
-                        component="label"
-                        role={undefined}
-                        variant="contained"
-                        fullWidth
-                        variant="outlined"
-                        sx={{ mt: 2 }}
-                      >
-                        <CameraAltIcon /> Upload Profile
-                        <VisuallyHiddenInput
+                      {/* Profile Picture Upload */}
+                      <div style={{ position: "relative", marginTop: "16px" }}>
+                        {preview ? (
+                          <img
+                            src={preview}
+                            alt="Profile Preview"
+                            style={{ maxWidth: "100%", height: "auto" }}
+                          />
+                        ) : (
+                          <Image
+                            src={shoppingImage}
+                            alt="Default Profile"
+                          />
+                        )}
+                        <IconButton
+                          sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            backgroundColor: "#ffffff",
+                          }}
+                          component="label"
+                          htmlFor="profile-image-input"
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <input
                           type="file"
+                          accept="image/*"
                           onChange={handleFileChange}
+                          style={{ display: "none" }}
+                          id="profile-image-input"
                         />
-                      </Button> */}
-                      <IconButton
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          backgroundColor: "#ffffff",
-                        }}
-                        component="label"
-                        htmlFor="profile-image-input"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        style={{ display: "none" }}
-                        id="profile-image-input"
-                      />
+                      </div>
+                      {/* End of Profile Picture Upload */}
                       <Button
                         type="submit"
                         variant="contained"

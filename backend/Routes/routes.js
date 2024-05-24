@@ -4,6 +4,7 @@ const userController = require("../controller/userController");
 const upload = require("../config/multerConfig");
 
 router.post("/register", upload.single("image"), userController.register);
+router.post("/login", userController.login);
 // router.post("/register", userController.register);
 
 // router.post("/register", userController.register);

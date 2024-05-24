@@ -8,7 +8,7 @@ const cors = require("cors");
 
 // Remove bodyParse.json() since express.json() is already used
 app.use(express.json());
-app.use(cors({ origin: ["http://localhost:3000", "http://localhost:3000/"] }));
+app.use(cors({ origin: ["http://localhost:3000","http://localhost:3000/"] }));
 
 database();
 

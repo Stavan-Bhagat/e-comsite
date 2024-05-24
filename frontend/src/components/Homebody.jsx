@@ -19,8 +19,7 @@ import women from "./../images/women.jpeg";
 import kids from "./../images/kids.jpeg";
 import electronics from "./../images/electronics.jpeg";
 import beauty from "./../images/beauty.jpeg";
-import toys from "./../images/toys.jpeg";
-
+import toys from "./../images/toys.jpeg"
 const categories = [
   { id: 1, name: "Men", imgSrc: men },
   { id: 2, name: "Women", imgSrc: women },
@@ -111,6 +110,7 @@ const responsive = {
 };
 
 const Body = () => {
+
   return (
     <>
       <div className="carousel-container">
@@ -135,13 +135,15 @@ const Body = () => {
             ))}
           </Row>
         </Container>
-     <div className="carousel-container">
+        <div className="carousel-container">
           <BootstrapCarousel>
             <BootstrapCarousel.Item>
               <img className="d-block w-100" src={image2} alt="First slide" />
               <BootstrapCarousel.Caption>
                 <h3>First slide label</h3>
-                <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                <p>
+                  Nulla vitae elit libero, a pharetra augue mollis interdum.
+                </p>
               </BootstrapCarousel.Caption>
             </BootstrapCarousel.Item>
             <BootstrapCarousel.Item>
@@ -155,7 +157,10 @@ const Body = () => {
               <img className="d-block w-100" src={image5} alt="Third slide" />
               <BootstrapCarousel.Caption>
                 <h3>Third slide label</h3>
-                <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+                <p>
+                  Praesent commodo cursus magna, vel scelerisque nisl
+                  consectetur.
+                </p>
               </BootstrapCarousel.Caption>
             </BootstrapCarousel.Item>
           </BootstrapCarousel>
@@ -190,7 +195,11 @@ const Body = () => {
         <Carousel showDots={true} responsive={responsive}>
           {productData.map((item) => (
             <Card key={item.id} className="card">
-              <Card.Img variant="top" src={item.imageurl} className="product--image" />
+              <Card.Img
+                variant="top"
+                src={item.imageurl}
+                className="product--image"
+              />
               <Card.Body>
                 <Card.Title>{item.name}</Card.Title>
                 <Card.Text>{item.description}</Card.Text>

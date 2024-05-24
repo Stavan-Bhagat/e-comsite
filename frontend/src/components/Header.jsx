@@ -5,8 +5,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountIcon from "@mui/icons-material/AccountCircleOutlined";
 import { useNavigate } from "react-router-dom";
-
+import { useSelector } from "react-redux";
 const Header = () => {
+  const user = useSelector((state) => state?.user?.user);
   const [collapsed, setCollapsed] = useState(true);
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
@@ -18,11 +19,10 @@ const Header = () => {
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
-// 
+  //
   const handleSearch = () => {
     console.log("Searching for:", search);
   };
-
 
   const handleLoginClick = () => {
     navigate("/login");
@@ -51,9 +51,27 @@ const Header = () => {
           <Button variant="outline-primary" onClick={handleLoginClick}>
             <PersonIcon /> Login
           </Button>
-          <Button variant="outline-primary">
-            <AccountIcon /> User
-          </Button>
+          {user?._id && (
+            <div
+              className="text-3xl cursor-pointer relative flex justify-center"
+              onClick={() => setMenuDisplay((preve) => !preve)}
+            >
+              {user?.profilePic ? (
+                <img
+                  src={user?.profilePic}
+                  className="w-10 h-10 rounded-full"
+                  alt={user?.name}
+                />
+              ) : (
+                // <FaRegCircleUser />
+                <Button variant="outline-primary">
+                <AccountIcon /> User
+              </Button>
+              )}
+            </div>
+          )}
+
+        
           <Button variant="outline-primary">
             <ShoppingCartIcon /> Cart
           </Button>

@@ -2,7 +2,8 @@ const nodemailer = require("nodemailer");
 const fs = require("fs");
 // const { generateEmailHTML } = require("../helper/");
 const emailTemplate = fs.readFileSync(
-  "/home/stavan/Documents/aspire/e-comsite/backend/helper/emailTemplate.html",
+  // "/home/stavan/Documents/aspire/e-comsite/backend/helper/emailTemplate.html",
+  "C:/Users/bhaga/Desktop/aspire/ecomsite/backend/helper/emailTemplate.html",
   "utf-8"
 );
 const transporter = nodemailer.createTransport({
@@ -13,7 +14,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 const sendVerificationEmail = async (user, token) => {
-  const url = `http://localhost:${process.env.PORT}/api/users/verify/${token}`;
+  const url = `http://localhost:${process.env.PORT}/submit/verify/${token}`;
   const emailBody = emailTemplate.replace("{{verificationUrl}}", url);
   await transporter.sendMail({
     to: user.email,

@@ -2,6 +2,7 @@ import Home from "./pages/Home";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./pages/login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import VerificationSuccess from "./components/verificationSuccess";
 function App() {
   return (
     <>
@@ -10,6 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />}></Route>
         <Route path="/login" element={<Login />}></Route>
+        <Route path="/verification-success" element={<VerificationSuccess/>}></Route>
       </Routes>
     </Router>
       
@@ -19,3 +21,4 @@ function App() {
 }
 
 export default App;
+ 

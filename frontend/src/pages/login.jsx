@@ -19,9 +19,10 @@ import axiosInstance from "../utils/axios";
 import { VisuallyHiddenInput } from ".././utils/style";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useDispatch } from "react-redux";
-import { loginSuccess, loginFailure } from "../redux/authSlice";
+import { loginSuccess, loginFailure } from "../redux/Slice/authSlice";
 import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
+import { set_token } from "../utils/service";
 const Login = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
@@ -53,17 +54,19 @@ const Login = () => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleLogin = (data) => {
+  const handleLogin = async(data) => {
     console.log("Login Data:", data);
     try {
-      const response = axiosInstance.post(`/submit/login`, data);
+      const response = await axiosInstance.post(`/submit/login`, data);
 
       const { success, message, accessToken, refreshToken, user } =
-        response.data;
-      localStorage.setItem("accessToken", accessToken);
+      response.data;
+      // localStorage.setItem("token", accessToken);
+      set_token(accessToken);
       localStorage.setItem("refreshToken", refreshToken);
+  
       if (success) {
-        dispatch(loginSuccess(user, accessToken));
+        dispatch(loginSuccess({user, accessToken}));
       } else {
         return "login failed", message;
       }
@@ -290,40 +293,22 @@ const Login = () => {
                             : ""
                         }
                       />
-                      {/* <Button
+                                         <Button
                         component="label"
-                        role={undefined}
-                        variant="contained"
-                        fullWidth
                         variant="outlined"
+                        color="primary"
+                        fullWidth
+                        size="large"
                         sx={{ mt: 2 }}
                       >
-                        <CameraAltIcon /> Upload Profile
-                        <VisuallyHiddenInput
+                        <CameraAltIcon sx={{ mr: 1 }} />
+                        Upload Profile Picture
+                        <input
                           type="file"
+                          accept="image/*"
                           onChange={handleFileChange}
-                        />
-                      </Button> */}
-                      <IconButton
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                          backgroundColor: "#ffffff",
-                        }}
-                        component="label"
-                        htmlFor="profile-image-input"
-                      >
-                        <EditIcon />
-                      </IconButton>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        style={{ display: "none" }}
-                        id="profile-image-input"
-                      />
+                          hidden
+                        />   </Button>
                       <Button
                         type="submit"
                         variant="contained"

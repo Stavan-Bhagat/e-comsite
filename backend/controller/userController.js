@@ -87,7 +87,7 @@ const userController = {
         password: tempUser.password,
         name: tempUser.name,
         role: tempUser.role,
-        image: tempUser.image,
+        imageUrl: tempUser.imageUrl
       });
       await user.save();
 

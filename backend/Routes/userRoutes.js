@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controller/userController");
-const upload = require("../config/multerConfig");
+const {uploadUserImage} = require("../config/multerConfig");
 
-router.post("/register", upload.single("image"), userController.register);
+router.post(
+  "/register",
+  uploadUserImage.single("image"),
+  userController.register
+);
 router.post("/login", userController.login);
-// router.post("/register", userController.register);
+router.get("/fetch-userdata", userController.getUserData);
 
-// router.post("/register", userController.register);
 router.get("/verify/:token", userController.verify);
 
 module.exports = router;

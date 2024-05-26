@@ -72,6 +72,18 @@ const userController = {
       res.status(500).json({ error: "Internal server error" });
     }
   },
+  getUserData: async (req, res) => {
+    try {
+      const data = await userService.getUserData();
+      if (data && data.length > 0) {
+        res.status(200).json({ data });
+      } else {
+        res.status(404).json({ message: "No user data found" });
+      }
+    } catch (e) {
+      res.status(500).json({ message: "internal server error" });
+    }
+  },
   verify: async (req, res) => {
     try {
       const { token } = req.params;
@@ -87,7 +99,7 @@ const userController = {
         password: tempUser.password,
         name: tempUser.name,
         role: tempUser.role,
-        imageUrl: tempUser.imageUrl
+        imageUrl: tempUser.imageUrl,
       });
       await user.save();
 

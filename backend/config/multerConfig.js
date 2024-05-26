@@ -7,15 +7,24 @@ cloudinary.config({
   api_key: process.env.API_KEY,
   api_secret: process.env.API_SECRET,
 });
-const storage = new CloudinaryStorage({
+const userStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "e-commerce",
+    folder: "e-commerce/users",
+    allowed_formats: ["jpg", "jpeg", "png", "gif"],
+    transformation: [{ width: 500, height: 500, crop: "fill" }],
+  },
+});
+const productStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "e-commerce/products",
     allowed_formats: ["jpg", "jpeg", "png", "gif"],
     transformation: [{ width: 500, height: 500, crop: "fill" }],
   },
 });
 
-const upload = multer({ storage: storage });
+const uploadUserImage = multer({ storage: userStorage });
+const uploadProductImages = multer({ storage: productStorage });
 
-module.exports = upload;
+module.exports = { uploadUserImage, uploadProductImages };

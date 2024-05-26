@@ -4,7 +4,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   // baseURL: process.env.BASEURL,
-  baseURL: "http://localhost:5000/",
+  baseURL: process.env.REACT_APP_BASEURL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -50,7 +50,7 @@ axiosInstance.interceptors.response.use(
           throw new Error("No refresh token available");
         }
         const refreshResponse = await axios.get(
-          `https://blog-q0l1.onrender.com/refresh/refreshtoken`,
+          `${process.env.REACT_APP_BASEURL}/refresh/refreshtoken`,
           {
             headers: { "refresh-token": refreshToken },
           }

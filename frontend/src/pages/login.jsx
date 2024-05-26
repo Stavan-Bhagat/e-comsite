@@ -6,23 +6,21 @@ import {
   Container,
   Card,
   CardMedia,
+  Box,
 } from "@mui/material";
-import { Row, Col, Image } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import Header from "../components/Header";
-import shoppingImage from "../images/shopping.avif";
+import loginImage from "../images/login.avif";
 import checkEmail from "../images/checkEmail.jpg";
 import "../css/register.css";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router";
 import axiosInstance from "../utils/axios";
-import { VisuallyHiddenInput } from ".././utils/style";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../redux/Slice/authSlice";
-import IconButton from "@mui/material/IconButton";
-import EditIcon from "@mui/icons-material/Edit";
 import { set_token } from "../utils/service";
+import Grid from "@mui/material/Grid";
 const Login = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
@@ -54,19 +52,19 @@ const Login = () => {
     setSelectedFile(event.target.files[0]);
   };
 
-  const handleLogin = async(data) => {
+  const handleLogin = async (data) => {
     console.log("Login Data:", data);
     try {
       const response = await axiosInstance.post(`/submit/login`, data);
 
       const { success, message, accessToken, refreshToken, user } =
-      response.data;
+        response.data;
       // localStorage.setItem("token", accessToken);
       set_token(accessToken);
       localStorage.setItem("refreshToken", refreshToken);
-  
+
       if (success) {
-        dispatch(loginSuccess({user, accessToken}));
+        dispatch(loginSuccess({ user, accessToken }));
       } else {
         return "login failed", message;
       }
@@ -119,17 +117,22 @@ const Login = () => {
         sx={{
           border: "1px solid #ccc",
           borderRadius: "5px",
-          align: "center",
-          margin: "3%",
-          padding: "2%",
+          marginTop: "4%",
+          padding: "1%",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          overflow: "hidden",
+          width:"70%"
         }}
       >
-        <Row>
-          <Col>
-            <Image src={shoppingImage} className="register-image" />
-          </Col>
-          <Col>
+        <Grid container spacing={2} >
+          <Grid item xs={6}>
+            <Box
+              component="img"
+              src={loginImage}
+              sx={{ objectFit: "cover", height: "100%", width: "100%" }}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <Container
               maxWidth="xs"
               sx={{
@@ -137,6 +140,7 @@ const Login = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
+                marginX: 7,
               }}
             >
               <Container maxWidth="xs">
@@ -162,7 +166,7 @@ const Login = () => {
                 ) : isLogin ? (
                   <>
                     <Typography variant="h4" align="center" gutterBottom>
-                      Sign In
+                      Login
                     </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
                       <TextField
@@ -207,7 +211,7 @@ const Login = () => {
                         size="large"
                         sx={{ mt: 2 }}
                       >
-                        Sign In
+                        Login
                       </Button>
                     </form>
                     <Typography variant="body1" align="center">
@@ -220,7 +224,7 @@ const Login = () => {
                 ) : (
                   <>
                     <Typography variant="h4" align="center" gutterBottom>
-                      Sign Up
+                      Register
                     </Typography>
                     <form onSubmit={handleSubmit(onSubmit)}>
                       <TextField
@@ -293,7 +297,7 @@ const Login = () => {
                             : ""
                         }
                       />
-                                         <Button
+                      <Button
                         component="label"
                         variant="outlined"
                         color="primary"
@@ -308,7 +312,8 @@ const Login = () => {
                           accept="image/*"
                           onChange={handleFileChange}
                           hidden
-                        />   </Button>
+                        />{" "}
+                      </Button>
                       <Button
                         type="submit"
                         variant="contained"
@@ -317,7 +322,7 @@ const Login = () => {
                         size="large"
                         sx={{ mt: 2 }}
                       >
-                        Sign UP
+                        Register
                       </Button>
                     </form>
                     <Typography variant="body1" align="center">
@@ -330,8 +335,8 @@ const Login = () => {
                 )}
               </Container>
             </Container>
-          </Col>
-        </Row>
+          </Grid>
+        </Grid>
       </Container>
     </>
   );

@@ -100,8 +100,8 @@ const Header = () => {
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/">Zen Fusion</Navbar.Brand>
+      <Navbar bg="light" expand="lg" style={{paddingLeft: '20px', paddingRight: '20px' ,zIndex:9999}}>
+        <Navbar.Brand href="/"  >Zen Fusion</Navbar.Brand>
         <Navbar.Toggle
           aria-controls="basic-navbar-nav"
           onClick={handleToggleCollapse}
@@ -154,7 +154,7 @@ const Header = () => {
                 )}
               </div>
             )}
-            {location.pathname === "/admin-panel" ? (
+            {/* {location.pathname === "/admin-panel" ? (
               <Button
                 variant="outline-primary"
                 onClick={handleHome}
@@ -172,7 +172,7 @@ const Header = () => {
                   Admin Panel
                 </Button>
               )
-            )}
+            )} */}
             <IconButton aria-label="cart">
               <Badge badgeContent={0} color="secondary">
                 <ShoppingCartIcon />
@@ -189,6 +189,7 @@ const Header = () => {
         placement="bottom-end"
         transition
         disablePortal
+        sx={{zIndex:"999"}}
       >
         {({ TransitionProps, placement }) => (
           <Grow
@@ -206,8 +207,12 @@ const Header = () => {
                   onKeyDown={handleListKeyDown}
                 >
                   <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                  {user?.role === "Admin" && (
-                    <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
+                  {location.pathname === "/admin-panel" ? (
+                    <MenuItem onClick={handleHome}>Home</MenuItem>
+                  ) : (
+                    user?.role === "Admin" && (
+                      <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
+                    )
                   )}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>

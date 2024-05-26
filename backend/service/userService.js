@@ -29,7 +29,6 @@ const userService = {
         user.password,
         secretKey
       ).toString(CryptoJS.enc.Utf8);
-console.log("hello");
       if (decryptedPassword === userData.password) {
         console.log("Login successful");
         return {
@@ -44,6 +43,14 @@ console.log("hello");
     } catch (error) {
       console.log("userService login error:", error);
       throw error;
+    }
+  },
+  getUserData: async () => {
+    try {
+      const userData = await User.find({});
+      return userData;
+    } catch (e) {
+      throw e;
     }
   },
 };

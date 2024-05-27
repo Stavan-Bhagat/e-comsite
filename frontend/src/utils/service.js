@@ -35,8 +35,13 @@ export const fetchUserData = async () => {
   const response = await axiosInstance.get("/submit/fetch-userdata");
   return response.data;
 };
-//
-export const fetchProductData = async () => {
-  const response = await axiosInstance.get("/product/fetch-Productdata");
+//product
+export const fetchProductData = async (page) => {
+  const response = await axiosInstance.get("/product/fetch-Productdata??page=${page}&limit=8");
   return response.data;
 };
+
+export const fetchProductsByCategory=async (category)=>{
+  const response =await axiosInstance.get(`/product/fetch-productdata-by-category?category=${category}`)
+  return response.data;
+}

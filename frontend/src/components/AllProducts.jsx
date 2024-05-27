@@ -6,8 +6,12 @@ import {
   Card,
   CardContent,
   Pagination,
+  CardMedia,
+  CardActionArea,
+  Grid,
 } from "@mui/material";
-import { Form, Container, Row, Col } from "react-bootstrap";
+import RupeeIcon from "@mui/icons-material/CurrencyRupee";
+import { Form, Container, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
@@ -42,18 +46,19 @@ const AllProducts = () => {
     reset,
   } = useForm();
 
-  const fetchProductsData = async () => {
+  const fetchProductsData = async (page) => {
     try {
       const response = await fetchProductData(page);
-      setProducts(response.data.products);
-      setTotalPages(response.data.totalPages);
+      console.log("fetchproduct", response);
+      setProducts(response.data);
+      setTotalPages(response.totalPages);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
   useEffect(() => {
-    fetchProductsData();
+    fetchProductsData(page);
   }, [page]);
 
   useEffect(() => {
@@ -153,11 +158,11 @@ const AllProducts = () => {
 
       console.log("Product added successfully:", response.data);
       handleClose();
-      fetchProductsData();
+      fetchProductsData(page); // Ensure the correct page data is fetched after adding a product
       reset();
       setSelectedFiles([]);
       setReadFileData([]);
-      setShowStatus(false); // Hide status section when files are cleared
+      setShowStatus(false);
     } catch (error) {
       console.error("Error adding product:", error);
     }
@@ -180,7 +185,13 @@ const AllProducts = () => {
         </Button>
       </Box>
 
-      <Modal show={open} onHide={handleClose} size="lg" centered>
+      <Modal
+        show={open}
+        onHide={handleClose}
+        size="lg"
+        centered
+        style={{ zIndex: "9999" }}
+      >
         <Box
           sx={{
             background: "#f5f5f5",
@@ -361,19 +372,61 @@ const AllProducts = () => {
           </Form>
         </Container>
       </Modal>
-
-      {products.map((product) => (
-        <Card key={product.id} sx={{ minWidth: 275, marginBottom: 2 }}>
-          <CardContent>
-            <Typography variant="h5" component="div">
-              {product.name}
-            </Typography>
-            <Typography color="text.secondary">
-              {product.description}
-            </Typography>
-          </CardContent>
-        </Card>
-      ))}
+      <Grid container spacing={2}>
+        {products.map((product) => (
+          <Grid item xs={3} key={product._id}>
+            {" "}
+            {/* Ensure unique key prop */}
+            <Card sx={{ maxWidth: 175 }}>
+              <CardActionArea>
+                <CardMedia
+                  component="img"
+                  height="100"
+                  image={product.productImage[0]}
+                  alt={product.productName}
+                />
+                <CardContent>
+                  <Typography
+                    gutterBottom
+                    variant="h6"
+                    component="div"
+                    sx={{ color: "#009688" }}
+                  >
+                    {product.productName}
+                  </Typography>
+                  <Box sx={{ display: "flex" }}>
+                    <div>
+                      <Typography
+                        variant="h5"
+                        gutterBottom
+                        sx={{ display: "flex", alignItems: "center" }}
+                      >
+                        <RupeeIcon fontSize="small" /> {product.sellingPrice}
+                      </Typography>
+                      <div style={{ display: "flex", alignItems: "center" }}>
+                        <Typography
+                          variant="body2"
+                          color="text.secondary"
+                          sx={{ marginRight: "8px" }}
+                        >
+                          M.R.P
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          color="text.secondary"
+                          sx={{ textDecoration: "line-through" }}
+                        >
+                          {product.price}
+                        </Typography>
+                      </div>
+                    </div>
+                  </Box>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
 
       <Pagination
         count={totalPages}

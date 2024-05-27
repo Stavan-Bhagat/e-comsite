@@ -19,7 +19,9 @@ import women from "./../images/women.jpeg";
 import kids from "./../images/kids.jpeg";
 import electronics from "./../images/electronics.jpeg";
 import beauty from "./../images/beauty.jpeg";
-import toys from "./../images/toys.jpeg"
+import toys from "./../images/toys.jpeg";
+import CategoryList from "../components/CategoryList";
+import HorizontalCategory from "../components/HorizontalCategory";
 const categories = [
   { id: 1, name: "Men", imgSrc: men },
   { id: 2, name: "Women", imgSrc: women },
@@ -110,31 +112,11 @@ const responsive = {
 };
 
 const Body = () => {
-
   return (
     <>
       <div className="carousel-container">
-        <Container fluid className="category-container">
-          <Row className="category-row d-flex justify-content-between flex-nowrap overflow-auto">
-            {categories.map((category) => (
-              <Col
-                key={category.id}
-                xs={6}
-                sm={4}
-                md={3}
-                lg={2}
-                className="text-center p-2"
-              >
-                <Image
-                  src={category.imgSrc}
-                  alt={category.name}
-                  className="round-image"
-                />
-                <Typography variant="h6">{category.name}</Typography>
-              </Col>
-            ))}
-          </Row>
-        </Container>
+        <CategoryList />
+
         <div className="carousel-container">
           <BootstrapCarousel>
             <BootstrapCarousel.Item>
@@ -165,11 +147,12 @@ const Body = () => {
             </BootstrapCarousel.Item>
           </BootstrapCarousel>
         </div>
-        <Container>
-          <Typography></Typography>
+        <Container classname="" fluid>
+          <Typography variant="h5">Best Of Electronics</Typography>
         </Container>
-        <Typography>Best Of Electronics</Typography>
-        <Container className="">
+
+        <HorizontalCategory />
+        {/* <Container className="">
           <Row className="display-product-row">
             {items.map((category) => (
               <Col
@@ -190,7 +173,7 @@ const Body = () => {
               </Col>
             ))}
           </Row>
-        </Container>
+        </Container> */}
         <Typography>Product Carousel</Typography>
         <Carousel showDots={true} responsive={responsive}>
           {productData.map((item) => (

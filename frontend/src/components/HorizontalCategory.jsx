@@ -3,6 +3,7 @@ import { fetchProductsByCategory } from "../utils/service";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Container, Image } from "react-bootstrap";
 import { Grid, Box, Typography } from "@mui/material";
+import { Link} from 'react-router-dom'; 
 const HorizontalCategory = () => {
   const [products, setProducts] = useState([]);
   const [loading, SetLoading] = useState(false);
@@ -23,24 +24,26 @@ const HorizontalCategory = () => {
       {loading ? (
         <LinearProgress color="secondary" />
       ) : (
-        <Container fluid sx={{height:200 ,width:100}}>
+        <Container fluid sx={{ height: 200, width: 100 }}>
           <Grid container spacing={2}>
             {products.map((category) => (
               <Grid
                 item
                 xs={3}
                 key={category._id}
-                sx={{ border: "1px solid", color: "black"}}
+                sx={{ border: "1px solid", color: "black" }}
               >
-                <Box>
-                  <Image
-                    src={category.productImage[0]}
-                    alt={category.productName}
-                    className="round-image"
-                  />
-                  <Typography variant="h6">{category.productName}</Typography>
-                  <Typography variant="h6">{category.price}</Typography>
-                </Box>
+                <Link to={`product/${products?._id}`}>
+                  <Box>
+                    <Image
+                      src={category.productImage[0]}
+                      alt={category.productName}
+                      className="round-image"
+                    />
+                    <Typography variant="h6">{category.productName}</Typography>
+                    <Typography variant="h6">{category.price}</Typography>
+                  </Box>
+                </Link>
               </Grid>
             ))}
           </Grid>

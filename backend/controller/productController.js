@@ -1,11 +1,11 @@
 const productService = require("../service/productService.js");
 const productController = {
-  fetchProduct: async (req, res) => {
+  fetchProductData: async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 8;
     const skip = (page - 1) * limit;
     try {
-      const data = await productService.fetchProduct({ limit, skip });
+      const data = await productService.fetchProductData({ limit, skip });
       if (data.productData && data.productData.length > 0) {
         res.status(200).json({
           data: data.productData,
@@ -15,6 +15,20 @@ const productController = {
       } else {
         res.status(404).json({ message: "No user data found" });
       }
+    } catch (e) {
+      res.status(500).json({ message: "internal server error" });
+    }
+  },
+  fetchProduct: async (req, res) => {
+    const {id}  = req.params;
+    const response = await productService.fetchProduct(id);
+    if (response) {
+      res.status(200).json({
+        data: response,
+        message: "fetch product",
+      });
+    }
+    try {
     } catch (e) {
       res.status(500).json({ message: "internal server error" });
     }
@@ -89,5 +103,6 @@ const productController = {
       });
     }
   },
+  
 };
 module.exports = productController;

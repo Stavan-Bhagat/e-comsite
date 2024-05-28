@@ -10,7 +10,8 @@ import {
 import VerificationSuccess from "./components/verificationSuccess";
 import AdminPanel from "./pages/AdminPanel";
 import { useSelector } from "react-redux";
-import ProductPage from "./components/ProductPage";
+import ProductPage from "./pages/ProductPage";
+import ProductSearch from "./pages/ProductSearch";
 function App() {
   const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
   return (
@@ -30,7 +31,11 @@ function App() {
             path="/admin-panel"
             element={isAuthenticated ? <AdminPanel /> : <Home />}
           ></Route>
-          <Route path="/product" element={<ProductPage />}></Route>
+          <Route path="/product/:id" element={<ProductPage />}></Route>
+          <Route
+            path="/product/search/:category"
+            element={<ProductSearch />}
+          ></Route>
         </Routes>
       </Router>
     </>

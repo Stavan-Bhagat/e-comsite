@@ -3,16 +3,14 @@ import { fetchProductsByCategory } from "../utils/service";
 import LinearProgress from "@mui/material/LinearProgress";
 import { Container, Image } from "react-bootstrap";
 import { Grid, Box, Typography } from "@mui/material";
-import { Link} from 'react-router-dom'; 
+import { Link } from "react-router-dom";
 const HorizontalCategory = () => {
   const [products, setProducts] = useState([]);
   const [loading, SetLoading] = useState(false);
   const [category, SetCategory] = useState("electronics");
   const fetchProductsFromCategory = async () => {
     SetLoading(true);
-    console.log("kaif", category);
     const response = await fetchProductsByCategory(category);
-    console.log("bycate", response);
     SetLoading(false);
     setProducts(response.data);
   };
@@ -33,7 +31,7 @@ const HorizontalCategory = () => {
                 key={category._id}
                 sx={{ border: "1px solid", color: "black" }}
               >
-                <Link to={`product/${products?._id}`}>
+                <Link to={`product/${category?._id}`}>
                   <Box>
                     <Image
                       src={category.productImage[0]}

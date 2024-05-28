@@ -1,13 +1,12 @@
 const Product = require("../model/product");
 const productService = {
-  fetchProduct: async (calc) => {
+  fetchProductData: async (calc) => {
     try {
       const productData = await Product.find({})
         .skip(calc.skip)
         .limit(calc.limit);
       const totalItems = await Product.countDocuments();
       const totalPages = Math.ceil(totalItems / calc.limit);
-      console.log(totalPages);
       if (productData && productData.length > 0) {
         return {
           productData,
@@ -21,6 +20,14 @@ const productService = {
           totalPages: 0,
         };
       }
+    } catch (e) {
+      throw e;
+    }
+  },
+  fetchProduct: async (id) => {
+    try {
+      const product = await Product.find({ _id: id });
+      return product;
     } catch (e) {
       throw e;
     }
@@ -79,6 +86,7 @@ const productService = {
       throw e;
     }
   },
+  
 };
 
 module.exports = productService;

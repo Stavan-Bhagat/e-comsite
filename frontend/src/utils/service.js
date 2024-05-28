@@ -37,11 +37,24 @@ export const fetchUserData = async () => {
 };
 //product
 export const fetchProductData = async (page) => {
-  const response = await axiosInstance.get("/product/fetch-Productdata??page=${page}&limit=8");
+  const response = await axiosInstance.get(
+    "/product/fetch-productdata??page=${page}&limit=8"
+  );
+  return response.data;
+};
+export const fetchProduct = async (id) => {
+  const response = await axiosInstance.get(`/product/fetch-product/${id}`);
   return response.data;
 };
 
-export const fetchProductsByCategory=async (category)=>{
-  const response =await axiosInstance.get(`/product/fetch-productdata-by-category?category=${category}`)
+export const fetchProductsByCategory = async (category) => {
+  const response = await axiosInstance.get(
+    `/product/fetch-productdata-by-category?category=${category}`
+  );
   return response.data;
-}
+};
+
+export const fetchCategoryProducts = async (category) => {
+ const response = await axiosInstance.get(`/product/fetch-category-product`);
+  return response.data;
+};

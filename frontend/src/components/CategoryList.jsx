@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Container, Grid, Item, Typography, Box } from "@mui/material";
 import { Image } from "react-bootstrap";
 import axiosInstance from "../utils/axios";
@@ -7,11 +8,16 @@ import CircularProgress from "@mui/material/CircularProgress";
 const CategoryList = () => {
   const [categoryProduct, SetCategoryProduct] = useState([]);
   const [loading, SetLoading] = useState(false);
+  const navigate = useNavigate();
   const fetchCategoryProduct = async () => {
     SetLoading(true);
     const response = await axiosInstance.get(`/product/fetch-category-product`);
     SetLoading(false);
     SetCategoryProduct(response.data.data);
+  };
+  const handleChange = (category) => {
+    console.log("hellolohodhfusd");
+    navigate(`/product/search/${category}`);
   };
   useEffect(() => {
     fetchCategoryProduct();
@@ -33,8 +39,9 @@ const CategoryList = () => {
           }}
         >
           {" "}
-          {categoryProduct.map((category) => (
-            <Box>
+          {categoryProduct.map((category, index) => (
+            <Box key={index} onClick={() => handleChange(category.category)}>
+              {/* onclick={() => handleChange(category.category)} */}
               <Image
                 src={category.productImage[0]}
                 alt={category.productName}
@@ -45,25 +52,6 @@ const CategoryList = () => {
               </Typography>
             </Box>
           ))}
-          {/* <Row className="category-row d-flex justify-content-between flex-nowrap overflow-auto">
-            {categories.map((category) => (
-              <Col
-                key={category.id}
-                xs={6}
-                sm={4}
-                md={3}
-                lg={2}
-                className="text-center p-2"
-              >
-                <Image
-                  src={category.imgSrc}
-                  alt={category.name}
-                  className="round-image"
-                />
-                <Typography variant="h6">{category.name}</Typography>
-              </Col>
-            ))}
-          </Row> */}
         </Container>
       )}
     </>

@@ -27,11 +27,12 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import Collapse from "@mui/material/Collapse";
 import { fetchProductsByCategory } from "../utils/service";
-
+import { useNavigate } from "react-router-dom";
 const valuetext = (value) => `${value}`;
 
 const ProductSearch = () => {
   const { category } = useParams();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -76,12 +77,19 @@ const ProductSearch = () => {
     });
     setFilteredProducts(filtered);
   };
-
+  const handleChange = (id) => {
+    navigate(`/product/${id}`);
+  };
   useEffect(() => {
     fetchProductsFromCategory(category);
     setPriceRange([0, 10000]);
     setSelectedBrands([]);
   }, [category]);
+
+  // Get unique brands
+  const uniqueBrands = [
+    ...new Set(products.map((product) => product.brandName)),
+  ];
 
   return (
     <>
@@ -131,16 +139,16 @@ const ProductSearch = () => {
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
                         <FormGroup>
-                          {products.map((product, index) => (
+                          {uniqueBrands.map((brand, index) => (
                             <FormControlLabel
                               key={index}
                               control={
                                 <Checkbox
-                                  value={product.brandName}
+                                  value={brand}
                                   onChange={handleBrandChange}
                                 />
                               }
-                              label={product.brandName}
+                              label={brand}
                             />
                           ))}
                         </FormGroup>
@@ -155,7 +163,12 @@ const ProductSearch = () => {
             <Grid container spacing={2}>
               {filteredProducts.map((product) => (
                 <Grid item xs={3} key={product.id}>
-                  <Card sx={{ maxWidth: 200 }}>
+                  {/* <Link to={`product/${produ?._id}`}> */}
+
+                  <Card
+                    sx={{ maxWidth: 200 }}
+                    onClick={() => handleChange(product._id)}
+                  >
                     <CardActionArea>
                       <CardMedia
                         component="img"
@@ -173,6 +186,7 @@ const ProductSearch = () => {
                       </CardContent>
                     </CardActionArea>
                   </Card>
+                  {/* </Link> */}
                 </Grid>
               ))}
             </Grid>
@@ -184,7 +198,6 @@ const ProductSearch = () => {
 };
 
 export default ProductSearch;
-
 
 // import React, { useState, useEffect } from "react";
 // import { useParams } from "react-router-dom";

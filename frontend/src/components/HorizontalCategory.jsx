@@ -30,7 +30,7 @@ const HorizontalCategory = () => {
                 xs={3}
                 key={category._id}
                 sx={{ border: "1px solid", color: "black" }}
-              >
+              >localhost //5000/signup/verigy/${category?._id}
                 <Link to={`product/${category?._id}`}>
                   <Box>
                     <Image

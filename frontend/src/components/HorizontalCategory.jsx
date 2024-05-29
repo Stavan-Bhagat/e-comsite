@@ -1,45 +1,47 @@
 import React, { useEffect, useState } from "react";
 import { fetchProductsByCategory } from "../utils/service";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Container, Image } from "react-bootstrap";
-import { Grid, Box, Typography } from "@mui/material";
+import { Container, Grid, Box, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
-const HorizontalCategory = () => {
+
+const HorizontalCategory = ({ category }) => {
   const [products, setProducts] = useState([]);
-  const [loading, SetLoading] = useState(false);
-  const [category, SetCategory] = useState("electronics");
+  const [loading, setLoading] = useState(false);
+
   const fetchProductsFromCategory = async () => {
-    SetLoading(true);
-    const response = await fetchProductsByCategory(category);
-    SetLoading(false);
-    setProducts(response.data);
+    setLoading(true);
+    try {
+      const response = await fetchProductsByCategory(category);
+      setProducts(response.data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
   useEffect(() => {
     fetchProductsFromCategory();
-  }, []);
+  }, [category]); // Fetch products whenever the category prop changes
+
   return (
     <>
       {loading ? (
         <LinearProgress color="secondary" />
       ) : (
-        <Container fluid sx={{ height: 200, width: 100 }}>
+        <Container>
           <Grid container spacing={2}>
-            {products.map((category) => (
-              <Grid
-                item
-                xs={3}
-                key={category._id}
-                sx={{ border: "1px solid", color: "black" }}
-              >localhost //5000/signup/verigy/${category?._id}
-                <Link to={`product/${category?._id}`}>
-                  <Box>
-                    <Image
-                      src={category.productImage[0]}
-                      alt={category.productName}
-                      className="round-image"
+            {products.map((product) => (
+              <Grid item xs={3} key={product._id}>
+                <Link to={`/product/${product._id}`} style={{ textDecoration: "none" }}>
+                  <Box sx={{ border: "1px solid", padding: 2 }}>
+                    <img
+                      src={product.productImage[0]}
+                      alt={product.productName}
+                      style={{ width: "100%", height: "auto" }}
                     />
-                    <Typography variant="h6">{category.productName}</Typography>
-                    <Typography variant="h6">{category.price}</Typography>
+                    <Typography variant="h6">{product.productName}</Typography>
+                    <Typography variant="h6">${product.price}</Typography>
                   </Box>
                 </Link>
               </Grid>
@@ -47,29 +49,8 @@ const HorizontalCategory = () => {
           </Grid>
         </Container>
       )}
-      {/* <Container className="">
-        <Row className="display-product-row">
-          {items.map((category) => (
-            <Col
-              key={category.id}
-              xs={6}
-              sm={4}
-              md={3}
-              lg={2}
-              className="text-center p-2"
-            >
-              <Image
-                src={category.img}
-                alt={category.name}
-                className="round-image"
-              />
-              <Typography variant="h6">{category.name}</Typography>
-              <Typography variant="h6">{category.price}</Typography>
-            </Col>
-          ))}
-        </Row>
-      </Container> */}
     </>
   );
 };
+
 export default HorizontalCategory;

@@ -17,4 +17,5 @@ router.get(
 );
 
 router.get("/suggestions", productController.suggestions);
+router.get("/orders", productController.fetchOrders);
 module.exports = router;

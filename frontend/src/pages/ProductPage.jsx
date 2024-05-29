@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Typography, Box, Button } from "@mui/material";
+import { Grid, Typography, Box, Button, Snackbar } from "@mui/material";
 import { Container } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { fetchProduct } from "../utils/service";
 import fallbackImage from "../images/ai.jpeg";
 import { Skeleton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/Slice/cartSlice";
-import { useNavigate } from "react-router-dom";
+import Header from "../components/Header";
+
 const ProductPage = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
   const [clickImage, setClickImage] = useState(null);
+  const [toast, setToast] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const fetchedProduct = async (id) => {
     setLoading(true);
     try {
@@ -32,13 +35,20 @@ const ProductPage = () => {
     }
   };
 
+  const handleClose = () => {
+    setToast(false);
+  };
+
   const handleImage = (image) => {
     setClickImage(image);
   };
+
   const handleCart = () => {
     dispatch(addToCart(product));
-    navigate(`/product/cart/`);
+    setToast(true);
+
   };
+
   useEffect(() => {
     fetchedProduct(id);
   }, [id]);
@@ -66,96 +76,108 @@ const ProductPage = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h5">Product Details</Typography>
-      <Grid container spacing={2}>
-        <Grid item xs={6}>
-          <Box sx={{ height: "90vh", display: "flex" }}>
-            <Box
-              sx={{
-                height: "100%",
-                width: "20%",
-                justifyContent: "space-between",
-                flexDirection: "column",
-                display: "flex",
-                marginRight: "1rem",
-              }}
-              component="div"
-            >
-              {product.productImage.map((image, index) => (
-                <Box
-                  key={index}
-                  sx={{ marginBottom: "1rem" }}
-                  component="div"
-                  onMouseEnter={() => handleImage(image)}
+    <>
+      <Header />
+      <Container>
+        <Typography variant="h5">Product Details</Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={6}>
+            <Box sx={{ height: "90vh", display: "flex" }}>
+              <Box
+                sx={{
+                  height: "100%",
+                  width: "20%",
+                  justifyContent: "space-between",
+                  flexDirection: "column",
+                  display: "flex",
+                  marginRight: "1rem",
+                }}
+                component="div"
+              >
+                {product.productImage.map((image, index) => (
+                  <Box
+                    key={index}
+                    sx={{ marginBottom: "1rem" }}
+                    component="div"
+                    onMouseEnter={() => handleImage(image)}
+                  >
+                    <img
+                      src={image}
+                      alt={product.productName}
+                      style={{ width: "100%", height: "auto" }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+              <img
+                src={
+                  product.productImage && product.productImage[0]
+                    ? clickImage || product.productImage[0]
+                    : fallbackImage
+                }
+                alt={product.productName}
+                style={{ width: "80%", height: "auto" }}
+                onError={(e) => {
+                  e.target.onerror = null;
+                  e.target.src = fallbackImage;
+                }}
+              />
+            </Box>
+          </Grid>
+          <Grid item xs={6}>
+            <Box sx={{ height: "90vh" }}>
+              <Typography variant="h4">{product.productName}</Typography>
+              <Typography variant="h6">${product.price}</Typography>
+              <Typography variant="body1">{product.description}</Typography>
+              <Box sx={{ mt: 2, mb: 2 }}>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="medium"
+                  fullWidth
+                  sx={{
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.01)",
+                      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                    },
+                  }}
+                  onClick={handleCart}
                 >
-                  <img
-                    src={image}
-                    alt={product.productName}
-                    style={{ width: "100%", height: "auto" }}
-                  />
-                </Box>
-              ))}
+                  <AddShoppingCartIcon />
+                  <Typography sx={{ ml: 1 }}>Add to Cart</Typography>
+                </Button>
+              </Box>
+              <Box>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    color: "black",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    "&:hover": {
+                      transform: "scale(1.01)",
+                      boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+                    },
+                  }}
+                  fullWidth
+                >
+                  Buy Now
+                </Button>
+              </Box>
             </Box>
-            <img
-              src={
-                product.productImage && product.productImage[0]
-                  ? clickImage || product.productImage[0]
-                  : fallbackImage
-              }
-              alt={product.productName}
-              style={{ width: "80%", height: "auto" }}
-              onError={(e) => {
-                e.target.onerror = null;
-                e.target.src = fallbackImage;
-              }}
-            />
-          </Box>
+          </Grid>
         </Grid>
-        <Grid item xs={6}>
-          <Box sx={{ height: "90vh" }}>
-            <Typography variant="h4">{product.productName}</Typography>
-            <Typography variant="h6">${product.price}</Typography>
-            <Typography variant="body1">{product.description}</Typography>
-            <Box sx={{ mt: 2, mb: 2 }}>
-              <Button
-                variant="contained"
-                color="secondary"
-                size="medium"
-                fullWidth
-                sx={{
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  "&:hover": {
-                    transform: "scale(1.01)",
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                  },
-                }}
-                onClick={handleCart}
-              >
-                <AddShoppingCartIcon />
-                <Typography sx={{ ml: 1 }}>Add to Cart</Typography>
-              </Button>
-            </Box>
-            <Box>
-              <Button
-                variant="outlined"
-                sx={{
-                  color: "black",
-                  transition: "transform 0.2s, box-shadow 0.2s",
-                  "&:hover": {
-                    transform: "scale(1.01)",
-                    boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-                  },
-                }}
-                fullWidth
-              >
-                Buy Now
-              </Button>
-            </Box>
-          </Box>
-        </Grid>
-      </Grid>
-    </Container>
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          open={toast}
+          onClose={handleClose}
+          autoHideDuration={2000}
+          message="Added to cart"
+          key={"bottomright"}
+         className="bg-success"
+        />
+      </Container>
+    </>
   );
 };
 

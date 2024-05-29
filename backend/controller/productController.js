@@ -140,5 +140,6 @@ const productController = {
       res.status(500).json({ message: "Server error" });
     }
   },
+  fetchOrders:()=>{}
 };
 module.exports = productController;

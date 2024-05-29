@@ -77,7 +77,9 @@ const Header = () => {
     dispatch(logout());
     navigate("/");
   };
-
+const handleCart=()=>{
+  navigate("/product/cart")
+}
   const handleProfile = () => {
     setProfile((prev) => !prev);
     setOpen(false);
@@ -162,7 +164,7 @@ const Header = () => {
                 )}
               </div>
             )}
-            <IconButton aria-label="cart">
+            <IconButton aria-label="cart" onClick={handleCart}>
               <Badge badgeContent={0} color="secondary">
                 <ShoppingCartIcon />
               </Badge>

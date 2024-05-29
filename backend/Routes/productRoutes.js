@@ -16,4 +16,5 @@ router.get(
   productController.fetchProductsByCategory
 );
 
+router.get("/suggestions", productController.suggestions);
 module.exports = router;

@@ -1,4 +1,5 @@
 const productService = require("../service/productService.js");
+const client = require("../config/elasticClient");
 const productController = {
   fetchProductData: async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -20,7 +21,7 @@ const productController = {
     }
   },
   fetchProduct: async (req, res) => {
-    const {id}  = req.params;
+    const { id } = req.params;
     const response = await productService.fetchProduct(id);
     if (response) {
       res.status(200).json({
@@ -103,6 +104,32 @@ const productController = {
       });
     }
   },
-  
+  suggestions: async (req, res) => {
+    try {
+      const searchQuery = req.query.search || "";
+console.log(searchQuery);
+      const { body } = await client.search({
+        index: "products",
+        body: {
+          query: {
+            multi_match: {
+              query: searchQuery,
+              fields: ["productName", "description"],
+            },
+          },
+        },
+      });
+
+      // Check if body and body.hits are defined
+      const suggestions =
+        body && body.hits ? body.hits.hits.map((hit) => hit._source) : [];
+
+      console.log("Suggestions:", suggestions);
+      res.json(suggestions);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+      res.status(500).json({ message: "Server error" });
+    }
+  },
 };
 module.exports = productController;

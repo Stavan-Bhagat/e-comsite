@@ -1,12 +1,11 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Navbar, Nav, FormControl, Form, Image } from "react-bootstrap";
+import { Navbar, Nav, Modal, Button, FormControl, Form } from "react-bootstrap";
 import SearchIcon from "@mui/icons-material/SearchOutlined";
 import PersonIcon from "@mui/icons-material/Person";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountIcon from "@mui/icons-material/AccountCircleOutlined";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import Button from "@mui/material/Button";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Grow from "@mui/material/Grow";
 import Paper from "@mui/material/Paper";
@@ -16,7 +15,6 @@ import MenuList from "@mui/material/MenuList";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import Avatar from "@mui/material/Avatar";
-import axios from "axios";
 import { logout } from "../redux/Slice/authSlice";
 import Profile from "./Profile";
 import AdminPanel from "../pages/AdminPanel";
@@ -25,9 +23,9 @@ import axiosInstance from "../utils/axios";
 const Header = () => {
   const user = useSelector((state) => state?.auth.user);
   const isAuthenticated = useSelector((state) => state?.auth.isAuthenticated);
-  const [collapsed, setCollapsed] = useState(true);
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -73,37 +71,6 @@ const Header = () => {
     prevOpen.current = open;
   }, [open]);
 
-  const handleToggleCollapse = () => {
-    setCollapsed(!collapsed);
-  };
-
-  const handleSearchChange = async (e) => {
-    const query = e.target.value;
-    console.log(query);
-    setSearch(query);
-
-    if (query.length > 0) {
-      try {
-        const response = await axiosInstance.get(`/product/suggestions`, {
-          params: { search: query },
-        });
-        setSuggestions(response.data);
-      } catch (error) {
-        console.error("Error fetching suggestions", error);
-      }
-    } else {
-      setSuggestions([]);
-    }
-  };
-
-  const handleSearch = () => {
-    console.log("Searching for:", search);
-  };
-
-  const handleLoginClick = () => {
-    navigate("/login");
-  };
-
   const prevOpen = useRef(open);
 
   const handleLogout = () => {
@@ -116,6 +83,41 @@ const Header = () => {
     setOpen(false);
   };
 
+  const handleSearchIconClick = () => {
+    setShowModal(true);
+  };
+
+  const handleSearchChange = async (e) => {
+    const query = e.target.value;
+    setSearch(query);
+
+    if (query.length > 0) {
+      try {
+        const response = await axiosInstance.get(`/product/suggestions`, {
+          params: { search: query },
+        });
+        console.log("suggestion", response);
+        setSuggestions(Array.isArray(response.data) ? response.data : []);
+      } catch (error) {
+        console.error("Error fetching suggestions", error);
+      }
+    } else {
+      setSuggestions([]);
+    }
+  };
+
+  const handleSearchSubmit = () => {
+    console.log("Searching for:", search);
+    // navigate(`/product/search/${suggestion.category}`);
+    setShowModal(false);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setSearch(suggestion.productName);
+    navigate(`/product/search/${suggestion.category}`);
+    setShowModal(false);
+  };
+
   return (
     <>
       <Navbar
@@ -124,53 +126,16 @@ const Header = () => {
         style={{ paddingLeft: "20px", paddingRight: "20px", zIndex: 9999 }}
       >
         <Navbar.Brand href="/">Zen Fusion</Navbar.Brand>
-        <Navbar.Toggle
-          aria-controls="basic-navbar-nav"
-          onClick={handleToggleCollapse}
-        />
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto" style={{ alignItems: "center" }}>
-            <Form
-              inline="true"
-              className="d-flex"
-              style={{ marginRight: "15px" }}
-            >
-              <FormControl
-                type="text"
-                placeholder="Search"
-                value={search}
-                onChange={handleSearchChange}
-                style={{ marginRight: "5px" }}
-              />
-              <Button variant="outline-success" onClick={handleSearch}>
-                <SearchIcon />
-              </Button>
-            </Form>
-            {suggestions.length > 0 && (
-              <ul
-                style={{
-                  position: "absolute",
-                  background: "white",
-                  listStyleType: "none",
-                  padding: 0,
-                  margin: 0,
-                  zIndex: 1000,
-                }}
-              >
-                {suggestions.map((suggestion) => (
-                  <li
-                    key={suggestion._id}
-                    onClick={() => setSearch(suggestion.productName)}
-                  >
-                    {suggestion.productName}
-                  </li>
-                ))}
-              </ul>
-            )}
+            <IconButton onClick={handleSearchIconClick}>
+              <SearchIcon />
+            </IconButton>
             {!isAuthenticated && (
               <Button
                 variant="outline-primary"
-                onClick={handleLoginClick}
+                onClick={() => navigate("/login")}
                 style={{ marginRight: "15px" }}
               >
                 <PersonIcon /> Login
@@ -205,6 +170,41 @@ const Header = () => {
           </Nav>
         </Navbar.Collapse>
       </Navbar>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Search Products</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSearchSubmit}>
+            <FormControl
+              type="text"
+              placeholder="Search"
+              value={search}
+              onChange={handleSearchChange}
+              style={{ marginBottom: "15px" }}
+            />
+            <Button variant="outline-success" onClick={handleSearchSubmit}>
+              Search
+            </Button>
+          </Form>
+          {suggestions.length > 0 && (
+            <ul
+              style={{ listStyleType: "none", padding: 0, marginTop: "15px" }}
+            >
+              {suggestions.slice(0, 5).map((suggestion) => (
+                <li
+                  key={suggestion._id}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  style={{ cursor: "pointer", padding: "5px 0" }}
+                >
+                  {suggestion.productName}
+                </li>
+              ))}
+            </ul>
+          )}
+        </Modal.Body>
+      </Modal>
 
       <Popper
         open={open}
@@ -254,7 +254,7 @@ const Header = () => {
 export default Header;
 
 // import React, { useState, useRef, useEffect } from "react";
-// import { Navbar, Nav, FormControl, Form, Image } from "react-bootstrap";
+// import { Navbar, Nav, FormControl, Form } from "react-bootstrap";
 // import SearchIcon from "@mui/icons-material/SearchOutlined";
 // import PersonIcon from "@mui/icons-material/Person";
 // import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -274,12 +274,14 @@ export default Header;
 // import { logout } from "../redux/Slice/authSlice";
 // import Profile from "./Profile";
 // import AdminPanel from "../pages/AdminPanel";
+// import axiosInstance from "../utils/axios";
 
 // const Header = () => {
 //   const user = useSelector((state) => state?.auth.user);
 //   const isAuthenticated = useSelector((state) => state?.auth.isAuthenticated);
 //   const [collapsed, setCollapsed] = useState(true);
 //   const [search, setSearch] = useState("");
+//   const [suggestions, setSuggestions] = useState([]); // Initialize as an empty array
 //   const navigate = useNavigate();
 //   const location = useLocation();
 //   const dispatch = useDispatch();
@@ -329,8 +331,23 @@ export default Header;
 //     setCollapsed(!collapsed);
 //   };
 
-//   const handleSearchChange = (e) => {
-//     setSearch(e.target.value);
+//   const handleSearchChange = async (e) => {
+//     const query = e.target.value;
+//     setSearch(query);
+
+//     if (query.length > 0) {
+//       try {
+//         const response = await axiosInstance.get(`/product/suggestions`, {
+//           params: { search: query },
+//         });
+//         console.log("suggestion", response);
+//         setSuggestions(Array.isArray(response.data) ? response.data : []);
+//       } catch (error) {
+//         console.error("Error fetching suggestions", error);
+//       }
+//     } else {
+//       setSuggestions([]);
+//     }
 //   };
 
 //   const handleSearch = () => {
@@ -355,8 +372,12 @@ export default Header;
 
 //   return (
 //     <>
-//       <Navbar bg="light" expand="lg" style={{paddingLeft: '20px', paddingRight: '20px' ,zIndex:9999}}>
-//         <Navbar.Brand href="/"  >Zen Fusion</Navbar.Brand>
+//       <Navbar
+//         bg="light"
+//         expand="lg"
+//         style={{ paddingLeft: "20px", paddingRight: "20px", zIndex: 9999 }}
+//       >
+//         <Navbar.Brand href="/">Zen Fusion</Navbar.Brand>
 //         <Navbar.Toggle
 //           aria-controls="basic-navbar-nav"
 //           onClick={handleToggleCollapse}
@@ -379,6 +400,27 @@ export default Header;
 //                 <SearchIcon />
 //               </Button>
 //             </Form>
+//             {suggestions.length > 0 && (
+//               <ul
+//                 style={{
+//                   position: "absolute",
+//                   background: "white",
+//                   listStyleType: "none",
+//                   padding: 0,
+//                   margin: 0,
+//                   zIndex: 1000,
+//                 }}
+//               >
+//                 {suggestions.map((suggestion) => (
+//                   <li
+//                     key={suggestion._id}
+//                     onClick={() => setSearch(suggestion.productName)}
+//                   >
+//                     {suggestion.productName}
+//                   </li>
+//                 ))}
+//               </ul>
+//             )}
 //             {!isAuthenticated && (
 //               <Button
 //                 variant="outline-primary"
@@ -409,7 +451,6 @@ export default Header;
 //                 )}
 //               </div>
 //             )}
-
 //             <IconButton aria-label="cart">
 //               <Badge badgeContent={0} color="secondary">
 //                 <ShoppingCartIcon />
@@ -426,7 +467,7 @@ export default Header;
 //         placement="bottom-end"
 //         transition
 //         disablePortal
-//         sx={{zIndex:"999"}}
+//         sx={{ zIndex: "999" }}
 //       >
 //         {({ TransitionProps, placement }) => (
 //           <Grow

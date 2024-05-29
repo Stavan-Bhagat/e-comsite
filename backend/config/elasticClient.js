@@ -1,17 +1,21 @@
 // elasticClient.js
 const { Client } = require("@elastic/elasticsearch");
 
-// Update the endpoint URL provided by Elastic Cloud
-// const endpointUrl = "YOUR_ELASTICSEARCH_ENDPOINT_URL"; // Replace with your actual endpoint URL
-
-// Initialize the Elasticsearch client with the endpoint URL
 const client = new Client({
   node: process.env.ELASTIC_ENDPOINTURL,
   auth: {
-    // If authentication is required, provide the username and password
-    username: process.env.ELASTIC_USERNAME, // Replace with your actual username
-    password: process.env.ELASTIC_PASSWORD, // Replace with your actual password
+    username: process.env.ELASTIC_USERNAME,
+    password: process.env.ELASTIC_PASSWORD,
   },
+});
+
+// Ping Elasticsearch server to check the connection
+client.ping((error) => {
+  if (error) {
+    console.error("Error connecting to Elasticsearch server:", error);
+  } else {
+    console.log("Successfully connected to Elasticsearch server.");
+  }
 });
 
 module.exports = client;

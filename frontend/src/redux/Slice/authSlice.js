@@ -17,7 +17,7 @@ const initialState = {
   token: get_token() ? get_token() : null,
   loading: false,
   error: null,
-};
+}; 
 const authSlice = createSlice({
   name: "auth",
   initialState,

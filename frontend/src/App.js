@@ -12,6 +12,7 @@ import AdminPanel from "./pages/AdminPanel";
 import { useSelector } from "react-redux";
 import ProductPage from "./pages/ProductPage";
 import ProductSearch from "./pages/ProductSearch";
+import Cart from "./pages/Cart";
 function App() {
   const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
   return (
@@ -35,6 +36,10 @@ function App() {
           <Route
             path="/product/search/:category"
             element={<ProductSearch />}
+          ></Route>
+           <Route
+            path="/product/cart/"
+            element={<Cart />}
           ></Route>
         </Routes>
       </Router>

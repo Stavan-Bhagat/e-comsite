@@ -16,7 +16,6 @@ const CategoryList = () => {
     SetCategoryProduct(response.data.data);
   };
   const handleChange = (category) => {
-    console.log("hellolohodhfusd");
     navigate(`/product/search/${category}`);
   };
   useEffect(() => {

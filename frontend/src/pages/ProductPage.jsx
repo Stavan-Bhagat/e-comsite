@@ -6,12 +6,16 @@ import { fetchProduct } from "../utils/service";
 import fallbackImage from "../images/ai.jpeg";
 import { Skeleton } from "@mui/material";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/Slice/cartSlice";
+import { useNavigate } from "react-router-dom";
 const ProductPage = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
   const [clickImage, setClickImage] = useState(null);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const fetchedProduct = async (id) => {
     setLoading(true);
     try {
@@ -30,6 +34,10 @@ const ProductPage = () => {
 
   const handleImage = (image) => {
     setClickImage(image);
+  };
+  const handleCart = () => {
+    dispatch(addToCart(product));
+    navigate(`/product/cart/`);
   };
   useEffect(() => {
     fetchedProduct(id);
@@ -122,6 +130,7 @@ const ProductPage = () => {
                     boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
                   },
                 }}
+                onClick={handleCart}
               >
                 <AddShoppingCartIcon />
                 <Typography sx={{ ml: 1 }}>Add to Cart</Typography>

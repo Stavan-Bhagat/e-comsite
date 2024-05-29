@@ -124,7 +124,7 @@ const ProductSearch = () => {
                     step={10}
                     marks
                     min={0}
-                    max={10000}
+                    max={30000}
                   />
                 </Box>
                 <ListItemButton onClick={handleClick}>
@@ -163,8 +163,6 @@ const ProductSearch = () => {
             <Grid container spacing={2}>
               {filteredProducts.map((product) => (
                 <Grid item xs={3} key={product.id}>
-                  {/* <Link to={`product/${produ?._id}`}> */}
-
                   <Card
                     sx={{ maxWidth: 200 }}
                     onClick={() => handleChange(product._id)}
@@ -186,7 +184,6 @@ const ProductSearch = () => {
                       </CardContent>
                     </CardActionArea>
                   </Card>
-                  {/* </Link> */}
                 </Grid>
               ))}
             </Grid>

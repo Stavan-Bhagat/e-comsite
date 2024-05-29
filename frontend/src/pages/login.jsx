@@ -121,10 +121,10 @@ const Login = () => {
           padding: "1%",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           overflow: "hidden",
-          width:"70%"
+          width: "70%",
         }}
       >
-        <Grid container spacing={2} >
+        <Grid container spacing={2}>
           <Grid item xs={6}>
             <Box
               component="img"

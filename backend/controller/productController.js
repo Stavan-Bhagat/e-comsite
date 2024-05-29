@@ -107,25 +107,34 @@ const productController = {
   suggestions: async (req, res) => {
     try {
       const searchQuery = req.query.search || "";
-console.log(searchQuery);
-      const { body } = await client.search({
+      console.log("Search Query:", searchQuery);
+
+      const response = await client.search({
         index: "products",
         body: {
           query: {
             multi_match: {
               query: searchQuery,
-              fields: ["productName", "description"],
+              fields: ["productName", "brandName","category"],
             },
           },
         },
       });
 
-      // Check if body and body.hits are defined
-      const suggestions =
-        body && body.hits ? body.hits.hits.map((hit) => hit._source) : [];
+      // Log the entire response object
+      console.log("Elasticsearch Response:", JSON.stringify(response, null, 2));
 
-      console.log("Suggestions:", suggestions);
-      res.json(suggestions);
+      // Ensure response.body is accessible and has the expected structure
+      const responseBody = response.body || response;
+      console.log("Response Body:", JSON.stringify(responseBody, null, 2));
+
+      if (responseBody && responseBody.hits && responseBody.hits.hits) {
+        const suggestions = responseBody.hits.hits.map((hit) => hit._source);
+        console.log("Suggestions:", suggestions);
+        res.json(suggestions);
+      } else {
+        res.json([]);
+      }
     } catch (error) {
       console.error("Error fetching suggestions:", error);
       res.status(500).json({ message: "Server error" });

@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { get_cart, set_cart, remove_cart } from "../../utils/service";
 
 const initialState = {
-  items: [],
+  items: get_cart() ? get_cart() : [],
   totalQuantity: 0,
   totalAmount: 0,
 };
@@ -26,10 +26,11 @@ const cartSlice = createSlice({
           quantity: 1,
           sellingPrice: newItem.sellingPrice,
         });
+        set_cart(state.items);
       } else {
         existingItem.quantity++;
+        set_cart(state.items);
       }
-      set_cart(state.items);
     },
     removeFromCart(state, action) {
       const id = action.payload.id;

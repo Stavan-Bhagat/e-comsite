@@ -377,7 +377,7 @@ const AllProducts = () => {
           <Grid item xs={3} key={product._id}>
             {" "}
             {/* Ensure unique key prop */}
-            <Card sx={{ maxWidth: 175 }}>
+            <Card sx={{ maxWidth: 175, width: "100%" }}>
               <CardActionArea>
                 <CardMedia
                   component="img"
@@ -388,12 +388,21 @@ const AllProducts = () => {
                 <CardContent>
                   <Typography
                     gutterBottom
-                    variant="h6"
+                    variant="h5"
                     component="div"
-                    sx={{ color: "#009688" }}
+                    sx={{
+                      color: "#009688",
+                      fontSize: "0.875rem",
+                      overflow: "hidden",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      maxWidth: "100%",
+                    }}
+                    title={product.productName}
                   >
                     {product.productName}
                   </Typography>
+
                   <Box sx={{ display: "flex" }}>
                     <div>
                       <Typography

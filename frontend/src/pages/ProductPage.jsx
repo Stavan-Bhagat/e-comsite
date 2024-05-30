@@ -18,7 +18,7 @@ const ProductPage = () => {
   const [toast, setToast] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const fetchedProduct = async (id) => {
     setLoading(true);
     try {
@@ -46,7 +46,6 @@ const ProductPage = () => {
   const handleCart = () => {
     dispatch(addToCart(product));
     setToast(true);
-
   };
 
   useEffect(() => {
@@ -174,7 +173,7 @@ const ProductPage = () => {
           autoHideDuration={2000}
           message="Added to cart"
           key={"bottomright"}
-         className="bg-success"
+          className="bg-success"
         />
       </Container>
     </>

@@ -5,6 +5,7 @@ import { Container, Grid, Item, Typography, Box } from "@mui/material";
 import { Image } from "react-bootstrap";
 import axiosInstance from "../utils/axios";
 import CircularProgress from "@mui/material/CircularProgress";
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 const CategoryList = () => {
   const [categoryProduct, SetCategoryProduct] = useState([]);
   const [loading, SetLoading] = useState(false);

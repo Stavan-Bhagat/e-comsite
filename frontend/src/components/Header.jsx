@@ -22,6 +22,7 @@ import axiosInstance from "../utils/axios";
 
 const Header = () => {
   const user = useSelector((state) => state?.auth.user);
+  const cart = useSelector((state) => state?.cart.items);
   const isAuthenticated = useSelector((state) => state?.auth.isAuthenticated);
   const [search, setSearch] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -77,9 +78,9 @@ const Header = () => {
     dispatch(logout());
     navigate("/");
   };
-const handleCart=()=>{
-  navigate("/product/cart")
-}
+  const handleCart = () => {
+    navigate("/product/cart");
+  };
   const handleProfile = () => {
     setProfile((prev) => !prev);
     setOpen(false);
@@ -165,7 +166,7 @@ const handleCart=()=>{
               </div>
             )}
             <IconButton aria-label="cart" onClick={handleCart}>
-              <Badge badgeContent={0} color="secondary">
+              <Badge badgeContent={cart.length} color="secondary">
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>

@@ -30,7 +30,37 @@ export const set_token = (setValue) => {
 export const remove_token = () => {
   return localStorage.removeItem("token");
 };
-//featc user data
+// orders
+export const get_orders = () => {
+  return localStorage.getItem("orders");
+};
+export const set_orders = (setValue) => {
+  return localStorage.setItem("orders", setValue);
+};
+export const remove_orders = () => {
+  return localStorage.removeItem("orders");
+};
+// cart
+export const get_cart = () => {
+  return JSON.parse(localStorage.getItem("cart"));
+};
+export const set_cart = (setValue) => {
+  return localStorage.setItem("cart", JSON.stringify(setValue));
+};
+export const remove_cart = () => {
+  return localStorage.removeItem("cart");
+};
+// export const get_cart = () => {
+//   return localStorage.getItem("cart");
+// };
+// export const set_cart = (setValue) => {
+//   return localStorage.setItem("cart", setValue);
+// };
+// export const remove_cart = () => {
+//   return localStorage.removeItem("cart");
+// };
+
+//featch user data
 export const fetchUserData = async () => {
   const response = await axiosInstance.get("/submit/fetch-userdata");
   return response.data;
@@ -55,6 +85,7 @@ export const fetchProductsByCategory = async (category) => {
 };
 
 export const fetchCategoryProducts = async (category) => {
- const response = await axiosInstance.get(`/product/fetch-category-product`);
+  const response = await axiosInstance.get(`/product/fetch-category-product`);
   return response.data;
 };
+// order

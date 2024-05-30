@@ -8,8 +8,6 @@ const client = new Client({
     password: process.env.ELASTIC_PASSWORD,
   },
 });
-
-// Ping Elasticsearch server to check the connection
 client.ping((error) => {
   if (error) {
     console.error("Error connecting to Elasticsearch server:", error);

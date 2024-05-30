@@ -11,6 +11,8 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { fetchProductsByCategory } from "../utils/service";
 import { styles } from "../css/multiCarousel";
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
+import { Link } from "react-router-dom";
 
 const responsive = {
   superLargeDesktop: {
@@ -19,7 +21,7 @@ const responsive = {
   },
   desktop: {
     breakpoint: { max: 3000, min: 1024 },
-    items: 3,
+    items: 5,
   },
   tablet: {
     breakpoint: { max: 1024, min: 464 },
@@ -53,33 +55,45 @@ const ProductCarousel = ({ category }) => {
 
   return (
     <>
-      <Typography variant="h6">Popular Brands</Typography>
+      <Typography variant="h6">Popular {category}</Typography>
       <Carousel showDots responsive={responsive}>
         {products?.map((item) => (
-          <Card key={item?.id} style={styles.card}>
-            <img
-              src={item?.productImage[0]}
-              alt={item?.name}
-              style={styles.productImage}
-            />
-            <CardContent style={styles.cardContent}>
-              <Typography style={styles.productName} variant="body1">
-                {item?.name}
-              </Typography>
-              <Typography
-                style={styles.productPrice}
-                variant="body2"
-                color="primary"
-              >
-                ${item?.price}
-              </Typography>
-            </CardContent>
-            <CardActions style={styles.cardActions}>
+          <Link to={`/product/${item._id}`}>
+            <Card key={item?.id} style={styles.card}>
+              <img
+                src={item?.productImage[0]}
+                alt={item?.name}
+                style={styles.productImage}
+              />
+              <CardContent style={styles.cardContent}>
+                <Typography style={styles.productName} variant="body1">
+                  {item?.productName}
+                </Typography>
+                <Typography
+                  style={styles.productPrice}
+                  variant="body1"
+                  color="black"
+                  component="span"
+                >
+                  From
+                </Typography>
+                <Typography
+                  style={styles.productPrice}
+                  variant="body2"
+                  color="primary"
+                  component="span"
+                >
+                  <CurrencyRupeeIcon fontSize="small" />
+                  {item?.price}
+                </Typography>
+              </CardContent>
+              {/* <CardActions style={styles.cardActions}>
               <Button variant="contained" color="primary">
                 Add to Cart
               </Button>
-            </CardActions>
-          </Card>
+            </CardActions> */}
+            </Card>
+          </Link>
         ))}
       </Carousel>
     </>

@@ -175,11 +175,19 @@ const ProductSearch = () => {
                         alt={product.productName}
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
+                        <Typography
+                          gutterBottom
+                          variant="button"
+                          component="div"
+                          sx={{
+                            textOverflow: "ellipsis",overflow:"hidden",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
                           {product.productName}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          {product.price}
+                         <CurrencyRupeeIcon fontSize="small"/> {product.price}
                         </Typography>
                       </CardContent>
                     </CardActionArea>

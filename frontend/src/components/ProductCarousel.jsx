@@ -1,31 +1,41 @@
-import React,{useEffect,useState} from "react";
-import { Typography, Card, Button } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import {
+  Typography,
+  Card,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Button,
+} from "@mui/material";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { fetchProductsByCategory } from "../utils/service";
-const ProductCarousel = ({category  }) => {
-  const responsive = {
-    superLargeDesktop: {
-      breakpoint: { max: 4000, min: 3000 },
-      items: 5,
-    },
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 3,
-    },
-    tablet: {
-      breakpoint: { max: 1024, min: 464 },
-      items: 2,
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-    },
-  };
+import { styles } from "../css/multiCarousel";
+
+const responsive = {
+  superLargeDesktop: {
+    breakpoint: { max: 4000, min: 3000 },
+    items: 5,
+  },
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+  },
+};
+
+const ProductCarousel = ({ category }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchProductsFromCategory = async () => {
+  const fetchProductsFromCategory = async (category) => {
     setLoading(true);
     try {
       const response = await fetchProductsByCategory(category);
@@ -38,26 +48,41 @@ const ProductCarousel = ({category  }) => {
   };
 
   useEffect(() => {
-    fetchProductsFromCategory();
+    fetchProductsFromCategory(category);
   }, [category]);
 
   return (
-    <div>
+    <>
       <Typography variant="h6">Popular Brands</Typography>
       <Carousel showDots responsive={responsive}>
         {products?.map((item) => (
-          <Card key={item.id} className="card">
-            <Card.Img variant="top" src={item.image} className="product--image" />
-            <Card.Body>
-              <Card.Title>{item.name}</Card.Title>
-              <Card.Text>{item.description}</Card.Text>
-              <Card.Text className="price">${item.price}</Card.Text>
-              <Button variant="contained" color="primary">Add to Cart</Button>
-            </Card.Body>
+          <Card key={item?.id} style={styles.card}>
+            <img
+              src={item?.productImage[0]}
+              alt={item?.name}
+              style={styles.productImage}
+            />
+            <CardContent style={styles.cardContent}>
+              <Typography style={styles.productName} variant="body1">
+                {item?.name}
+              </Typography>
+              <Typography
+                style={styles.productPrice}
+                variant="body2"
+                color="primary"
+              >
+                ${item?.price}
+              </Typography>
+            </CardContent>
+            <CardActions style={styles.cardActions}>
+              <Button variant="contained" color="primary">
+                Add to Cart
+              </Button>
+            </CardActions>
           </Card>
         ))}
       </Carousel>
-    </div>
+    </>
   );
 };
 

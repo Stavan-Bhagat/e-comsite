@@ -33,14 +33,13 @@ const CategoryList = () => {
             display: "flex",
             overflowX: "auto",
             whiteSpace: "nowrap",
-            padding: "1rem",
+            paddingTop: "2rem",
             gap: "1rem",
           }}
         >
           {" "}
           {categoryProduct.map((category, index) => (
             <Box key={index} onClick={() => handleChange(category.category)}>
-              {/* onclick={() => handleChange(category.category)} */}
               <Image
                 src={category.productImage[0]}
                 alt={category.productName}

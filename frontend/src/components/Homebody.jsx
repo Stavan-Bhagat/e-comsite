@@ -11,9 +11,9 @@ import {
 import { Typography } from "@mui/material";
 import "react-multi-carousel/lib/styles.css";
 import Carousel from "react-multi-carousel";
-import image2 from "./../images/w1.jpg";
-import image3 from "./../images/mens.webp";
-import image5 from "./../images/bags.jpg";
+import img1 from "./../images/img1.webp";
+import img3 from "./../images/img3.webp";
+import img2 from "./../images/img2.jpg";
 import men from "./../images/bhai.jpeg";
 import women from "./../images/women.jpeg";
 import kids from "./../images/kids.jpeg";
@@ -23,6 +23,7 @@ import toys from "./../images/toys.jpeg";
 import CategoryList from "../components/CategoryList";
 import HorizontalCategory from "../components/HorizontalCategory";
 import ProductCarousel from "./ProductCarousel";
+import { styles } from "../css/multiCarousel";
 
 // const responsive = {
 //   superLargeDesktop: {
@@ -47,13 +48,13 @@ import ProductCarousel from "./ProductCarousel";
 const Body = () => {
   return (
     <>
-      <div className="carousel-container">
+      {/* <div className="carousel-container">
         <CategoryList />
 
         <div className="carousel-container">
           <BootstrapCarousel>
             <BootstrapCarousel.Item>
-              <img className="d-block w-100" src={image2} alt="First slide" />
+              <img className="d-block w-100" src={img1} alt="First slide" />
               <BootstrapCarousel.Caption>
                 <h3>First slide label</h3>
                 <p>
@@ -62,14 +63,14 @@ const Body = () => {
               </BootstrapCarousel.Caption>
             </BootstrapCarousel.Item>
             <BootstrapCarousel.Item>
-              <img className="d-block w-100" src={image3} alt="Second slide" />
+              <img className="d-block h-100" src={img2} alt="Second slide" />
               <BootstrapCarousel.Caption>
                 <h3>Second slide label</h3>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
               </BootstrapCarousel.Caption>
             </BootstrapCarousel.Item>
             <BootstrapCarousel.Item>
-              <img className="d-block w-100" src={image5} alt="Third slide" />
+              <img className="d-block w-100" src={img3} alt="Third slide" />
               <BootstrapCarousel.Caption>
                 <h3>Third slide label</h3>
                 <p>
@@ -79,7 +80,50 @@ const Body = () => {
               </BootstrapCarousel.Caption>
             </BootstrapCarousel.Item>
           </BootstrapCarousel>
-        </div>
+        </div> */}
+         <div className="carousel-container">
+         <CategoryList />
+    <BootstrapCarousel>
+      <BootstrapCarousel.Item style={styles.carouselItem}>
+        <img
+          className="d-block w-100"
+          src={img1}
+          alt="First slide"
+          style={styles.carouselImage}
+        />
+        <BootstrapCarousel.Caption>
+          <h3>First slide label</h3>
+          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+        </BootstrapCarousel.Caption>
+      </BootstrapCarousel.Item>
+
+      <BootstrapCarousel.Item style={styles.carouselItem}>
+        <img
+          className="d-block w-100"
+          src={img2}
+          alt="Second slide"
+          style={styles.carouselImage}
+        />
+        <BootstrapCarousel.Caption>
+          <h3>Second slide label</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </BootstrapCarousel.Caption>
+      </BootstrapCarousel.Item>
+
+      <BootstrapCarousel.Item style={styles.carouselItem}>
+        <img
+          className="d-block w-100"
+          src={img3}
+          alt="Third slide"
+          style={styles.carouselImage}
+        />
+        <BootstrapCarousel.Caption>
+          <h3>Third slide label</h3>
+          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
+        </BootstrapCarousel.Caption>
+      </BootstrapCarousel.Item>
+    </BootstrapCarousel>
+  </div>
         <Container classname="" fluid>
           <Typography variant="h5">Best Of Electronics</Typography>
         </Container>
@@ -88,6 +132,7 @@ const Body = () => {
 
         <ProductCarousel category="fashion" />
         <ProductCarousel category="skincare" />
+        
         {/* <Typography>Popular Brands</Typography>
         <Carousel showDots={true} responsive={responsive}>
           {productData.map((item) => (
@@ -102,7 +147,7 @@ const Body = () => {
             </Card>
           ))}
         </Carousel> */}
-      </div>
+
     </>
   );
 };

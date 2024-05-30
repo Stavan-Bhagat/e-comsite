@@ -158,7 +158,7 @@ const AllProducts = () => {
 
       console.log("Product added successfully:", response.data);
       handleClose();
-      fetchProductsData(page); // Ensure the correct page data is fetched after adding a product
+      fetchProductsData(page);
       reset();
       setSelectedFiles([]);
       setReadFileData([]);

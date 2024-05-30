@@ -10,6 +10,7 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     placeOrder(state, action) {
+      console.log("place order",action.payload);
       state.orderDetails = action.payload;
     },
   },

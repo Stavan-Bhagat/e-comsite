@@ -25,7 +25,6 @@ import HorizontalCategory from "../components/HorizontalCategory";
 import ProductCarousel from "./ProductCarousel";
 import { styles } from "../css/multiCarousel";
 
-
 const Body = () => {
   return (
     <>
@@ -62,59 +61,61 @@ const Body = () => {
             </BootstrapCarousel.Item>
           </BootstrapCarousel>
         </div> */}
-         <div className="carousel-container">
-         <CategoryList />
-    <BootstrapCarousel>
-      <BootstrapCarousel.Item style={styles.carouselItem}>
-        <img
-          className="d-block w-100"
-          src={img1}
-          alt="First slide"
-          style={styles.carouselImage}
-        />
-        <BootstrapCarousel.Caption>
-          <h3>First slide label</h3>
-          <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-        </BootstrapCarousel.Caption>
-      </BootstrapCarousel.Item>
+      <div className="carousel-container">
+        <CategoryList />
+        <BootstrapCarousel>
+          <BootstrapCarousel.Item style={styles.carouselItem}>
+            <img
+              className="d-block w-100"
+              src={img1}
+              alt="First slide"
+              style={styles.carouselImage}
+            />
+            <BootstrapCarousel.Caption>
+              <h3>First slide label</h3>
+              <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+            </BootstrapCarousel.Caption>
+          </BootstrapCarousel.Item>
 
-      <BootstrapCarousel.Item style={styles.carouselItem}>
-        <img
-          className="d-block w-100"
-          src={img2}
-          alt="Second slide"
-          style={styles.carouselImage}
-        />
-        <BootstrapCarousel.Caption>
-          <h3>Second slide label</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </BootstrapCarousel.Caption>
-      </BootstrapCarousel.Item>
+          <BootstrapCarousel.Item style={styles.carouselItem}>
+            <img
+              className="d-block w-100"
+              src={img2}
+              alt="Second slide"
+              style={styles.carouselImage}
+            />
+            <BootstrapCarousel.Caption>
+              <h3>Second slide label</h3>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            </BootstrapCarousel.Caption>
+          </BootstrapCarousel.Item>
 
-      <BootstrapCarousel.Item style={styles.carouselItem}>
-        <img
-          className="d-block w-100"
-          src={img3}
-          alt="Third slide"
-          style={styles.carouselImage}
-        />
-        <BootstrapCarousel.Caption>
-          <h3>Third slide label</h3>
-          <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-        </BootstrapCarousel.Caption>
-      </BootstrapCarousel.Item>
-    </BootstrapCarousel>
-  </div>
-        <Container classname="" fluid>
-          <Typography variant="h5">Best Of Electronics</Typography>
-        </Container>
+          <BootstrapCarousel.Item style={styles.carouselItem}>
+            <img
+              className="d-block w-100"
+              src={img3}
+              alt="Third slide"
+              style={styles.carouselImage}
+            />
+            <BootstrapCarousel.Caption>
+              <h3>Third slide label</h3>
+              <p>
+                Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+              </p>
+            </BootstrapCarousel.Caption>
+          </BootstrapCarousel.Item>
+        </BootstrapCarousel>
+      </div>
+      <Container classname="" fluid>
+        <Typography variant="h5">Best Of Electronics</Typography>
+      </Container>
 
-        <HorizontalCategory category="electronics" />
+      <HorizontalCategory category="electronics" />
 
-        <ProductCarousel category="fashion" />
-        <ProductCarousel category="skincare" />
-        
-        {/* <Typography>Popular Brands</Typography>
+      <ProductCarousel category="fashion" />
+      <ProductCarousel category="skincare" />
+
+      {/* <Typography>Popular Brands</Typography>
         <Carousel showDots={true} responsive={responsive}>
           {productData.map((item) => (
             <Card key={item.id} className="card">
@@ -128,7 +129,6 @@ const Body = () => {
             </Card>
           ))}
         </Carousel> */}
-
     </>
   );
 };

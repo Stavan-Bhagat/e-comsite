@@ -6,7 +6,7 @@ const database = require("./database/connection");
 const userRoutes = require("./Routes/userRoutes");
 const cors = require("cors");
 const productRoutes = require("./Routes/productRoutes.js");
-// Remove bodyParse.json() since express.json() is already used
+const orderRoutes = require("./Routes/orderRoutes.js");
 app.use(express.json());
 app.use(cors({ origin: ["http://localhost:3000", "http://localhost:3000/"] }));
 
@@ -14,6 +14,7 @@ database();
 
 app.use("/submit", userRoutes);
 app.use("/product", productRoutes);
+app.use("/order", orderRoutes);
 app.use("/", (req, res) => {
   res.json("demo api");
 });

@@ -24,6 +24,7 @@ const ProductPage = () => {
     try {
       const response = await fetchProduct(id);
       if (response.data && response.data.length > 0) {
+       
         setProduct(response.data[0]);
       } else {
         setProduct(null);
@@ -44,6 +45,7 @@ const ProductPage = () => {
   };
 
   const handleCart = () => {
+    
     dispatch(addToCart(product));
     setToast(true);
   };

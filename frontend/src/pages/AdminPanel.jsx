@@ -3,12 +3,14 @@ import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
-import PeopleIcon from '@mui/icons-material/People';
+import ShoppingBasketIcon from "@mui/icons-material/ShoppingBasket";
+import PeopleIcon from "@mui/icons-material/People";
+import ReceiptIcon from "@mui/icons-material/Receipt"; // New icon for order details
 import Header from "../components/Header";
 import Box from "@mui/material/Box";
 import AllUsers from "../components/AllUsers";
 import AllProducts from "../components/AllProducts";
+import OrderDetails from "../components/OrderDetails"; // Import your OrderDetails component
 
 const AdminPanel = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -20,6 +22,7 @@ const AdminPanel = () => {
   const sidebarItems = [
     { text: "All Users", icon: <PeopleIcon /> },
     { text: "All Products", icon: <ShoppingBasketIcon /> },
+    { text: "Order Details", icon: <ReceiptIcon /> }, // New sidebar item
   ];
 
   const renderSidebar = () => {
@@ -44,17 +47,11 @@ const AdminPanel = () => {
       case 0:
         return <AllUsers />;
       case 1:
-        return (
-          <h1>
-            <AllProducts />
-          </h1>
-        );
+        return <AllProducts />;
+      case 2:
+        return <OrderDetails />; // New content for order details
       default:
-        return (
-          <h1>
-            <AllProducts />
-          </h1>
-        );
+        return <AllProducts />;
     }
   };
 

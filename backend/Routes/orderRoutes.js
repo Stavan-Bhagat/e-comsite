@@ -8,3 +8,4 @@ router.post(
 
   orderController.createOrder
 );
+module.exports = router;

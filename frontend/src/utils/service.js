@@ -50,15 +50,6 @@ export const set_cart = (setValue) => {
 export const remove_cart = () => {
   return localStorage.removeItem("cart");
 };
-// export const get_cart = () => {
-//   return localStorage.getItem("cart");
-// };
-// export const set_cart = (setValue) => {
-//   return localStorage.setItem("cart", setValue);
-// };
-// export const remove_cart = () => {
-//   return localStorage.removeItem("cart");
-// };
 
 //featch user data
 export const fetchUserData = async () => {
@@ -68,7 +59,7 @@ export const fetchUserData = async () => {
 //product
 export const fetchProductData = async (page) => {
   const response = await axiosInstance.get(
-    "/product/fetch-productdata??page=${page}&limit=8"
+    `/product/fetch-productdata?page=${page}&limit=8`
   );
   return response.data;
 };
@@ -89,3 +80,6 @@ export const fetchCategoryProducts = async (category) => {
   return response.data;
 };
 // order
+export const fetchAllOrders = async () => {
+  return await axiosInstance.get("/order/fetch-order");
+};

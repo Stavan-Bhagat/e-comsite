@@ -1,30 +1,18 @@
-// src/components/ConfirmationPage.js
 import React from "react";
 import { useSelector } from "react-redux";
 import { Container, Typography, Box, Divider, Button } from "@mui/material";
+import axiosInstance from "../utils/axios";
+import { useDispatch } from "react-redux";
+import {clearCart} from "../redux/Slice/cartSlice"
+import { useNavigate } from "react-router";
 
 const ConfirmationPage = () => {
-  //   const orderDetails = useSelector((state) => state.order.orderDetails);
+  const orderDetails = useSelector((state) => state.order.orderDetails);
+  const Cartdata = useSelector((state) => state.cart.items);
+const dispatch = useDispatch();
+const navigate=useNavigate();
 
-  const orderDetails = {
-    name: "John Doe",
-    address: "123 Main St, Anytown, USA",
-    items: [
-      {
-        productName: "Product 1",
-        quantity: 2,
-        sellingPrice: 25.99,
-      },
-      {
-        productName: "Product 2",
-        quantity: 1,
-        sellingPrice: 49.99,
-      },
-    ],
-    totalAmount: 101.97,
-  };
-
-  if (!orderDetails) {
+  if (!orderDetails || !Cartdata) {
     return (
       <Container>
         <Typography variant="h5" gutterBottom>
@@ -34,9 +22,33 @@ const ConfirmationPage = () => {
     );
   }
 
-  const onSubmit = () => {
-    alert("placed successfully");
+  const calculateTotal = () => {
+    return Cartdata.reduce(
+      (total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0),
+      0
+    );
   };
+
+  const onSubmit = async () => {
+    const mergedData = {
+      ...orderDetails,
+      items: Cartdata,
+      totalAmount: calculateTotal(),
+    };
+
+    try {
+      const response = await axiosInstance.post(`/order/add-Order`, mergedData);
+      if (response.status === 201) {
+        alert("Order placed successfully");
+        dispatch(clearCart());
+        navigate("/")
+      }
+    } catch (error) {
+      console.error("Error placing order:", error);
+      alert("Failed to place order");
+    }
+  };
+
   return (
     <Container
       sx={{
@@ -52,13 +64,13 @@ const ConfirmationPage = () => {
         </Typography>
         <Box mb={2}>
           <Typography variant="h6">Billing Details</Typography>
-          <Typography>Name: {orderDetails.name}</Typography>
-          <Typography>Address: {orderDetails.address}</Typography>
+          <Typography>Name: {orderDetails?.name}</Typography>
+          <Typography>Address: {orderDetails?.address}</Typography>
         </Box>
         <Divider />
         <Box mb={2}>
           <Typography variant="h6">Order Details</Typography>
-          {orderDetails.items?.map((item, index) => (
+          {Cartdata?.map((item, index) => (
             <Box key={index} mb={1}>
               <Typography>Product: {item.productName}</Typography>
               <Typography>Quantity: {item.quantity}</Typography>
@@ -69,13 +81,12 @@ const ConfirmationPage = () => {
         <Divider />
         <Box mt={2}>
           <Typography variant="h5">
-            Total Amount: ${orderDetails.totalAmount}
+            Total Amount: ${calculateTotal()}
           </Typography>
         </Box>
         <Box>
           <Button onClick={onSubmit} variant="contained" color="success">
-            {" "}
-            place Orders
+            Place Order
           </Button>
         </Box>
       </Box>

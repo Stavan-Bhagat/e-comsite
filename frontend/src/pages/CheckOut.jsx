@@ -12,6 +12,7 @@ const CheckOut = () => {
   });
 
   const cartItems = useSelector((state) => state.cart.items);
+  console.log("cartitems", cartItems);
   const totalAmount = useSelector((state) =>
     state.cart.items.reduce(
       (total, item) => total + item.sellingPrice * item.quantity,
@@ -43,7 +44,7 @@ const CheckOut = () => {
       address: "",
     });
 
-    navigate("/confirmation"); // Redirect to confirmation page
+    navigate("/confirmation"); 
   };
 
   return (

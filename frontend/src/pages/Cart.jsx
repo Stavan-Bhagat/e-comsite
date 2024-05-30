@@ -12,13 +12,19 @@ import {
 } from "@mui/material";
 import { Image } from "react-bootstrap";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { removeFromCart, updateQuantity } from "../redux/Slice/cartSlice";
+import {
+  clearCart,
+  removeFromCart,
+  updateQuantity,
+} from "../redux/Slice/cartSlice";
 import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
+  const cartamount = useSelector((state) => state.cart.totalAmount);
+  console.log("citem", cartamount);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -29,7 +35,8 @@ const Cart = () => {
   };
 
   const handleRemoveItem = (id) => {
-    dispatch(removeFromCart({ id }));
+    console.log(id);
+    dispatch(removeFromCart(id));
   };
 
   const handleCheckout = () => {
@@ -68,7 +75,7 @@ const Cart = () => {
           <Divider />
           <Grid container spacing={2}>
             {cartItems.map((item) => (
-              <Grid container item spacing={2} key={item.id}>
+              <Grid container item spacing={2} key={item._id}>
                 <Grid item xs={3}>
                   <Image
                     src={item.productImage[0]}
@@ -90,7 +97,7 @@ const Cart = () => {
                     value={item.quantity}
                     min="1"
                     onChange={(e) =>
-                      handleQuantityChange(item.id, parseInt(e.target.value))
+                      handleQuantityChange(item._id, parseInt(e.target.value))
                     }
                     style={{ width: "60px", marginRight: "10px" }}
                   />
@@ -101,7 +108,7 @@ const Cart = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={1}>
-                  <IconButton onClick={() => handleRemoveItem(item.id)}>
+                  <IconButton onClick={() => handleRemoveItem(item._id)}>
                     <DeleteIcon />
                   </IconButton>
                 </Grid>

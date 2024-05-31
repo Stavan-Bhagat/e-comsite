@@ -58,8 +58,17 @@ export const fetchUserData = async () => {
   const response = await axiosInstance.get("/submit/fetch-userdata");
   return response.data;
 };
-export const updateUserData = async (id) => {
-  const response = await axiosInstance.patch(`/submit/update-userdata?id=${id}`);
+export const updateUserData = async (id, data) => {
+  const response = await axiosInstance.patch(
+    `/submit/update-userdata?id=${id}`,
+    data
+  );
+  return response.data;
+};
+export const deleteUserData = async (id) => {
+  const response = await axiosInstance.delete(
+    `/submit/delete-userdata?id=${id}`
+  );
   return response.data;
 };
 
@@ -86,6 +95,14 @@ export const fetchCategoryProducts = async (category) => {
   const response = await axiosInstance.get(`/product/fetch-category-product`);
   return response.data;
 };
+
+export const deleteProduct = async (productId) => {
+  const response = await axiosInstance.delete(
+    `/product/delete-product?id=${productId}`
+  );
+  return response.data;
+};
+
 // order
 export const fetchAllOrders = async () => {
   return await axiosInstance.get("/order/fetch-order");

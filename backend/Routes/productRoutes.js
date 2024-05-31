@@ -10,6 +10,8 @@ router.post(
   uploadProductImages.array("images", 5),
   productController.addProduct
 );
+
+router.delete("/delete-product", productController.deleteProduct);
 router.get("/fetch-category-product", productController.fetchCategoryProduct);
 router.get(
   "/fetch-productdata-by-category",

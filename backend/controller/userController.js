@@ -84,11 +84,12 @@ const userController = {
       res.status(500).json({ message: "internal server error" });
     }
   },
-  updateData: async () => {
+  updateData: async (req, res) => {
     const { id } = req.query;
     try {
-      const {id, name, email, role } = req.body;
+      const { name, email, role } = req.body;
       const response = await userService.updateData({
+        id,
         name,
         email,
         role,
@@ -97,6 +98,16 @@ const userController = {
     } catch (e) {
       console.log("error", e);
       res.status(500).json({ error: "internal server error" });
+    }
+  },
+  deleteData: async (req, res) => {
+    try {
+      const { id } = req.query;
+      const blogData = await userService.deleteData(id);
+      res.status(200).json(blogData);
+    } catch (error) {
+      console.error(`deleteUserdata controller error : ${error}`);
+      res.status(500).json({ error: "Internal server error" });
     }
   },
   verify: async (req, res) => {

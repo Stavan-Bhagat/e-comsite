@@ -54,15 +54,30 @@ const userService = {
     }
   },
   updateData: async ({ id, name, email, role }) => {
+    console.log("bla", id, name, email, role);
+    if (role) {
+      role = role.value;
+      console.log("bla2");
+    }
     try {
       let updateFields = { name, email, role };
 
       const updateUser = await User.findByIdAndUpdate(id, updateFields, {
         new: true,
       });
+
       return updateUser;
     } catch (error) {
       console.log("user service register error ", error);
+      throw error;
+    }
+  },
+  deleteData: async (id) => {
+    try {
+      const deleteUserData = await User.findByIdAndDelete(id);
+      return deleteUserData;
+    } catch (error) {
+      console.log("getting blog Data error ", error);
       throw error;
     }
   },

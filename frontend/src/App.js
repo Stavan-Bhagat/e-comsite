@@ -43,7 +43,6 @@ function App() {
           <Route path="/product/cart/" element={<Cart />}></Route>
           <Route path="/checkout" element={<CheckOut />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
-
         </Routes>
       </Router>
     </>

@@ -67,6 +67,16 @@ const productController = {
       res.status(500).json({ message: "internal server error" });
     }
   },
+  deleteProduct: async (req, res) => {
+    try {
+      const { id } = req.query;
+      const productData = await productService.deleteProduct(id);
+      res.status(200).json(productData);
+    } catch (error) {
+      console.error(`deletproductdata controller error : ${error}`);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
   fetchCategoryProduct: async (req, res) => {
     try {
       const response = await productService.fetchCategoryProduct();
@@ -115,7 +125,7 @@ const productController = {
           query: {
             multi_match: {
               query: searchQuery,
-              fields: ["productName", "brandName","category"],
+              fields: ["productName", "brandName", "category"],
             },
           },
         },
@@ -140,6 +150,6 @@ const productController = {
       res.status(500).json({ message: "Server error" });
     }
   },
-  fetchOrders:()=>{}
+  fetchOrders: () => {},
 };
 module.exports = productController;

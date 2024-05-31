@@ -21,11 +21,14 @@ import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../redux/Slice/authSlice";
 import { set_token } from "../utils/service";
 import Grid from "@mui/material/Grid";
+import CircularProgress from "@mui/material/CircularProgress";
+import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
 const Login = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [selectedFile, setSelectedFile] = useState(null);
   const [verificationSent, setVerificationSent] = useState(false);
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const {
     register,
@@ -89,13 +92,13 @@ const Login = () => {
       if (selectedFile) {
         formData.append("image", selectedFile);
       }
-
-      await axiosInstance.post("/submit/register", formData, {
+      setLoading(true);
+      const response = await axiosInstance.post("/submit/register", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      setLoading(false);
       setVerificationSent(true);
     } catch (e) {
       console.log(`Error: ${e}`);
@@ -109,6 +112,24 @@ const Login = () => {
       handleRegister(data);
     }
   };
+  if (loading) {
+    return (
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh"
+        textAlign="center"
+      >
+        <CircularProgress color="secondary" />
+        <Typography mt={2}>
+          Processing your request
+          <SentimentVerySatisfiedIcon className="px-2" />
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>

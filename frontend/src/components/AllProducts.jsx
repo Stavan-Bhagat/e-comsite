@@ -16,7 +16,11 @@ import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
 import axiosInstance from "../utils/axios";
-import { fetchProductData } from "../utils/service";
+import {
+  fetchProductData,
+  deleteProduct,
+  fetchProduct,
+} from "../utils/service";
 import {
   MultipleFileUpload,
   MultipleFileUploadMain,
@@ -36,8 +40,22 @@ const AllProducts = () => {
   const [readFileData, setReadFileData] = useState([]);
   const [showStatus, setShowStatus] = useState(false);
   const [statusIcon, setStatusIcon] = useState("inProgress");
+  const [isUpdateMode, setIsUpdateMode] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    resetForm();
+  };
+
+  const resetForm = () => {
+    reset();
+    setSelectedFiles([]);
+    setReadFileData([]);
+    setShowStatus(false);
+    setIsUpdateMode(false);
+    setCurrentProduct(null);
+  };
 
   const {
     register,
@@ -146,25 +164,61 @@ const AllProducts = () => {
       Array.from(selectedFiles).forEach((file) => {
         formData.append("images", file);
       });
-      const response = await axiosInstance.post(
-        "/product/add-product",
-        formData,
-        {
+
+      let response;
+      if (isUpdateMode) {
+        formData.append("productId", currentProduct._id);
+        response = await axiosInstance.put(
+          "/product/update-product",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        console.log("Product updated successfully:", response.data);
+      } else {
+        response = await axiosInstance.post("/product/add-product", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
-        }
-      );
+        });
+        console.log("Product added successfully:", response.data);
+      }
 
-      console.log("Product added successfully:", response.data);
       handleClose();
       fetchProductsData(page);
-      reset();
-      setSelectedFiles([]);
-      setReadFileData([]);
-      setShowStatus(false);
+      resetForm();
     } catch (error) {
-      console.error("Error adding product:", error);
+      console.error("Error submitting product:", error);
+    }
+  };
+
+  const handleUpdateProduct = async (productId) => {
+    try {
+      const product = await fetchProduct(productId);
+      console.log("pro", product.data[0]);
+      setCurrentProduct(product.data[0]);
+      setIsUpdateMode(true);
+      setOpen(true);
+      reset(product);
+    } catch (error) {
+      console.error("Error fetching product data for update:", error);
+    }
+  };
+
+  const handleRemoveProduct = async (productId) => {
+    const confirmation = window.confirm("Are you sure you want to delete it?");
+    if (confirmation) {
+      try {
+        await deleteProduct(productId);
+        fetchProductsData(page);
+      } catch (error) {
+        console.error("Error removing product:", error);
+      }
+    } else {
+      return;
     }
   };
 
@@ -175,11 +229,15 @@ const AllProducts = () => {
   return (
     <>
       <Box display={"flex"}>
-        <Typography variant="h5"> All Products</Typography>
+        <Typography variant="h5">All Products</Typography>
         <Button
           variant="contained"
           sx={{ marginLeft: "auto" }}
-          onClick={() => setOpen(!open)}
+          onClick={() => {
+            setOpen(true);
+            setIsUpdateMode(false);
+            resetForm();
+          }}
         >
           <AddIcon fontSize="small" sx={{ marginRight: 1 }} /> Add Product
         </Button>
@@ -201,7 +259,7 @@ const AllProducts = () => {
         >
           <Modal.Header closeButton>
             <Typography variant="h5" color="#0d47a1">
-              Add Product
+              {isUpdateMode ? "Update Product" : "Add Product"}
             </Typography>
           </Modal.Header>
         </Box>
@@ -375,8 +433,6 @@ const AllProducts = () => {
       <Grid container spacing={2}>
         {products.map((product) => (
           <Grid item xs={3} key={product._id}>
-            {" "}
-            {/* Ensure unique key prop */}
             <Card sx={{ maxWidth: 175, width: "100%" }}>
               <CardActionArea>
                 <CardMedia
@@ -429,6 +485,31 @@ const AllProducts = () => {
                         </Typography>
                       </div>
                     </div>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mt: 2,
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      onClick={() => handleUpdateProduct(product._id)}
+                      className="mx-1"
+                    >
+                      Update
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      onClick={() => handleRemoveProduct(product._id)}
+                    >
+                      Remove
+                    </Button>
                   </Box>
                 </CardContent>
               </CardActionArea>

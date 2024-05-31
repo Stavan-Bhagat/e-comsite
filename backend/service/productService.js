@@ -63,6 +63,15 @@ const productService = {
       throw e;
     }
   },
+  deleteProduct: async (id) => {
+    try {
+      const deleteProductData = await Product.findByIdAndDelete(id);
+      return deleteProductData;
+    } catch (error) {
+      console.log("getting blog Data error ", error);
+      throw error;
+    }
+  },
   fetchCategoryProduct: async () => {
     try {
       const productCategory = await Product.distinct("category");
@@ -87,17 +96,15 @@ const productService = {
       throw e;
     }
   },
-  fetchOrders:async()=>{
+  fetchOrders: async () => {
     try {
       const orders = await Order.find();
       res.json(orders);
     } catch (error) {
-      console.error('Error fetching orders:', error);
-      res.status(500).json({ message: 'Server error' });
+      console.error("Error fetching orders:", error);
+      res.status(500).json({ message: "Server error" });
     }
-  }
-  
-  
+  },
 };
 
 module.exports = productService;

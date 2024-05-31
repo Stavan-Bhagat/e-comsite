@@ -13,7 +13,6 @@ import Header from "../components/Header";
 const ProductPage = () => {
   const { id } = useParams();
   const cartData = useSelector((state) => state.cart.items);
-  console.log("cartdata", cartData);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
   const [clickImage, setClickImage] = useState(null);

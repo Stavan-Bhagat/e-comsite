@@ -53,5 +53,18 @@ const userService = {
       throw e;
     }
   },
+  updateData: async ({ id, name, email, role }) => {
+    try {
+      let updateFields = { name, email, role };
+
+      const updateUser = await User.findByIdAndUpdate(id, updateFields, {
+        new: true,
+      });
+      return updateUser;
+    } catch (error) {
+      console.log("user service register error ", error);
+      throw error;
+    }
+  },
 };
 module.exports = userService;

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Grid, Typography, Box, Button, Snackbar } from "@mui/material";
 import { Container } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchProduct } from "../utils/service";
 import fallbackImage from "../images/ai.jpeg";
 import { Skeleton } from "@mui/material";
@@ -12,6 +12,8 @@ import Header from "../components/Header";
 
 const ProductPage = () => {
   const { id } = useParams();
+  const cartData = useSelector((state) => state.cart.items);
+  console.log("cartdata", cartData);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
   const [clickImage, setClickImage] = useState(null);
@@ -24,7 +26,6 @@ const ProductPage = () => {
     try {
       const response = await fetchProduct(id);
       if (response.data && response.data.length > 0) {
-       
         setProduct(response.data[0]);
       } else {
         setProduct(null);
@@ -45,11 +46,19 @@ const ProductPage = () => {
   };
 
   const handleCart = () => {
-    
     dispatch(addToCart(product));
     setToast(true);
   };
+  const handleBuyNow = (id) => {
+    const isProductInCart = cartData.find((item) => item._id === id);
 
+    if (isProductInCart) {
+      navigate("/product/cart/");
+    } else {
+      dispatch(addToCart(product));
+      navigate("/product/cart/");
+    }
+  };
   useEffect(() => {
     fetchedProduct(id);
   }, [id]);
@@ -161,6 +170,7 @@ const ProductPage = () => {
                     },
                   }}
                   fullWidth
+                  onClick={() => handleBuyNow(product._id)}
                 >
                   Buy Now
                 </Button>

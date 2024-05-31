@@ -84,6 +84,21 @@ const userController = {
       res.status(500).json({ message: "internal server error" });
     }
   },
+  updateData: async () => {
+    const { id } = req.query;
+    try {
+      const {id, name, email, role } = req.body;
+      const response = await userService.updateData({
+        name,
+        email,
+        role,
+      });
+      res.status(200).json(response);
+    } catch (e) {
+      console.log("error", e);
+      res.status(500).json({ error: "internal server error" });
+    }
+  },
   verify: async (req, res) => {
     try {
       const { token } = req.params;

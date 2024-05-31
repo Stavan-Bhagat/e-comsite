@@ -10,7 +10,7 @@ router.post(
 );
 router.post("/login", userController.login);
 router.get("/fetch-userdata", userController.getUserData);
-
+router.patch("/update-userdata", userController.updateData);
 router.get("/verify/:token", userController.verify);
 
 module.exports = router;

@@ -51,11 +51,18 @@ export const remove_cart = () => {
   return localStorage.removeItem("cart");
 };
 
-//featch user data
+// all api
+
+//user data
 export const fetchUserData = async () => {
   const response = await axiosInstance.get("/submit/fetch-userdata");
   return response.data;
 };
+export const updateUserData = async (id) => {
+  const response = await axiosInstance.patch(`/submit/update-userdata?id=${id}`);
+  return response.data;
+};
+
 //product
 export const fetchProductData = async (page) => {
   const response = await axiosInstance.get(

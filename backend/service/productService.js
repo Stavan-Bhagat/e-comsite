@@ -1,5 +1,6 @@
 const Product = require("../model/product");
-const Order = require("../model/product");
+const Order = require("../model/order"); // Fix the typo here, previously it was incorrectly requiring Product
+
 const productService = {
   fetchProductData: async (calc) => {
     try {
@@ -27,7 +28,7 @@ const productService = {
   },
   fetchProduct: async (id) => {
     try {
-      const product = await Product.find({ _id: id });
+      const product = await Product.findById(id); // Use findById for finding by _id
       return product;
     } catch (e) {
       throw e;
@@ -63,12 +64,46 @@ const productService = {
       throw e;
     }
   },
+  updateProduct: async (productData) => {
+    try {
+      const {
+        productId,
+        productName,
+        brandName,
+        category,
+        description,
+        price,
+        sellingPrice,
+        stock,
+        imageUrl,
+      } = productData;
+
+      const updatedProduct = await Product.findByIdAndUpdate(
+        productId,
+        {
+          productName,
+          brandName,
+          category,
+          description,
+          price,
+          sellingPrice,
+          stock,
+          productImage: imageUrl,
+        },
+        { new: true } // Return the updated document
+      );
+
+      return updatedProduct;
+    } catch (e) {
+      throw e;
+    }
+  },
   deleteProduct: async (id) => {
     try {
       const deleteProductData = await Product.findByIdAndDelete(id);
       return deleteProductData;
     } catch (error) {
-      console.log("getting blog Data error ", error);
+      console.log("Error deleting product: ", error);
       throw error;
     }
   },
@@ -90,7 +125,7 @@ const productService = {
   },
   fetchProductsByCategory: async (category) => {
     try {
-      const response = await Product.find({ category: category });
+      const response = await Product.find({ category });
       return response;
     } catch (e) {
       throw e;
@@ -99,10 +134,10 @@ const productService = {
   fetchOrders: async () => {
     try {
       const orders = await Order.find();
-      res.json(orders);
+      return orders;
     } catch (error) {
       console.error("Error fetching orders:", error);
-      res.status(500).json({ message: "Server error" });
+      throw error;
     }
   },
 };

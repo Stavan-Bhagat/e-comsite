@@ -168,7 +168,7 @@ const AllProducts = () => {
       let response;
       if (isUpdateMode) {
         formData.append("productId", currentProduct._id);
-        response = await axiosInstance.put(
+        response = await axiosInstance.patch(
           "/product/update-product",
           formData,
           {
@@ -198,8 +198,8 @@ const AllProducts = () => {
   const handleUpdateProduct = async (productId) => {
     try {
       const product = await fetchProduct(productId);
-      console.log("pro", product.data[0]);
-      setCurrentProduct(product.data[0]);
+
+      setCurrentProduct(product.data);
       setIsUpdateMode(true);
       setOpen(true);
       reset(product);

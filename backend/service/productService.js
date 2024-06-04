@@ -78,26 +78,31 @@ const productService = {
         imageUrl,
       } = productData;
 
+      const updateFields = {
+        productName,
+        brandName,
+        category,
+        description,
+        price,
+        sellingPrice,
+        stock,
+      };
+
+      if (imageUrl.length > 0) {
+        updateFields.productImage = imageUrl;
+      }
+
       const updatedProduct = await Product.findByIdAndUpdate(
         productId,
-        {
-          productName,
-          brandName,
-          category,
-          description,
-          price,
-          sellingPrice,
-          stock,
-          productImage: imageUrl,
-        },
-        { new: true } // Return the updated document
+        updateFields,
+        { new: true }
       );
-
       return updatedProduct;
     } catch (e) {
       throw e;
     }
   },
+
   deleteProduct: async (id) => {
     try {
       const deleteProductData = await Product.findByIdAndDelete(id);

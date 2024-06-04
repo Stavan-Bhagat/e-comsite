@@ -153,6 +153,7 @@ const AllProducts = () => {
   const onSubmit = async (data) => {
     try {
       const formData = new FormData();
+
       formData.append("productName", data.productName);
       formData.append("brandName", data.brandName);
       formData.append("category", data.category);
@@ -168,8 +169,12 @@ const AllProducts = () => {
       let response;
       if (isUpdateMode) {
         formData.append("productId", currentProduct._id);
+        console.log("FormData entries for update:");
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ": " + pair[1]);
+        }
         response = await axiosInstance.patch(
-          "/product/update-product",
+          `/product/update-product`,
           formData,
           {
             headers: {
@@ -177,8 +182,11 @@ const AllProducts = () => {
             },
           }
         );
-        console.log("Product updated successfully:", response.data);
       } else {
+        console.log("FormData entries for add:");
+        for (let pair of formData.entries()) {
+          console.log(pair[0] + ": " + pair[1]);
+        }
         response = await axiosInstance.post("/product/add-product", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -195,6 +203,18 @@ const AllProducts = () => {
     }
   };
 
+  // const handleUpdateProduct = async (productId) => {
+  //   try {
+  //     const product = await fetchProduct(productId);
+
+  //     setCurrentProduct(product.data);
+  //     setIsUpdateMode(true);
+  //     setOpen(true);
+  //     reset(product);
+  //   } catch (error) {
+  //     console.error("Error fetching product data for update:", error);
+  //   }
+  // };
   const handleUpdateProduct = async (productId) => {
     try {
       const product = await fetchProduct(productId);
@@ -202,7 +222,7 @@ const AllProducts = () => {
       setCurrentProduct(product.data);
       setIsUpdateMode(true);
       setOpen(true);
-      reset(product);
+      reset(product.data);
     } catch (error) {
       console.error("Error fetching product data for update:", error);
     }

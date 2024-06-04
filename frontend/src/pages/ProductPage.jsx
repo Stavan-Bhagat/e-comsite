@@ -24,8 +24,8 @@ const ProductPage = () => {
     setLoading(true);
     try {
       const response = await fetchProduct(id);
-      console.log(response.data);
-      if (response.data && response.data.length > 0) {
+      console.log("HELLO DATA", response.data);
+      if (response.data) {
         console.log("hi");
         setProduct(response.data);
       } else {
@@ -138,7 +138,7 @@ const ProductPage = () => {
           <Grid item xs={6}>
             <Box sx={{ height: "90vh" }}>
               <Typography variant="h4">{product.productName}</Typography>
-              <Typography variant="h6">${product.price}</Typography>
+              <Typography variant="h6">${product.sellingPrice}</Typography>
               <Typography variant="body1">{product.description}</Typography>
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Button

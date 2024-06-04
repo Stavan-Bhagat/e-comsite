@@ -180,14 +180,15 @@ const ProductSearch = () => {
                           variant="button"
                           component="div"
                           sx={{
-                            textOverflow: "ellipsis",overflow:"hidden",
+                            textOverflow: "ellipsis",
+                            overflow: "hidden",
                             whiteSpace: "nowrap",
                           }}
                         >
                           {product.productName}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                         <CurrencyRupeeIcon fontSize="small"/> {product.price}
+                          <CurrencyRupeeIcon fontSize="small" /> {product.price}
                         </Typography>
                       </CardContent>
                     </CardActionArea>

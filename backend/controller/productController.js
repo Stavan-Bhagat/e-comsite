@@ -74,7 +74,7 @@ const productController = {
   updateProduct: async (req, res) => {
     try {
       const {
-        productId, // Ensure productId is included in the request body
+        productId,
         productName,
         brandName,
         category,
@@ -83,6 +83,7 @@ const productController = {
         sellingPrice,
         stock,
       } = req.body;
+
       const imageUrl = req.files
         ? req.files.map((file) => file.path)
         : undefined;
@@ -98,6 +99,7 @@ const productController = {
         stock,
         imageUrl,
       });
+
       res
         .status(200)
         .json({ message: "Product updated successfully.", updatedData });
@@ -105,9 +107,11 @@ const productController = {
       res.status(500).json({ message: "Internal server error" });
     }
   },
+
   deleteProduct: async (req, res) => {
     try {
-      const { id } = req.params;
+      const { id } = req.query;
+      console.log("iddel", id);
       const productData = await productService.deleteProduct(id);
       if (productData) {
         res.status(200).json({ message: "Product deleted successfully." });

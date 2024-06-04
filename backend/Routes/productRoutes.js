@@ -17,7 +17,11 @@ router.get(
   "/fetch-productdata-by-category",
   productController.fetchProductsByCategory
 );
-router.patch("/update-product", productController.updateProduct);
+router.patch(
+  "/update-product",
+  uploadProductImages.array("images", 5),
+  productController.updateProduct
+);
 router.get("/suggestions", productController.suggestions);
 router.get("/orders", productController.fetchOrders);
 module.exports = router;

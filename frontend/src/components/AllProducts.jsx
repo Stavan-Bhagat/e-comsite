@@ -67,7 +67,7 @@ const AllProducts = () => {
   const fetchProductsData = async (page) => {
     try {
       const response = await fetchProductData(page);
-      console.log("fetchproduct", response);
+      console.log("fetchproduct", response.data);
       setProducts(response.data);
       setTotalPages(response.totalPages);
     } catch (error) {

@@ -24,8 +24,10 @@ const ProductPage = () => {
     setLoading(true);
     try {
       const response = await fetchProduct(id);
+      console.log(response.data);
       if (response.data && response.data.length > 0) {
-        setProduct(response.data[0]);
+        console.log("hi");
+        setProduct(response.data);
       } else {
         setProduct(null);
       }

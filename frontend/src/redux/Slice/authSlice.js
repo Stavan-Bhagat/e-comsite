@@ -17,7 +17,7 @@ const initialState = {
   token: get_token() ? get_token() : null,
   loading: false,
   error: null,
-}; 
+};
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -46,8 +46,13 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+    updateUser: (state, action) => {
+      state.user = action.payload;
+      set_session_user(action.payload);
+    },
   },
 });
 
-export const { loginSuccess, loginFailure,logout } = authSlice.actions;
+export const { loginSuccess, loginFailure, logout, updateUser } =
+  authSlice.actions;
 export default authSlice.reducer;

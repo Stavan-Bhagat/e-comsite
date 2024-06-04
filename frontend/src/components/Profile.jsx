@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Card from "@mui/material/Card";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
@@ -10,27 +10,25 @@ import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
+import { updateUser } from "../redux/Slice/authSlice";
+import { updateUserData } from "../utils/service";
 
 const Profile = () => {
-  // Access user from Redux store using useSelector
   const user = useSelector((state) => state.auth.user);
+  const dispatch = useDispatch();
 
-  // State for form fields
   const [formData, setFormData] = useState({
     name: user ? user.name : "",
     email: user ? user.email : "",
     role: user ? user.role : "",
   });
 
-  // State for edit mode
   const [editMode, setEditMode] = useState(false);
+  const [showSubmitButton, setShowSubmitButton] = useState(true);
 
-  const handleClose = () => {
-    // Add close functionality here
-  };
+  const handleClose = () => {};
 
   const handleEdit = () => {
-    // Toggle edit mode
     setEditMode(!editMode);
   };
 
@@ -41,26 +39,32 @@ const Profile = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add submit functionality here
-    setEditMode(false);
+    const response = await updateUserData(user._id, formData);
+    console.log("aaaa",response);
+    if (response) {
+      console.log("respoce", response);
+      dispatch(updateUser(response));
+      setEditMode(false);
+      setShowSubmitButton(true);
+    } else {
+      return "unable to change the profile!";
+    }
   };
 
   const handleCancel = () => {
-    // Reset form fields to their original values
     setFormData({
       name: user ? user.name : "",
       email: user ? user.email : "",
       role: user ? user.role : "",
     });
-    // Toggle off edit mode
+
     setEditMode(false);
+    setShowSubmitButton(true);
   };
 
-  const handleImageUpload = (e) => {
-    // Handle image upload functionality here
-  };
+  const handleImageUpload = (e) => {};
 
   return (
     <Box
@@ -120,17 +124,19 @@ const Profile = () => {
                 disabled={!editMode}
               />
             </Box>
-            <Box mb={2}>
-              <TextField
-                label="Role"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                fullWidth
-                variant="outlined"
-                disabled={!editMode}
-              />
-            </Box>
+            {user?.role === "Admin" && (
+              <Box mb={2}>
+                <TextField
+                  label="Role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  fullWidth
+                  variant="outlined"
+                  disabled={!editMode}
+                />
+              </Box>
+            )}
             {!editMode ? (
               <Box display="flex" justifyContent="flex-end">
                 <IconButton
@@ -149,9 +155,11 @@ const Profile = () => {
               </Box>
             ) : (
               <Box display="flex" justifyContent="flex-end">
-                <Button type="submit" variant="contained" mr={2}>
-                  Submit
-                </Button>
+                {showSubmitButton && (
+                  <Button type="submit" variant="contained" mr={2}>
+                    Submit
+                  </Button>
+                )}
                 <Button type="button" variant="outlined" onClick={handleCancel}>
                   Cancel
                 </Button>

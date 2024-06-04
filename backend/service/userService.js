@@ -65,7 +65,7 @@ const userService = {
       const updateUser = await User.findByIdAndUpdate(id, updateFields, {
         new: true,
       });
-
+      console.log;
       return updateUser;
     } catch (error) {
       console.log("user service register error ", error);

@@ -4,22 +4,39 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "test": "echo \"Error: no test specified\" && exit 1"
+=======
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+>>>>>>> refactor
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+<<<<<<< HEAD
+=======
+    "@elastic/elasticsearch": "^8.13.1",
+>>>>>>> refactor
     "body-parser": "^1.20.2",
     "cloudinary": "^1.41.3",
     "cors": "^2.8.5",
     "crypto-js": "^4.2.0",
     "dotenv": "^16.4.5",
+<<<<<<< HEAD
+=======
+    "elasticsearch": "^16.7.3",
+>>>>>>> refactor
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.4.0",
     "multer": "^1.4.5-lts.1",
     "multer-storage-cloudinary": "^4.0.0",
+<<<<<<< HEAD
+=======
+    "nodemailer": "^6.9.13",
+>>>>>>> refactor
     "nodemon": "^3.1.0",
     "redis": "^4.6.14"
   }

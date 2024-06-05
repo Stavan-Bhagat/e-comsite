@@ -15,11 +15,12 @@ import { Form, Container, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
-import axiosInstance from "../utils/axios";
 import {
   fetchProductData,
   deleteProduct,
   fetchProduct,
+  updateProduct,
+  addProduct,
 } from "../utils/service";
 import {
   MultipleFileUpload,
@@ -173,25 +174,13 @@ const AllProducts = () => {
         for (let pair of formData.entries()) {
           console.log(pair[0] + ": " + pair[1]);
         }
-        response = await axiosInstance.patch(
-          `/product/update-product`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        );
+        response = await updateProduct(formData);
       } else {
         console.log("FormData entries for add:");
         for (let pair of formData.entries()) {
           console.log(pair[0] + ": " + pair[1]);
         }
-        response = await axiosInstance.post("/product/add-product", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        response = await addProduct(formData);
         console.log("Product added successfully:", response.data);
       }
 
@@ -202,19 +191,6 @@ const AllProducts = () => {
       console.error("Error submitting product:", error);
     }
   };
-
-  // const handleUpdateProduct = async (productId) => {
-  //   try {
-  //     const product = await fetchProduct(productId);
-
-  //     setCurrentProduct(product.data);
-  //     setIsUpdateMode(true);
-  //     setOpen(true);
-  //     reset(product);
-  //   } catch (error) {
-  //     console.error("Error fetching product data for update:", error);
-  //   }
-  // };
   const handleUpdateProduct = async (productId) => {
     try {
       const product = await fetchProduct(productId);
@@ -227,7 +203,6 @@ const AllProducts = () => {
       console.error("Error fetching product data for update:", error);
     }
   };
-
   const handleRemoveProduct = async (productId) => {
     const confirmation = window.confirm("Are you sure you want to delete it?");
     if (confirmation) {
@@ -241,11 +216,9 @@ const AllProducts = () => {
       return;
     }
   };
-
   const successfullyReadFileCount = readFileData.filter(
     (fileData) => fileData.loadResult === "success"
   ).length;
-
   return (
     <>
       <Box display={"flex"}>

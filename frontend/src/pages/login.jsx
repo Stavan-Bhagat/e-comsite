@@ -15,14 +15,15 @@ import checkEmail from "../images/checkEmail.jpg";
 import "../css/register.css";
 import CryptoJS from "crypto-js";
 import { useNavigate } from "react-router";
-import axiosInstance from "../utils/axios";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { useDispatch } from "react-redux";
 import { loginSuccess, loginFailure } from "../redux/Slice/authSlice";
 import { set_token } from "../utils/service";
 import Grid from "@mui/material/Grid";
 import CircularProgress from "@mui/material/CircularProgress";
+import { loginUser, registerUser } from "../utils/service";
 import SentimentVerySatisfiedIcon from "@mui/icons-material/SentimentVerySatisfied";
+
 const Login = () => {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
@@ -56,17 +57,16 @@ const Login = () => {
   };
 
   const handleLogin = async (data) => {
-    console.log("Login Data:", data);
     try {
-      const response = await axiosInstance.post(`/submit/login`, data);
-
+      const response = await loginUser(data);
       const { success, message, accessToken, refreshToken, user } =
-        response.data;
-      // localStorage.setItem("token", accessToken);
+        response;
       set_token(accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
       if (success) {
+      console.log("userbhai",user
+      )
         dispatch(loginSuccess({ user, accessToken }));
       } else {
         return "login failed", message;
@@ -93,11 +93,7 @@ const Login = () => {
         formData.append("image", selectedFile);
       }
       setLoading(true);
-      const response = await axiosInstance.post("/submit/register", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const response = await registerUser(formData);
       setLoading(false);
       setVerificationSent(true);
     } catch (e) {

@@ -58,7 +58,7 @@ const ProductCarousel = ({ category }) => {
       <Typography variant="h6">Popular {category}</Typography>
       <Carousel showDots responsive={responsive}>
         {products?.map((item) => (
-          <Link to={`/product/${item._id}`}>
+          <Link to={`/product/${item._id}`}  style={{ textDecoration: "none", color: "inherit", }}>
             <Card key={item?.id} style={styles.card}>
               <img
                 src={item?.productImage[0]}
@@ -87,11 +87,6 @@ const ProductCarousel = ({ category }) => {
                   {item?.price}
                 </Typography>
               </CardContent>
-              {/* <CardActions style={styles.cardActions}>
-              <Button variant="contained" color="primary">
-                Add to Cart
-              </Button>
-            </CardActions> */}
             </Card>
           </Link>
         ))}

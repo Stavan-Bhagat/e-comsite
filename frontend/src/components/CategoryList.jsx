@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Link, Navigate } from "react-router-dom";
 import { Container, Grid, Item, Typography, Box } from "@mui/material";
 import { Image } from "react-bootstrap";
-import axiosInstance from "../utils/axios";
+import { fetchCategoryProducts } from "../utils/service";
 import CircularProgress from "@mui/material/CircularProgress";
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
 const CategoryList = () => {
   const [categoryProduct, SetCategoryProduct] = useState([]);
   const [loading, SetLoading] = useState(false);
   const navigate = useNavigate();
   const fetchCategoryProduct = async () => {
     SetLoading(true);
-    const response = await axiosInstance.get(`/product/fetch-category-product`);
+    const response = await fetchCategoryProducts();
     SetLoading(false);
-    SetCategoryProduct(response.data.data);
+    SetCategoryProduct(response.data);
   };
   const handleChange = (category) => {
     navigate(`/product/search/${category}`);

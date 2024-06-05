@@ -92,7 +92,7 @@ const HorizontalCategory = ({ category }) => {
               <Grid item xs={3} key={product._id}>
                 <Link
                   to={`/product/${product._id}`}
-                  style={{ textDecoration: "none", color: "inherit" }}
+                  style={{ textDecoration: "none", color: "inherit", }}
                 >
                   <Box sx={{ padding: 2 }}>
                     <img

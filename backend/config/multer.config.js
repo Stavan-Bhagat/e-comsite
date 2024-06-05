@@ -26,5 +26,4 @@ const productStorage = new CloudinaryStorage({
 
 const uploadUserImage = multer({ storage: userStorage });
 const uploadProductImages = multer({ storage: productStorage });
-
 module.exports = { uploadUserImage, uploadProductImages };

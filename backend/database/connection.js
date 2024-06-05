@@ -48,9 +48,9 @@
 
 const mongoose = require("mongoose");
 require("dotenv").config();
-const elasticClient = require("../config/elasticClient");
+const elasticClient = require("../config/elasticClient.config");
 const dbUri = process.env.MONGODB_URI;
-const Product = require("../model/product");
+const Product = require("../model/product.model");
 
 const connectDB = async () => {
   try {

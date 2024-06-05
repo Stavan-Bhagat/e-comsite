@@ -52,58 +52,98 @@ export const remove_cart = () => {
 };
 
 // all api
-
 //user data
 export const fetchUserData = async () => {
-  const response = await axiosInstance.get("/submit/fetch-userdata");
+  const response = await axiosInstance.get("/fusion/submit/fetch-user");
   return response.data;
 };
 export const updateUserData = async (id, data) => {
   const response = await axiosInstance.patch(
-    `/submit/update-userdata?id=${id}`,
+    `/submit/update-user?id=${id}`,
     data
   );
   return response.data;
 };
 export const deleteUserData = async (id) => {
   const response = await axiosInstance.delete(
-    `/submit/delete-userdata?id=${id}`
+    `/fusion/submit/delete-user?id=${id}`
   );
+  return response.data;
+};
+export const loginUser = async (data) => {
+  const response = await axiosInstance.post(`fusion/submit/login`, data);
+  return response.data;
+};
+export const registerUser = async (data) => {
+  const response = await axiosInstance.post("fusion/submit/register", data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
 //product
 export const fetchProductData = async (page) => {
   const response = await axiosInstance.get(
-    `/product/fetch-productdata?page=${page}&limit=8`
+    `/fusion/product/fetch-product-data?page=${page}&limit=8`
   );
   return response.data;
 };
 export const fetchProduct = async (id) => {
-  const response = await axiosInstance.get(`/product/fetch-product/${id}`);
+  const response = await axiosInstance.get(
+    `/fusion/product/fetch-product/${id}`
+  );
   return response.data;
 };
 
 export const fetchProductsByCategory = async (category) => {
   const response = await axiosInstance.get(
-    `/product/fetch-productdata-by-category?category=${category}`
+    `/fusion/product/fetch-product-by-category?category=${category}`
   );
   return response.data;
 };
 
-export const fetchCategoryProducts = async (category) => {
-  const response = await axiosInstance.get(`/product/fetch-category-product`);
+export const fetchCategoryProducts = async () => {
+  const response = await axiosInstance.get(
+    `/fusion/product/fetch-category-product`
+  );
   return response.data;
 };
 
 export const deleteProduct = async (productId) => {
   const response = await axiosInstance.delete(
-    `/product/delete-product?id=${productId}`
+    `/fusion/product/delete-product?id=${productId}`
+  );
+  return response.data;
+};
+
+export const updateProduct = async (data) => {
+  const response = await axiosInstance.patch(
+    `/fusion/product/update-product`,
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+  return response.data;
+};
+export const addProduct = async (data) => {
+  const response = await axiosInstance.post(
+    "/fusion/product/add-product",
+    data,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   return response.data;
 };
 
 // order
 export const fetchAllOrders = async () => {
-  return await axiosInstance.get("/order/fetch-order");
+  return await axiosInstance.get("/fusion/order/fetch-order");
 };

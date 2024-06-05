@@ -1,24 +1,27 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
-// const { generateEmailHTML } = require("../helper/");
-const emailTemplate = fs.readFileSync(
-  // "/home/stavan/Documents/aspire/e-comsite/backend/helper/emailTemplate.html",
-  "C:/Users/bhaga/Desktop/aspire/ecomsite/backend/helper/emailTemplate.html",
-  "utf-8"
+const path = require("path");
+const emailTemplatePath = path.resolve(
+  __dirname,
+  "../helper/emailTemplate.html"
 );
+const { emailSubject, serviceName } = require("../constant/email.constant");
+
+const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  service: serviceName,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
 });
+
 const sendVerificationEmail = async (user, token) => {
   const url = `http://localhost:${process.env.PORT}/submit/verify/${token}`;
   const emailBody = emailTemplate.replace("{{verificationUrl}}", url);
   await transporter.sendMail({
     to: user.email,
-    subject: "Verify your email",
+    subject: emailSubject,
     html: emailBody,
   });
 };

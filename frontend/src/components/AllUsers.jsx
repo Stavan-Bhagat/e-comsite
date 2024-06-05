@@ -79,7 +79,7 @@ const AllUsers = () => {
   const handleDeleteClick = (rowData) => {
     const confirmDelete = window.confirm("Are you sure you want to delete?");
     if (confirmDelete) {
-      const respone = deleteUserData(rowData._id);
+      deleteUserData(rowData._id);
       fetchData();
     } else {
       return;

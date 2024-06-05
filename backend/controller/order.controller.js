@@ -1,6 +1,5 @@
-const Order = require("../model/order");
+const Order = require("../model/order.model");
 
-// Create a new order
 exports.createOrder = async (req, res) => {
   try {
     const { name, address, items, totalAmount } = req.body;
@@ -17,7 +16,6 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// Get all orders
 exports.fetchOrder = async (req, res) => {
   try {
     const orders = await Order.find();

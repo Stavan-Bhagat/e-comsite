@@ -1,27 +1,32 @@
 const express = require("express");
-const app = express();
-require("dotenv").config();
-const port = process.env.PORT || 8080;
-const database = require("./database/connection");
-const userRoutes = require("./Routes/userRoutes");
-const cors = require("cors");
-const productRoutes = require("./Routes/productRoutes.js");
-const orderRoutes = require("./Routes/orderRoutes.js");
 const http = require("http");
 const socketIo = require("socket.io");
+const cors = require("cors");
+// const corsOrigins = process.env.CORS_ORIGIN.split(",");
+const database = require("./database/connection");
+const allRoutes = require("./router/allRoutes");
+const app = express();
+const port = process.env.PORT || 8080;
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+require("dotenv").config();
+database();
 
 app.use(express.json());
 app.use(cors({ origin: ["http://localhost:3000", "http://localhost:3000/"] }));
+// app.use(cors({ origin: corsOrigins }));
 
-database();
-
-app.use("/submit", userRoutes);
-app.use("/product", productRoutes);
-app.use("/order", orderRoutes);
+app.use("/fusion", allRoutes);
 app.use("/", (req, res) => {
   res.json("demo api");
+});
+app.use("*", (req, res) => {
+  res.status(404).json({ message: "Resource not found" });
 });
 
 io.on("connection", (socket) => {
@@ -32,6 +37,6 @@ io.on("connection", (socket) => {
   });
 });
 
-app.listen(port, () => {
-  console.log(`server is running on ${port}`);
+server.listen(port, () => {
+  console.log(`Server is running on ${port}`);
 });

@@ -12,6 +12,7 @@ const {
   suggestions,
 } = require("../../controller/product.controller.js");
 const { uploadProductImages } = require("../../config/multer.config.js");
+const authentication=require("../../middleware/authentication.middleware")
 
 productRouter.get("/fetch-product-data", fetchProductData);
 productRouter.get("/fetch-product/:id", fetchProduct);

@@ -9,9 +9,10 @@ const {
   deleteData,
 } = require("../../controller/user.controller");
 const { uploadUserImage } = require("../../config/multer.config");
+const authentication=require("../../middleware/authentication.middleware")
 
 userRouter.get("/verify/:token", verify);
-userRouter.get("/fetch-user", getUserData);
+userRouter.get("/fetch-user",authentication, getUserData);
 userRouter.post("/submit/register", uploadUserImage.single("image"), register);
 userRouter.post("/login", login);
 userRouter.patch("/update-user", updateData);

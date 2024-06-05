@@ -64,6 +64,7 @@ const productController = {
         stock,
         imageUrl,
       });
+      io.emit("newProduct", newProduct);
       res
         .status(201)
         .json({ message: "Product added successfully.", newProduct });

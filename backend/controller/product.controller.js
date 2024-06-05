@@ -1,3 +1,4 @@
+const socket = require("../socket");
 const {
   fetchProductData_service,
   fetchProduct_service,
@@ -8,6 +9,8 @@ const {
   fetchCategoryProduct_service,
   fetchOrders_service,
 } = require("../service/product.service.js");
+const { io } = require("../socket");
+console.log("io", io);
 const client = require("../config/elasticClient.config.js");
 
 exports.fetchProductData = async (req, res) => {
@@ -74,13 +77,14 @@ exports.addProduct = async (req, res) => {
       imageUrl,
     });
     console.log("added2");
+    const io = socket.getIo();
     io.emit("newProduct", newProduct);
     console.log("added3");
     res
       .status(201)
       .json({ message: "Product added successfully.", newProduct });
   } catch (e) {
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ message: "error :", e });
   }
 };
 

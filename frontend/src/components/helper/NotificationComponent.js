@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import socketIOClient from "socket.io-client";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import AddAlertIcon from "@mui/icons-material/AddAlert";
 
 const SOCKET_SERVER_URL = "http://localhost:5000";
 const NotificationComponent = () => {
-  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!("Notification" in window)) {
@@ -19,10 +22,10 @@ const NotificationComponent = () => {
 
     const socket = socketIOClient(SOCKET_SERVER_URL);
     socket.on("newProduct", (newProduct) => {
-      setProducts((prevProducts) => [...prevProducts, newProduct]);
+      setProduct((prevProducts) => [...prevProducts, newProduct]);
 
       if (Notification.permission === "granted") {
-        new Notification(`New product added: ${newProduct.name}`, {
+        new Notification(`New product added: ${newProduct.productName}`, {
           body: `Description: ${newProduct.description}`,
           icon: <AddAlertIcon />,
         });
@@ -33,16 +36,28 @@ const NotificationComponent = () => {
       socket.disconnect();
     };
   }, []);
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <div>
-      <h1>Product List</h1>
-      <ul>
-        {products.map((product, index) => (
-          <li key={index}>{product.name}</li>
-        ))}
-      </ul>
-    </div>
+    <Snackbar
+      open={open}
+      autoHideDuration={6000}
+      onClose={handleClose}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <MuiAlert
+        elevation={6}
+        variant="filled"
+        onClose={handleClose}
+        severity="success"
+      >
+        New product added: {product && product.name}
+        <br />
+        Description: {product && product.description}
+      </MuiAlert>
+    </Snackbar>
   );
 };
 

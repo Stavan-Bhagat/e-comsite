@@ -1,12 +1,7 @@
 import Home from "./pages/Home";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Login from "./pages/login";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import VerificationSuccess from "./components/VerificationSuccess";
 import AdminPanel from "./pages/AdminPanel";
 import { useSelector } from "react-redux";

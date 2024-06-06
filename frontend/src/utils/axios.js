@@ -1,10 +1,10 @@
 import axios from "axios";
 // import { logout } from "../store/authSlice";
 // import store from "../store/store";
-
+const { REACT_APP_BASEURL } = process.env;
 const axiosInstance = axios.create({
   // baseURL: process.env.BASEURL,
-  baseURL: process.env.REACT_APP_BASEURL,
+  baseURL: REACT_APP_BASEURL,
 });
 
 axiosInstance.interceptors.request.use(

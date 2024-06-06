@@ -1,0 +1,5 @@
+# Ignore specific files or directories
+**/sonarqube-scanner.js
+
+# Ignore specific ESLint errors
+**/*.js

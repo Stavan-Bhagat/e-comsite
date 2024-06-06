@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Typography, Card, CardMedia, CardContent, CardActions, Button } from "@mui/material";
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
-import { fetchProductsByCategory } from "../utils/service";
-import { styles } from "../css/multiCarousel";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Typography, Card, CardContent, CircularProgress, Box } from '@mui/material';
+import PropTypes from 'prop-types';
+import Carousel from 'react-multi-carousel';
+import { useSnackbar } from 'notistack';
+import 'react-multi-carousel/lib/styles.css';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import { Link } from 'react-router-dom';
+import { fetchProductsByCategory } from '../utils/services/product.service';
+import { styles } from '../css/multiCarousel';
 
 const responsive = {
   superLargeDesktop: {
@@ -27,16 +29,19 @@ const responsive = {
 };
 
 const ProductCarousel = ({ category }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const fetchProductsFromCategory = async (category) => {
+  const fetchProductsFromCategory = async (categoryType) => {
     setLoading(true);
     try {
-      const response = await fetchProductsByCategory(category);
+      const response = await fetchProductsByCategory(categoryType);
       setProducts(response.data);
     } catch (error) {
-      console.error("Error fetching products:", error);
+      enqueueSnackbar(`Failed to fetch the product. Please try again later. ${error.message}`, {
+        variant: 'error',
+      });
     } finally {
       setLoading(false);
     }
@@ -49,29 +54,53 @@ const ProductCarousel = ({ category }) => {
   return (
     <>
       <Typography variant="h6">Popular {category}</Typography>
-      <Carousel showDots responsive={responsive}>
-        {products?.map((item) => (
-          <Link to={`/product/${item._id}`} style={{ textDecoration: "none", color: "inherit" }}>
-            <Card key={item?.id} style={styles.card}>
-              <img src={item?.productImage[0]} alt={item?.name} style={styles.productImage} />
-              <CardContent style={styles.cardContent}>
-                <Typography style={styles.productName} variant="body1">
-                  {item?.productName}
-                </Typography>
-                <Typography style={styles.productPrice} variant="body1" color="black" component="span">
-                  From
-                </Typography>
-                <Typography style={styles.productPrice} variant="body2" color="primary" component="span">
-                  <CurrencyRupeeIcon fontSize="small" />
-                  {item?.price}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </Carousel>
+      {loading ? (
+        <Box display="flex" justifyContent="center" alignItems="center" height={200}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Carousel showDots responsive={responsive}>
+          {products.map((item) => (
+            <Link
+              to={`/product/${item._id}`}
+              style={{ textDecoration: 'none', color: 'inherit' }}
+              key={item._id}
+            >
+              <Card style={styles.card}>
+                <img src={item.productImage[0]} alt={item.name} style={styles.productImage} />
+                <CardContent style={styles.cardContent}>
+                  <Typography style={styles.productName} variant="body1">
+                    {item.productName}
+                  </Typography>
+                  <Typography
+                    style={styles.productPrice}
+                    variant="body1"
+                    color="black"
+                    component="span"
+                  >
+                    From
+                  </Typography>
+                  <Typography
+                    style={styles.productPrice}
+                    variant="body2"
+                    color="primary"
+                    component="span"
+                  >
+                    <CurrencyRupeeIcon fontSize="small" />
+                    {item.price}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </Carousel>
+      )}
     </>
   );
+};
+
+ProductCarousel.propTypes = {
+  category: PropTypes.string.isRequired,
 };
 
 export default ProductCarousel;

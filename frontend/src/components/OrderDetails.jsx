@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
+import { useSnackbar } from 'notistack';
 import {
   Container,
   Typography,
@@ -9,14 +10,15 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
-} from "@mui/material";
-import { fetchAllOrders } from "../utils/service";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+} from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { fetchAllOrders } from '../utils/services/order.service';
 
 const OrderDetails = () => {
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -24,7 +26,9 @@ const OrderDetails = () => {
         const response = await fetchAllOrders();
         setOrders(response.data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+          variant: 'error',
+        });
       }
     };
 
@@ -57,8 +61,8 @@ const OrderDetails = () => {
             {expandedOrderId === order._id && (
               <Box mt={2}>
                 <Typography variant="h6">Items</Typography>
-                {order.items.map((item, index) => (
-                  <Box key={index} mb={1} paddingLeft={2}>
+                {order.items.map((item) => (
+                  <Box key={item._id} mb={1} paddingLeft={2}>
                     <Typography>Product: {item.productName}</Typography>
                     <Typography>Quantity: {item.quantity}</Typography>
                     <Typography>Price: ${item.sellingPrice}</Typography>

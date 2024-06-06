@@ -1,58 +1,72 @@
-import React, { useEffect, useState } from "react";
-import socketIOClient from "socket.io-client";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
-import AddAlertIcon from "@mui/icons-material/AddAlert";
+import React, { useEffect, useState } from 'react';
 
-const SOCKET_SERVER_URL = "http://localhost:5000";
+import socketIOClient from 'socket.io-client';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from '@mui/material';
+
+const SOCKET_SERVER_URL = 'http://localhost:5000';
+
 const NotificationComponent = () => {
-  const [product, setProduct] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [, setProducts] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+  const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
 
   useEffect(() => {
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notifications.");
-    } else if (Notification.permission === "default") {
+    if (!('Notification' in window)) {
+      console.error('This browser does not support desktop notifications.');
+    } else if (notificationPermission === 'default') {
       Notification.requestPermission().then((permission) => {
-        if (permission === "granted") {
-          console.log("Notification permission granted.");
-        }
+        setNotificationPermission(permission);
       });
     }
 
     const socket = socketIOClient(SOCKET_SERVER_URL);
-    socket.on("newProduct", (newProduct) => {
-      setProduct((prevProducts) => [...prevProducts, newProduct]);
 
-      if (Notification.permission === "granted") {
-        new Notification(`New product added: ${newProduct.productName}`, {
+    socket.on('newProduct', (newProduct) => {
+      setProducts((prevProducts) => [...prevProducts, newProduct]);
+      setDialogMessage(
+        `New product added: ${newProduct.productName}\nDescription: ${newProduct.description}`
+      );
+      setOpenDialog(true);
+
+      if (Notification.permission === 'granted') {
+        const options = {
           body: `Description: ${newProduct.description}`,
-          icon: <AddAlertIcon />,
-        });
+          icon: '/home/stavan/Documents/aspire/e-comsite/frontend/src/images/notification.svg',
+        };
+        // eslint-disable-next-line no-new
+        new Notification(`New product added: ${newProduct.productName}`, options);
       }
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
-  const handleClose = () => {
-    setOpen(false);
+  }, [notificationPermission]);
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   return (
-    <Snackbar
-      open={open}
-      autoHideDuration={6000}
-      onClose={handleClose}
-      anchorOrigin={{ vertical: "top", horizontal: "center" }}
-    >
-      <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
-        New product added: {product && product.name}
-        <br />
-        Description: {product && product.description}
-      </MuiAlert>
-    </Snackbar>
+    <Dialog open={openDialog} onClose={handleCloseDialog}>
+      <DialogTitle>New Product Notification</DialogTitle>
+      <DialogContent>
+        <DialogContentText>{dialogMessage}</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleCloseDialog} color="primary">
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

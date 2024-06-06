@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { get_cart, set_cart, remove_cart } from "../../utils/service";
+import { get_cart, set_cart, remove_cart } from "../../constant/localStorage.constant";
 
 const initialState = {
   items: get_cart(),

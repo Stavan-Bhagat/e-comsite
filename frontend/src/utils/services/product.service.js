@@ -1,3 +1,6 @@
+import axiosInstance from "axios";
+
+
 export const fetchProductData = async (page) => {
   const response = await axiosInstance.get(`/fusion/product/fetch-product-data?page=${page}&limit=8`);
   return response.data;

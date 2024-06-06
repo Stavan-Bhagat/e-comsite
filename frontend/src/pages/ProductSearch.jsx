@@ -1,24 +1,32 @@
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { Container, Grid, Box, Typography, FormControlLabel, FormControl, Checkbox, FormGroup } from "@mui/material";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import { CardActionArea } from "@mui/material";
-import AbcIcon from "@mui/icons-material/Abc";
-import Header from "../components/Header";
-import CurrencyRupeeIcon from "@mui/icons-material/CurrencyRupee";
-import Slider from "@mui/material/Slider";
-import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import Collapse from "@mui/material/Collapse";
-import { fetchProductsByCategory } from "../utils/service";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  Grid,
+  Box,
+  Typography,
+  FormControlLabel,
+  Checkbox,
+  FormGroup,
+  CardActionArea,
+} from '@mui/material';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import AbcIcon from '@mui/icons-material/Abc';
+import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
+import Slider from '@mui/material/Slider';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import Divider from '@mui/material/Divider';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Collapse from '@mui/material/Collapse';
+import Header from '../components/Header';
+import { fetchProductsByCategory } from '../utils/services/product.service';
+
+// eslint-disable-next-line no-unused-vars
 const valuetext = (value) => `${value}`;
 
 const ProductSearch = () => {
@@ -26,14 +34,15 @@ const ProductSearch = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const [products, setProducts] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
 
-  const fetchProductsFromCategory = async (category) => {
+  const fetchProductsFromCategory = async (fetchCategory) => {
     setLoading(true);
-    const response = await fetchProductsByCategory(category);
+    const response = await fetchProductsByCategory(fetchCategory);
     setLoading(false);
     setProducts(response.data);
     setFilteredProducts(response.data);
@@ -41,6 +50,16 @@ const ProductSearch = () => {
 
   const handleClick = () => {
     setOpen(!open);
+  };
+  const filterProducts = (priceRangeProduct, selectedBrandsProduct) => {
+    const filtered = products.filter((product) => {
+      const isInPriceRange =
+        product.price >= priceRangeProduct[0] && product.price <= priceRange[1];
+      const isBrandSelected =
+        selectedBrandsProduct.length === 0 || selectedBrandsProduct.includes(product.brandName);
+      return isInPriceRange && isBrandSelected;
+    });
+    setFilteredProducts(filtered);
   };
 
   const handlePriceChange = (event, newValue) => {
@@ -50,19 +69,13 @@ const ProductSearch = () => {
 
   const handleBrandChange = (event) => {
     const { value, checked } = event.target;
-    const updatedBrands = checked ? [...selectedBrands, value] : selectedBrands.filter((brand) => brand !== value);
+    const updatedBrands = checked
+      ? [...selectedBrands, value]
+      : selectedBrands.filter((brand) => brand !== value);
     setSelectedBrands(updatedBrands);
     filterProducts(priceRange, updatedBrands);
   };
 
-  const filterProducts = (priceRange, selectedBrands) => {
-    const filtered = products.filter((product) => {
-      const isInPriceRange = product.price >= priceRange[0] && product.price <= priceRange[1];
-      const isBrandSelected = selectedBrands.length === 0 || selectedBrands.includes(product.brandName);
-      return isInPriceRange && isBrandSelected;
-    });
-    setFilteredProducts(filtered);
-  };
   const handleChange = (id) => {
     navigate(`/product/${id}`);
   };
@@ -84,9 +97,9 @@ const ProductSearch = () => {
             <Box>
               <List
                 sx={{
-                  width: "100%",
+                  width: '100%',
                   maxWidth: 360,
-                  bgcolor: "background.paper",
+                  bgcolor: 'background.paper',
                 }}
               >
                 <Typography variant="h5" gutterBottom>
@@ -123,9 +136,9 @@ const ProductSearch = () => {
                     <ListItemButton sx={{ pl: 4 }}>
                       <ListItemIcon>
                         <FormGroup>
-                          {uniqueBrands.map((brand, index) => (
+                          {uniqueBrands.map((brand) => (
                             <FormControlLabel
-                              key={index}
+                              key={brand}
                               control={<Checkbox value={brand} onChange={handleBrandChange} />}
                               label={brand}
                             />
@@ -156,9 +169,9 @@ const ProductSearch = () => {
                           variant="button"
                           component="div"
                           sx={{
-                            textOverflow: "ellipsis",
-                            overflow: "hidden",
-                            whiteSpace: "nowrap",
+                            textOverflow: 'ellipsis',
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
                           }}
                         >
                           {product.productName}
@@ -180,144 +193,3 @@ const ProductSearch = () => {
 };
 
 export default ProductSearch;
-
-// import React, { useState, useEffect } from "react";
-// import { useParams } from "react-router-dom";
-// import {
-//   Container,
-//   Grid,
-//   Box,
-//   Typography,
-//   TextField,
-//   Button,
-//   Select,
-//   MenuItem,
-//   FormControl,
-//   InputLabel,
-// } from "@mui/material";
-// import { Image } from "react-bootstrap";
-// import axios from "axios";
-
-// const ProductSearch = () => {
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [products, setProducts] = useState([]);
-//   const [filteredProducts, setFilteredProducts] = useState([]);
-//   const [category, setCategory] = useState("");
-//   const [priceRange, setPriceRange] = useState([0, 1000]);
-//   const
-
-//   useEffect(() => {
-//     if (searchQuery) {
-//       fetchProducts();
-//     }
-//   }, [searchQuery]);
-
-//   const fetchProducts = async () => {
-//     try {
-//       // Replace with your actual API endpoint
-//       const response = await axios.get(`/api/products?search=${searchQuery}`);
-//       setProducts(response.data);
-//       setFilteredProducts(response.data);
-//     } catch (error) {
-//       console.error("Error fetching products", error);
-//     }
-//   };
-
-//   const handleSearch = (e) => {
-//     setSearchQuery(e.target.value);
-//   };
-
-//   const handleFilter = () => {
-//     let filtered = products;
-
-//     if (category) {
-//       filtered = filtered.filter((product) => product.category === category);
-//     }
-
-//     filtered = filtered.filter(
-//       (product) =>
-//         product.price >= priceRange[0] && product.price <= priceRange[1]
-//     );
-
-//     setFilteredProducts(filtered);
-//   };
-
-//   return (
-//     <Container>
-//       <Typography variant="h4" gutterBottom>
-//         Search Products
-//       </Typography>
-//       <Box mb={3}>
-//         <TextField
-//           variant="outlined"
-//           fullWidth
-//           placeholder="Search for products..."
-//           value={searchQuery}
-//           onChange={handleSearch}
-//         />
-//       </Box>
-//       <Grid container spacing={2}>
-//         <Grid item xs={3}>
-//           <Box mb={2}>
-//             <FormControl fullWidth>
-//               <InputLabel>Category</InputLabel>
-//               <Select
-//                 value={category}
-//                 onChange={(e) => setCategory(e.target.value)}
-//               >
-//                 <MenuItem value="">All</MenuItem>
-//                 <MenuItem value="electronics">Electronics</MenuItem>
-//                 <MenuItem value="fashion">Fashion</MenuItem>
-//                 <MenuItem value="home">Home</MenuItem>
-//               </Select>
-//             </FormControl>
-//           </Box>
-//           <Box mb={2}>
-//             <Typography>Price Range</Typography>
-//             <TextField
-//               type="number"
-//               placeholder="Min"
-//               value={priceRange[0]}
-//               onChange={(e) =>
-//                 setPriceRange([Number(e.target.value), priceRange[1]])
-//               }
-//               fullWidth
-//             />
-//             <TextField
-//               type="number"
-//               placeholder="Max"
-//               value={priceRange[1]}
-//               onChange={(e) =>
-//                 setPriceRange([priceRange[0], Number(e.target.value)])
-//               }
-//               fullWidth
-//               sx={{ mt: 2 }}
-//             />
-//           </Box>
-//           <Button variant="contained" color="primary" onClick={handleFilter}>
-//             Apply Filters
-//           </Button>
-//         </Grid>
-//         <Grid item xs={9}>
-//           <Grid container spacing={2}>
-//             {filteredProducts.map((product) => (
-//               <Grid item xs={4} key={product.id}>
-//                 <Box>
-//                   <Image
-//                     src={product.productImage}
-//                     alt={product.productName}
-//                     fluid
-//                   />
-//                   <Typography variant="h6">{product.productName}</Typography>
-//                   <Typography variant="body1">${product.price}</Typography>
-//                 </Box>
-//               </Grid>
-//             ))}
-//           </Grid>
-//         </Grid>
-//       </Grid>
-//     </Container>
-//   );
-// };
-
-// export default ProductSearch;

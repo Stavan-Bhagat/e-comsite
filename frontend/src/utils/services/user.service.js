@@ -1,3 +1,5 @@
+import axiosInstance from "axios";
+
 export const fetchUserData = async () => {
   const response = await axiosInstance.get("/fusion/submit/fetch-user");
   return response.data;

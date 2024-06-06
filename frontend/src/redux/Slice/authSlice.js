@@ -1,7 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { set_session_user, get_session_user, remove_session_user } from "../../utils/service";
-import { set_is_authenticated, get_is_authenticated, remove_is_authenticated } from "../../utils/service";
-import { set_token, get_token, remove_token } from "../../utils/service";
+import { set_session_user, get_session_user, remove_session_user } from "../../constant/localStorage.constant";
+import {
+  set_is_authenticated,
+  get_is_authenticated,
+  remove_is_authenticated,
+} from "../../constant/localStorage.constant";
+import { set_token, get_token, remove_token } from "../../constant/localStorage.constant";
 
 const initialState = {
   isAuthenticated: get_is_authenticated() ? get_is_authenticated() : false,

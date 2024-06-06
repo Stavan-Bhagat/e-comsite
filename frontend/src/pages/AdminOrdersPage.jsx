@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { Typography, Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { useSnackbar } from 'notistack';
+import { Typography, Table, TableHead, TableBody, TableRow, TableCell } from '@mui/material';
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
+
+  const fetchOrders = async () => {
+    try {
+      const response = await axios.get('/api/orders');
+      setOrders(response.data);
+    } catch (error) {
+      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+        variant: 'error',
+      });
+    }
+  };
 
   useEffect(() => {
     fetchOrders();
   }, []);
-
-  const fetchOrders = async () => {
-    try {
-      const response = await axios.get("/api/orders");
-      setOrders(response.data);
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
 
   return (
     <div>

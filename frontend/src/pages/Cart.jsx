@@ -1,18 +1,18 @@
 // src/components/Cart.js
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { Container, Grid, Box, Typography, Button, IconButton, Divider } from "@mui/material";
-import { Image } from "react-bootstrap";
-import DeleteIcon from "@mui/icons-material/Delete";
-import { clearCart, removeFromCart, updateQuantity } from "../redux/Slice/cartSlice";
-import Header from "../components/Header";
-import { useNavigate } from "react-router-dom";
-import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { Container, Grid, Box, Typography, Button, IconButton, Divider } from '@mui/material';
+import { Image } from 'react-bootstrap';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { useNavigate } from 'react-router-dom';
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
+import { removeFromCart, updateQuantity } from '../redux/Slice/cartSlice';
+import Header from '../components/Header';
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
+  // eslint-disable-next-line no-unused-vars
   const cartamount = useSelector((state) => state.cart.totalAmount);
-  console.log("citem", cartamount);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -23,16 +23,18 @@ const Cart = () => {
   };
 
   const handleRemoveItem = (id) => {
-    console.log(id);
     dispatch(removeFromCart(id));
   };
 
   const handleCheckout = () => {
-    navigate("/checkout");
+    navigate('/checkout');
   };
 
   const calculateTotal = () => {
-    return cartItems.reduce((total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0), 0);
+    return cartItems.reduce(
+      (total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0),
+      0
+    );
   };
 
   return (
@@ -41,11 +43,11 @@ const Cart = () => {
       {cartItems.length === 0 ? (
         <Box
           sx={{
-            height: "90vh",
-            width: "100vw",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            height: '90vh',
+            width: '100vw',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           Please Add a Product
@@ -61,7 +63,12 @@ const Cart = () => {
             {cartItems.map((item) => (
               <Grid container item spacing={2} key={item._id}>
                 <Grid item xs={3}>
-                  <Image src={item.productImage[0]} alt={item.productName} style={{ width: 100 }} fluid />
+                  <Image
+                    src={item.productImage[0]}
+                    alt={item.productName}
+                    style={{ width: 100 }}
+                    fluid
+                  />
                 </Grid>
                 <Grid item xs={3}>
                   <Typography variant="h6">{item.productName}</Typography>
@@ -73,8 +80,8 @@ const Cart = () => {
                     type="number"
                     value={item.quantity}
                     min="1"
-                    onChange={(e) => handleQuantityChange(item._id, parseInt(e.target.value))}
-                    style={{ width: "60px", marginRight: "10px" }}
+                    onChange={(e) => handleQuantityChange(item._id, parseInt(e.target.value, 10))}
+                    style={{ width: '60px', marginRight: '10px' }}
                   />
                 </Grid>
                 <Grid item xs={2}>

@@ -1,18 +1,19 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { Container, Typography, Box, Divider, Button } from "@mui/material";
-import axiosInstance from "../utils/axios";
-import { useDispatch } from "react-redux";
-import { clearCart } from "../redux/Slice/cartSlice";
-import { useNavigate } from "react-router";
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
+import { Container, Typography, Box, Divider, Button } from '@mui/material';
+import { useNavigate } from 'react-router';
+import axiosInstance from '../utils/axios';
+import { clearCart } from '../redux/Slice/cartSlice';
 
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
-  const Cartdata = useSelector((state) => state.cart.items);
+  const cartData = useSelector((state) => state.cart.items);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { enqueueSnackbar } = useSnackbar();
 
-  if (!orderDetails || !Cartdata) {
+  if (!orderDetails || !cartData) {
     return (
       <Container>
         <Typography variant="h5" gutterBottom>
@@ -23,36 +24,42 @@ const ConfirmationPage = () => {
   }
 
   const calculateTotal = () => {
-    return Cartdata.reduce((total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0), 0);
+    return cartData.reduce(
+      (total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0),
+      0
+    );
   };
 
   const onSubmit = async () => {
     const mergedData = {
       ...orderDetails,
-      items: Cartdata,
+      items: cartData,
       totalAmount: calculateTotal(),
     };
 
     try {
       const response = await axiosInstance.post(`/order/add-Order`, mergedData);
       if (response.status === 201) {
-        alert("Order placed successfully");
+        enqueueSnackbar(`order placed successfully.`, {
+          variant: 'info',
+        });
         dispatch(clearCart());
-        navigate("/");
+        navigate('/');
       }
     } catch (error) {
-      console.error("Error placing order:", error);
-      alert("Failed to place order");
+      enqueueSnackbar(`failed to placed the order.`, {
+        variant: 'info',
+      });
     }
   };
 
   return (
     <Container
       sx={{
-        width: "40%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        width: '40%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <Box>
@@ -67,8 +74,8 @@ const ConfirmationPage = () => {
         <Divider />
         <Box mb={2}>
           <Typography variant="h6">Order Details</Typography>
-          {Cartdata?.map((item, index) => (
-            <Box key={index} mb={1}>
+          {cartData?.map((item) => (
+            <Box key={item._id} mb={1}>
               <Typography>Product: {item.productName}</Typography>
               <Typography>Quantity: {item.quantity}</Typography>
               <Typography>Price: ${item.sellingPrice}</Typography>

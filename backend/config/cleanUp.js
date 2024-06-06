@@ -8,9 +8,7 @@ cron.schedule("0 0 * * *", async () => {
       verified: false,
       createdAt: { $lt: expirationThreshold },
     });
-    console.log(
-      "Cleanup completed: Unverified users older than 24 hours have been removed."
-    );
+    console.log("Cleanup completed: Unverified users older than 24 hours have been removed.");
   } catch (error) {
     console.error("Error during cleanup:", error);
   }

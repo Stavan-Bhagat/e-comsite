@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Image,
-  Container,
-  Row,
-  Col,
-  Carousel as BootstrapCarousel,
-  Card,
-  Button,
-} from "react-bootstrap";
+import { Image, Container, Row, Col, Carousel as BootstrapCarousel, Card, Button } from "react-bootstrap";
 import { Typography } from "@mui/material";
 import "react-multi-carousel/lib/styles.css";
 import Carousel from "react-multi-carousel";
@@ -32,28 +24,13 @@ const Body = () => {
         <CategoryList />
         <BootstrapCarousel>
           <BootstrapCarousel.Item style={styles.carouselItem}>
-            <img
-              className="d-block w-100"
-              src={img1}
-              alt="First slide"
-              style={styles.carouselImage}
-            />
+            <img className="d-block w-100" src={img1} alt="First slide" style={styles.carouselImage} />
           </BootstrapCarousel.Item>
           <BootstrapCarousel.Item style={styles.carouselItem}>
-            <img
-              className="d-block w-100"
-              src={img2}
-              alt="Second slide"
-              style={styles.carouselImage}
-            />
+            <img className="d-block w-100" src={img2} alt="Second slide" style={styles.carouselImage} />
           </BootstrapCarousel.Item>
           <BootstrapCarousel.Item style={styles.carouselItem}>
-            <img
-              className="d-block w-100"
-              src={img3}
-              alt="Third slide"
-              style={styles.carouselImage}
-            />
+            <img className="d-block w-100" src={img3} alt="Third slide" style={styles.carouselImage} />
           </BootstrapCarousel.Item>
         </BootstrapCarousel>
       </div>

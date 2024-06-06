@@ -26,10 +26,7 @@ exports.login_service = async (userData) => {
     if (!user) {
       return { success: false, message: "Login failed" };
     }
-    const decryptedPassword = CryptoJS.AES.decrypt(
-      user.password,
-      secretKey
-    ).toString(CryptoJS.enc.Utf8);
+    const decryptedPassword = CryptoJS.AES.decrypt(user.password, secretKey).toString(CryptoJS.enc.Utf8);
     if (decryptedPassword === userData.password) {
       console.log("Login successful");
       return {

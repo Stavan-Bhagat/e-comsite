@@ -1,10 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
-const emailTemplatePath = path.resolve(
-  __dirname,
-  "../helper/emailTemplate.html"
-);
+const emailTemplatePath = path.resolve(__dirname, "../helper/emailTemplate.html");
 const { emailSubject, serviceName } = require("../constant/email.constant");
 
 const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");

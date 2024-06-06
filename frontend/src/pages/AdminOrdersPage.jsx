@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {
-  Typography,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-} from "@mui/material";
+import { Typography, Table, TableHead, TableBody, TableRow, TableCell } from "@mui/material";
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -43,9 +36,7 @@ const AdminOrdersPage = () => {
             <TableRow key={order._id}>
               <TableCell>{order.orderId}</TableCell>
               <TableCell>{order.customerName}</TableCell>
-              <TableCell>
-                {new Date(order.orderDate).toLocaleDateString()}
-              </TableCell>
+              <TableCell>{new Date(order.orderDate).toLocaleDateString()}</TableCell>
               <TableCell>${order.totalAmount}</TableCell>
               <TableCell>{order.status}</TableCell>
             </TableRow>

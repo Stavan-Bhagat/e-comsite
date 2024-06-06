@@ -14,10 +14,7 @@ const CheckOut = () => {
   const cartItems = useSelector((state) => state.cart.items);
   console.log("cartitems", cartItems);
   const totalAmount = useSelector((state) =>
-    state.cart.items.reduce(
-      (total, item) => total + item.sellingPrice * item.quantity,
-      0
-    )
+    state.cart.items.reduce((total, item) => total + item.sellingPrice * item.quantity, 0)
   );
 
   const navigate = useNavigate();
@@ -44,7 +41,7 @@ const CheckOut = () => {
       address: "",
     });
 
-    navigate("/confirmation"); 
+    navigate("/confirmation");
   };
 
   return (
@@ -78,13 +75,7 @@ const CheckOut = () => {
             margin="normal"
           />
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handlePlaceOrder}
-            fullWidth
-            size="large"
-          >
+          <Button variant="contained" color="primary" onClick={handlePlaceOrder} fullWidth size="large">
             Place Order
           </Button>
         </Box>

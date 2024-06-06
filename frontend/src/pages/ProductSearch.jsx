@@ -1,15 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Container,
-  Grid,
-  Box,
-  Typography,
-  FormControlLabel,
-  FormControl,
-  Checkbox,
-  FormGroup,
-} from "@mui/material";
+import { Container, Grid, Box, Typography, FormControlLabel, FormControl, Checkbox, FormGroup } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -59,20 +50,15 @@ const ProductSearch = () => {
 
   const handleBrandChange = (event) => {
     const { value, checked } = event.target;
-    const updatedBrands = checked
-      ? [...selectedBrands, value]
-      : selectedBrands.filter((brand) => brand !== value);
+    const updatedBrands = checked ? [...selectedBrands, value] : selectedBrands.filter((brand) => brand !== value);
     setSelectedBrands(updatedBrands);
     filterProducts(priceRange, updatedBrands);
   };
 
   const filterProducts = (priceRange, selectedBrands) => {
     const filtered = products.filter((product) => {
-      const isInPriceRange =
-        product.price >= priceRange[0] && product.price <= priceRange[1];
-      const isBrandSelected =
-        selectedBrands.length === 0 ||
-        selectedBrands.includes(product.brandName);
+      const isInPriceRange = product.price >= priceRange[0] && product.price <= priceRange[1];
+      const isBrandSelected = selectedBrands.length === 0 || selectedBrands.includes(product.brandName);
       return isInPriceRange && isBrandSelected;
     });
     setFilteredProducts(filtered);
@@ -87,9 +73,7 @@ const ProductSearch = () => {
   }, [category]);
 
   // Get unique brands
-  const uniqueBrands = [
-    ...new Set(products.map((product) => product.brandName)),
-  ];
+  const uniqueBrands = [...new Set(products.map((product) => product.brandName))];
 
   return (
     <>
@@ -142,12 +126,7 @@ const ProductSearch = () => {
                           {uniqueBrands.map((brand, index) => (
                             <FormControlLabel
                               key={index}
-                              control={
-                                <Checkbox
-                                  value={brand}
-                                  onChange={handleBrandChange}
-                                />
-                              }
+                              control={<Checkbox value={brand} onChange={handleBrandChange} />}
                               label={brand}
                             />
                           ))}
@@ -163,10 +142,7 @@ const ProductSearch = () => {
             <Grid container spacing={2}>
               {filteredProducts.map((product) => (
                 <Grid item xs={3} key={product.id}>
-                  <Card
-                    sx={{ maxWidth: 200 }}
-                    onClick={() => handleChange(product._id)}
-                  >
+                  <Card sx={{ maxWidth: 200 }} onClick={() => handleChange(product._id)}>
                     <CardActionArea>
                       <CardMedia
                         component="img"

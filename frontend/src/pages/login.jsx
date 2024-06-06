@@ -1,13 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  TextField,
-  Button,
-  Typography,
-  Container,
-  Card,
-  CardMedia,
-  Box,
-} from "@mui/material";
+import { TextField, Button, Typography, Container, Card, CardMedia, Box } from "@mui/material";
 import { useForm } from "react-hook-form";
 import Header from "../components/Header";
 import loginImage from "../images/login.avif";
@@ -59,14 +51,12 @@ const Login = () => {
   const handleLogin = async (data) => {
     try {
       const response = await loginUser(data);
-      const { success, message, accessToken, refreshToken, user } =
-        response;
+      const { success, message, accessToken, refreshToken, user } = response;
       set_token(accessToken);
       localStorage.setItem("refreshToken", refreshToken);
 
       if (success) {
-      console.log("userbhai",user
-      )
+        console.log("userbhai", user);
         dispatch(loginSuccess({ user, accessToken }));
       } else {
         return "login failed", message;
@@ -143,11 +133,7 @@ const Login = () => {
       >
         <Grid container spacing={2}>
           <Grid item xs={6}>
-            <Box
-              component="img"
-              src={loginImage}
-              sx={{ objectFit: "cover", height: "100%", width: "100%" }}
-            />
+            <Box component="img" src={loginImage} sx={{ objectFit: "cover", height: "100%", width: "100%" }} />
           </Grid>
           <Grid item xs={6}>
             <Container
@@ -167,17 +153,11 @@ const Login = () => {
                       Verify Your Email
                     </Typography>
                     <Typography variant="body1" align="center" gutterBottom>
-                      Please check your email to verify your account within 5
-                      minutes, If you haven't received the email, please
-                      register again
+                      Please check your email to verify your account within 5 minutes, If you haven't received the
+                      email, please register again
                     </Typography>
                     <Card sx={{ maxWidth: 400, margin: "auto" }}>
-                      <CardMedia
-                        component="img"
-                        height="300"
-                        image={checkEmail}
-                        alt="check Email"
-                      />
+                      <CardMedia component="img" height="300" image={checkEmail} alt="check Email" />
                     </Card>
                   </>
                 ) : isLogin ? (
@@ -194,8 +174,7 @@ const Login = () => {
                         {...register("email", {
                           required: "Email is required",
                           pattern: {
-                            value:
-                              /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                            value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
                             message: "Invalid email address",
                           },
                         })}
@@ -216,18 +195,9 @@ const Login = () => {
                           },
                         })}
                         error={!!errors.password}
-                        helperText={
-                          errors.password ? errors.password.message : ""
-                        }
+                        helperText={errors.password ? errors.password.message : ""}
                       />
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        size="large"
-                        sx={{ mt: 2 }}
-                      >
+                      <Button type="submit" variant="contained" color="primary" fullWidth size="large" sx={{ mt: 2 }}>
                         Login
                       </Button>
                     </form>
@@ -263,8 +233,7 @@ const Login = () => {
                         {...register("email", {
                           required: "Email is required",
                           pattern: {
-                            value:
-                              /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
+                            value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
                             message: "Invalid email address",
                           },
                         })}
@@ -284,16 +253,13 @@ const Login = () => {
                             message: "Password must be at least 8 characters",
                           },
                           pattern: {
-                            value:
-                              /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
+                            value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
                             message:
                               "Password must include upper and lower case letters, a number, and a special character",
                           },
                         })}
                         error={!!errors.password}
-                        helperText={
-                          errors.password ? errors.password.message : ""
-                        }
+                        helperText={errors.password ? errors.password.message : ""}
                       />
                       <TextField
                         fullWidth
@@ -303,16 +269,10 @@ const Login = () => {
                         variant="outlined"
                         {...register("confirmPassword", {
                           required: "Confirm Password is required",
-                          validate: (value) =>
-                            value === getValues("password") ||
-                            "Passwords do not match",
+                          validate: (value) => value === getValues("password") || "Passwords do not match",
                         })}
                         error={!!errors.confirmPassword}
-                        helperText={
-                          errors.confirmPassword
-                            ? errors.confirmPassword.message
-                            : ""
-                        }
+                        helperText={errors.confirmPassword ? errors.confirmPassword.message : ""}
                       />
                       <Button
                         component="label"
@@ -324,21 +284,9 @@ const Login = () => {
                       >
                         <CameraAltIcon sx={{ mr: 1 }} />
                         Upload Profile Picture
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          hidden
-                        />{" "}
+                        <input type="file" accept="image/*" onChange={handleFileChange} hidden />{" "}
                       </Button>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        size="large"
-                        sx={{ mt: 2 }}
-                      >
+                      <Button type="submit" variant="contained" color="primary" fullWidth size="large" sx={{ mt: 2 }}>
                         Register
                       </Button>
                     </form>

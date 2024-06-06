@@ -47,12 +47,7 @@ const NotificationComponent = () => {
       onClose={handleClose}
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
     >
-      <MuiAlert
-        elevation={6}
-        variant="filled"
-        onClose={handleClose}
-        severity="success"
-      >
+      <MuiAlert elevation={6} variant="filled" onClose={handleClose} severity="success">
         New product added: {product && product.name}
         <br />
         Description: {product && product.description}

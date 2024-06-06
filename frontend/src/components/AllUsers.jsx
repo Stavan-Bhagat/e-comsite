@@ -2,20 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import {
-  fetchUserData,
-  updateUserData,
-  deleteUserData,
-} from "../utils/service";
-import {
-  Container,
-  IconButton,
-  TextField,
-  Box,
-  Button,
-  Typography,
-  Modal,
-} from "@mui/material";
+import { fetchUserData, updateUserData, deleteUserData } from "../utils/service";
+import { Container, IconButton, TextField, Box, Button, Typography, Modal } from "@mui/material";
 import Select from "react-select";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -91,10 +79,7 @@ const AllUsers = () => {
       <IconButton onClick={() => handleEditClick(data)}>
         <EditIcon />
       </IconButton>
-      <IconButton
-        onClick={() => handleDeleteClick(data)}
-        disabled={currentUser._id === data._id}
-      >
+      <IconButton onClick={() => handleDeleteClick(data)} disabled={currentUser._id === data._id}>
         <DeleteIcon />
       </IconButton>
     </div>
@@ -195,14 +180,7 @@ const AllUsers = () => {
                 />
               )}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              size="large"
-              sx={{ mt: 2 }}
-            >
+            <Button type="submit" variant="contained" color="primary" fullWidth size="large" sx={{ mt: 2 }}>
               Save
             </Button>
           </form>

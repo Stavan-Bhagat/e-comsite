@@ -7,7 +7,7 @@ const {
   login,
   updateData,
   deleteData,
-  refreshToken
+  refreshToken,
 } = require("../../controller/user.controller");
 const { uploadUserImage } = require("../../config/multer.config");
 const authentication = require("../../middleware/authentication.middleware");

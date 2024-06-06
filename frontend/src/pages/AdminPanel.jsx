@@ -29,11 +29,7 @@ const AdminPanel = () => {
     return (
       <List>
         {sidebarItems.map((item, index) => (
-          <ListItemButton
-            key={item.text}
-            selected={selectedIndex === index}
-            onClick={() => handleListItemClick(index)}
-          >
+          <ListItemButton key={item.text} selected={selectedIndex === index} onClick={() => handleListItemClick(index)}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItemButton>

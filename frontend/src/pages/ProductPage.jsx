@@ -112,11 +112,7 @@ const ProductPage = () => {
                     component="div"
                     onMouseEnter={() => handleImage(image)}
                   >
-                    <img
-                      src={image}
-                      alt={product.productName}
-                      style={{ width: "100%", height: "auto" }}
-                    />
+                    <img src={image} alt={product.productName} style={{ width: "100%", height: "auto" }} />
                   </Box>
                 ))}
               </Box>

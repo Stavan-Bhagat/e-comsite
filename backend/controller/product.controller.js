@@ -49,15 +49,7 @@ exports.addProduct = async (req, res) => {
       return res.status(400).json({ error: "No image files uploaded" });
     }
 
-    const {
-      productName,
-      brandName,
-      category,
-      description,
-      price,
-      sellingPrice,
-      stock,
-    } = req.body;
+    const { productName, brandName, category, description, price, sellingPrice, stock } = req.body;
     const imageUrl = req.files.map((file) => file.path);
 
     const newProduct = new Product({
@@ -76,9 +68,7 @@ exports.addProduct = async (req, res) => {
     const io = socket.getIo();
     io.emit("newProduct", createdProduct);
 
-    res
-      .status(201)
-      .json({ message: "Product added successfully.", newProduct });
+    res.status(201).json({ message: "Product added successfully.", newProduct });
   } catch (e) {
     res.status(500).json({ message: "Internal server error", error: e });
   }
@@ -86,16 +76,7 @@ exports.addProduct = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   try {
-    const {
-      productId,
-      productName,
-      brandName,
-      category,
-      description,
-      price,
-      sellingPrice,
-      stock,
-    } = req.body;
+    const { productId, productName, brandName, category, description, price, sellingPrice, stock } = req.body;
 
     const imageUrl = req.files ? req.files.map((file) => file.path) : undefined;
 
@@ -113,15 +94,9 @@ exports.updateProduct = async (req, res) => {
       updateFields.productImage = imageUrl;
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      updateFields,
-      { new: true }
-    );
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updateFields, { new: true });
 
-    res
-      .status(200)
-      .json({ message: "Product updated successfully.", updatedProduct });
+    res.status(200).json({ message: "Product updated successfully.", updatedProduct });
   } catch (e) {
     res.status(500).json({ message: "Internal server error" });
   }

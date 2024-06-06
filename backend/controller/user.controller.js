@@ -32,9 +32,7 @@ exports.register = async (req, res) => {
     await newUser.save();
     await sendVerificationEmail(email, token);
 
-    res
-      .status(200)
-      .json({ message: "Registration successful. Please verify your email." });
+    res.status(200).json({ message: "Registration successful. Please verify your email." });
   } catch (error) {
     console.error("Registration error:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -46,20 +44,13 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found." });
+      return res.status(404).json({ success: false, message: "User not found." });
     }
 
-    const decryptedPassword = CryptoJS.AES.decrypt(
-      user.password,
-      secretKey
-    ).toString(CryptoJS.enc.Utf8);
+    const decryptedPassword = CryptoJS.AES.decrypt(user.password, secretKey).toString(CryptoJS.enc.Utf8);
 
     if (decryptedPassword !== password) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Incorrect password." });
+      return res.status(401).json({ success: false, message: "Incorrect password." });
     }
 
     if (!user.verified) {
@@ -164,11 +155,9 @@ exports.refreshToken = (req, res) => {
   const refreshToken = req.headers["refresh-token"];
   try {
     const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
-    const newAccessToken = jwt.sign(
-      { email: decoded.email },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME }
-    );
+    const newAccessToken = jwt.sign({ email: decoded.email }, process.env.JWT_SECRET, {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME,
+    });
     return res.status(200).json({
       message: "Access token refreshed successfully",
       accessToken: newAccessToken,

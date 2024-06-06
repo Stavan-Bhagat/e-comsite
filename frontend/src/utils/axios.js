@@ -1,6 +1,6 @@
 import axios from "axios";
 import { logout } from "../redux/Slice/authSlice";
-import store from "../redux/store/store"
+import store from "../redux/store/store";
 
 const axiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASEURL,
@@ -45,12 +45,9 @@ axiosInstance.interceptors.response.use(
         if (!refreshToken) {
           throw new Error("No refresh token available");
         }
-        const refreshResponse = await axios.get(
-          `${process.env.REACT_APP_BASEURL}/submit/refreshtoken`,
-          {
-            headers: { "refresh-token": refreshToken },
-          }
-        );
+        const refreshResponse = await axios.get(`${process.env.REACT_APP_BASEURL}/submit/refreshtoken`, {
+          headers: { "refresh-token": refreshToken },
+        });
         const newAccessToken = refreshResponse.data.accessToken;
         console.log("new token", newAccessToken);
         localStorage.setItem("accessToken", newAccessToken);

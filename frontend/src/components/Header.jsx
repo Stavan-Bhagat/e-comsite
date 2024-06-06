@@ -123,11 +123,7 @@ const Header = () => {
 
   return (
     <>
-      <Navbar
-        bg="light"
-        expand="lg"
-        style={{ paddingLeft: "20px", paddingRight: "20px", zIndex: 9999 }}
-      >
+      <Navbar bg="light" expand="lg" style={{ paddingLeft: "20px", paddingRight: "20px", zIndex: 9999 }}>
         <Navbar.Brand href="/">Zen Fusion</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -136,23 +132,14 @@ const Header = () => {
               <SearchIcon />
             </IconButton>
             {!isAuthenticated && (
-              <Button
-                variant="outline-primary"
-                onClick={() => navigate("/login")}
-                style={{ marginRight: "15px" }}
-              >
+              <Button variant="outline-primary" onClick={() => navigate("/login")} style={{ marginRight: "15px" }}>
                 <PersonIcon /> Login
               </Button>
             )}
             {user?._id && (
               <div>
                 {user?.imageUrl ? (
-                  <Avatar
-                    alt="Travis Howard"
-                    src={user.imageUrl}
-                    ref={anchorRef}
-                    onClick={handleToggle}
-                  />
+                  <Avatar alt="Travis Howard" src={user.imageUrl} ref={anchorRef} onClick={handleToggle} />
                 ) : (
                   <Button
                     variant="outline-primary"
@@ -192,9 +179,7 @@ const Header = () => {
             </Button>
           </Form>
           {suggestions.length > 0 && (
-            <ul
-              style={{ listStyleType: "none", padding: 0, marginTop: "15px" }}
-            >
+            <ul style={{ listStyleType: "none", padding: 0, marginTop: "15px" }}>
               {suggestions.slice(0, 5).map((suggestion) => (
                 <li
                   key={suggestion._id}
@@ -222,24 +207,17 @@ const Header = () => {
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin:
-                placement === "bottom-end" ? "right top" : "right bottom",
+              transformOrigin: placement === "bottom-end" ? "right top" : "right bottom",
             }}
           >
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
-                <MenuList
-                  autoFocusItem={open}
-                  id="composition-menu"
-                  onKeyDown={handleListKeyDown}
-                >
+                <MenuList autoFocusItem={open} id="composition-menu" onKeyDown={handleListKeyDown}>
                   <MenuItem onClick={handleProfile}>Profile</MenuItem>
                   {location.pathname === "/admin-panel" ? (
                     <MenuItem onClick={handleHome}>Home</MenuItem>
                   ) : (
-                    user?.role === "Admin" && (
-                      <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
-                    )
+                    user?.role === "Admin" && <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
                   )}
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>

@@ -49,15 +49,8 @@ const OrderDetails = () => {
                 secondary={`Name: ${order.name} | Address: ${order.address} | Total Amount: $${order.totalAmount}`}
               />
               <ListItemSecondaryAction>
-                <IconButton
-                  edge="end"
-                  onClick={() => handleToggleExpand(order._id)}
-                >
-                  {expandedOrderId === order._id ? (
-                    <ExpandLessIcon />
-                  ) : (
-                    <ExpandMoreIcon />
-                  )}
+                <IconButton edge="end" onClick={() => handleToggleExpand(order._id)}>
+                  {expandedOrderId === order._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
                 </IconButton>
               </ListItemSecondaryAction>
             </ListItem>

@@ -1,4 +1,3 @@
-// src/redux/Slice/orderSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -10,12 +9,10 @@ const orderSlice = createSlice({
   initialState,
   reducers: {
     placeOrder(state, action) {
-      console.log("place order", action.payload);
       state.orderDetails = action.payload;
     },
   },
 });
 
 export const { placeOrder } = orderSlice.actions;
-
 export default orderSlice.reducer;

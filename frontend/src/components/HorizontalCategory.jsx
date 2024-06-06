@@ -90,10 +90,7 @@ const HorizontalCategory = ({ category }) => {
           <Grid container spacing={2}>
             {products?.map((product) => (
               <Grid item xs={3} key={product._id}>
-                <Link
-                  to={`/product/${product._id}`}
-                  style={{ textDecoration: "none", color: "inherit", }}
-                >
+                <Link to={`/product/${product._id}`} style={{ textDecoration: "none", color: "inherit" }}>
                   <Box sx={{ padding: 2 }}>
                     <img
                       src={product.productImage[0]}
@@ -113,10 +110,7 @@ const HorizontalCategory = ({ category }) => {
                     <Typography variant="h6" color="secondary">
                       <CurrencyRupeeIcon fontSize="small" />
                       {product.sellingPrice}
-                      <Typography
-                        component="span"
-                        sx={{ textDecoration: "line-through", marginLeft: 2 }}
-                      >
+                      <Typography component="span" sx={{ textDecoration: "line-through", marginLeft: 2 }}>
                         {product.price}{" "}
                       </Typography>
                     </Typography>

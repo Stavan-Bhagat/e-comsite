@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { get_cart, set_cart, remove_cart } from "../../utils/service";
 
 const initialState = {
-  items: get_cart() ? get_cart() : [],
+  items: get_cart(),
   totalQuantity: 0,
   totalAmount: 0,
 };

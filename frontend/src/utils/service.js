@@ -42,8 +42,10 @@ export const remove_orders = () => {
 };
 // cart
 export const get_cart = () => {
-  return JSON.parse(localStorage.getItem("cart"));
+  const cart = localStorage.getItem("cart");
+  return cart ? JSON.parse(cart) : [];
 };
+
 export const set_cart = (setValue) => {
   return localStorage.setItem("cart", JSON.stringify(setValue));
 };

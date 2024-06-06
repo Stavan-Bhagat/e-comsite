@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const jwtSecretKey = process.env.JWT_SECRET_KEY;
+const jwtKey = process.env.JWT_SECRET;
 
 const authentication = async (req, res, next) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
@@ -9,7 +9,7 @@ const authentication = async (req, res, next) => {
       .json({ success: false, message: "Access token is missing" });
   }
   try {
-    const decoded = jwt.verify(accessToken, jwtSecretKey);
+    const decoded = jwt.verify(accessToken, jwtKey);
     req.userData = decoded;
     next();
   } catch (error) {

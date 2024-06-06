@@ -1,9 +1,8 @@
 import axios from "axios";
-// import { logout } from "../store/authSlice";
-// import store from "../store/store";
+import { logout } from "../redux/Slice/authSlice";
+import store from "../redux/store/store"
 
 const axiosInstance = axios.create({
-  // baseURL: process.env.BASEURL,
   baseURL: process.env.REACT_APP_BASEURL,
 });
 
@@ -15,11 +14,9 @@ axiosInstance.interceptors.request.use(
     if (accessToken) {
       config.headers.Authorization = `Bearer ${accessToken}`;
     }
-
     if (refreshToken) {
       config.headers["refresh-token"] = refreshToken;
     }
-
     console.log("Request Interceptor:", config);
     return config;
   },
@@ -43,14 +40,13 @@ axiosInstance.interceptors.response.use(
     console.error("Response Interceptor Error:", error);
 
     if (error.response && error.response.status === 419) {
-      // Handle 419 error by refreshing the token
       try {
         const refreshToken = localStorage.getItem("refreshToken");
         if (!refreshToken) {
           throw new Error("No refresh token available");
         }
         const refreshResponse = await axios.get(
-          `${process.env.REACT_APP_BASEURL}/refresh/refreshtoken`,
+          `${process.env.REACT_APP_BASEURL}/submit/refreshtoken`,
           {
             headers: { "refresh-token": refreshToken },
           }
@@ -58,18 +54,16 @@ axiosInstance.interceptors.response.use(
         const newAccessToken = refreshResponse.data.accessToken;
         console.log("new token", newAccessToken);
         localStorage.setItem("accessToken", newAccessToken);
-        // Retry the original request with the new access token
         const originalRequest = error.config;
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         console.error("Error refreshing access token:", refreshError);
-
         if (
           refreshError.response.status === 401 &&
           refreshError.response.data.message === "Refresh token has expired"
         ) {
-          //   store.dispatch(logout());
+          store.dispatch(logout());
         }
         return Promise.reject(error);
       }

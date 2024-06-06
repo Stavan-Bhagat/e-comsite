@@ -1,28 +1,21 @@
 const socket = require("../socket");
-const {
-  fetchProductData_service,
-  fetchProduct_service,
-  addProduct_service,
-  updateProduct_service,
-  deleteProduct_service,
-  fetchProductsByCategory_service,
-  fetchCategoryProduct_service,
-  fetchOrders_service,
-} = require("../service/product.service.js");
-const { io } = require("../socket");
-console.log("io", io);
+const Product = require("../model/product.model.js");
+const Order = require("../model/order.model");
 const client = require("../config/elasticClient.config.js");
+const { io } = require("../socket");
 
 exports.fetchProductData = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 8;
   const skip = (page - 1) * limit;
   try {
-    const data = await fetchProductData_service({ limit, skip });
-    if (data.productData && data.productData.length > 0) {
+    const productData = await Product.find({}).skip(skip).limit(limit);
+    const totalItems = await Product.countDocuments();
+    const totalPages = Math.ceil(totalItems / limit);
+    if (productData && productData.length > 0) {
       res.status(200).json({
-        data: data.productData,
-        totalPages: data.totalPages,
+        data: productData,
+        totalPages,
         currentPage: page,
       });
     } else {
@@ -32,13 +25,14 @@ exports.fetchProductData = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 exports.fetchProduct = async (req, res) => {
   const { id } = req.params;
   try {
-    const response = await fetchProduct_service(id);
-    if (response) {
+    const product = await Product.findById(id);
+    if (product) {
       res.status(200).json({
-        data: response,
+        data: product,
         message: "Product fetched successfully",
       });
     } else {
@@ -66,7 +60,7 @@ exports.addProduct = async (req, res) => {
     } = req.body;
     const imageUrl = req.files.map((file) => file.path);
 
-    const newProduct = await addProduct_service({
+    const newProduct = new Product({
       productName,
       brandName,
       category,
@@ -74,17 +68,19 @@ exports.addProduct = async (req, res) => {
       price,
       sellingPrice,
       stock,
-      imageUrl,
+      productImage: imageUrl,
     });
-    console.log("added2");
+
+    const createdProduct = await newProduct.save();
+
     const io = socket.getIo();
-    io.emit("newProduct", newProduct);
-    console.log("added3");
+    io.emit("newProduct", createdProduct);
+
     res
       .status(201)
       .json({ message: "Product added successfully.", newProduct });
   } catch (e) {
-    res.status(500).json({ message: "error :", e });
+    res.status(500).json({ message: "Internal server error", error: e });
   }
 };
 
@@ -103,8 +99,7 @@ exports.updateProduct = async (req, res) => {
 
     const imageUrl = req.files ? req.files.map((file) => file.path) : undefined;
 
-    const updatedData = await updateProduct_service({
-      productId,
+    const updateFields = {
       productName,
       brandName,
       category,
@@ -112,12 +107,21 @@ exports.updateProduct = async (req, res) => {
       price,
       sellingPrice,
       stock,
-      imageUrl,
-    });
+    };
+
+    if (imageUrl && imageUrl.length > 0) {
+      updateFields.productImage = imageUrl;
+    }
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      updateFields,
+      { new: true }
+    );
 
     res
       .status(200)
-      .json({ message: "Product updated successfully.", updatedData });
+      .json({ message: "Product updated successfully.", updatedProduct });
   } catch (e) {
     res.status(500).json({ message: "Internal server error" });
   }
@@ -126,7 +130,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.query;
-    const productData = await deleteProduct_service(id);
+    const productData = await Product.findByIdAndDelete(id);
     if (productData) {
       res.status(200).json({ message: "Product deleted successfully." });
     } else {
@@ -140,10 +144,18 @@ exports.deleteProduct = async (req, res) => {
 
 exports.fetchCategoryProduct = async (req, res) => {
   try {
-    const response = await fetchCategoryProduct_service();
+    const productCategory = await Product.distinct("category");
+
+    const productByCategory = [];
+    for (const category of productCategory) {
+      const product = await Product.findOne({ category });
+      if (product) {
+        productByCategory.push(product);
+      }
+    }
     res.status(200).json({
       message: "Product categories fetched successfully",
-      data: response,
+      data: productByCategory,
       success: true,
       error: false,
     });
@@ -159,7 +171,7 @@ exports.fetchCategoryProduct = async (req, res) => {
 exports.fetchProductsByCategory = async (req, res) => {
   const { category } = req.query;
   try {
-    const response = await fetchProductsByCategory_service(category);
+    const response = await Product.find({ category });
     if (response.length > 0) {
       res.status(200).json({
         message: "Products by category fetched successfully",
@@ -216,7 +228,7 @@ exports.suggestions = async (req, res) => {
 
 exports.fetchOrders = async (req, res) => {
   try {
-    const orders = await fetchOrders_service();
+    const orders = await Order.find();
     res.status(200).json(orders);
   } catch (error) {
     console.error("Error fetching orders:", error);

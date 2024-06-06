@@ -1,14 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  set_session_user,
-  get_session_user,
-  remove_session_user,
-} from "../../utils/service";
-import {
-  set_is_authenticated,
-  get_is_authenticated,
-  remove_is_authenticated,
-} from "../../utils/service";
+import { set_session_user, get_session_user, remove_session_user } from "../../utils/service";
+import { set_is_authenticated, get_is_authenticated, remove_is_authenticated } from "../../utils/service";
 import { set_token, get_token, remove_token } from "../../utils/service";
 
 const initialState = {
@@ -18,6 +10,7 @@ const initialState = {
   loading: false,
   error: null,
 };
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -32,6 +25,7 @@ const authSlice = createSlice({
       set_token(action.payload.token);
       set_is_authenticated(true);
     },
+
     loginFailure: (state, action) => {
       state.isAuthenticated = false;
       state.user = null;
@@ -39,6 +33,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+
     logout: (state) => {
       state.isAuthenticated = remove_is_authenticated();
       state.user = remove_session_user();
@@ -46,6 +41,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
+
     updateUser: (state, action) => {
       state.user = action.payload;
       set_session_user(action.payload);
@@ -53,6 +49,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { loginSuccess, loginFailure, logout, updateUser } =
-  authSlice.actions;
+export const { loginSuccess, loginFailure, logout, updateUser } = authSlice.actions;
 export default authSlice.reducer;

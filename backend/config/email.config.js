@@ -1,10 +1,7 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
-const emailTemplatePath = path.resolve(
-  __dirname,
-  "../helper/emailTemplate.html"
-);
+const emailTemplatePath = path.resolve(__dirname, "../helper/emailTemplate.html");
 const { emailSubject, serviceName } = require("../constant/email.constant");
 
 const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
@@ -16,11 +13,11 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const sendVerificationEmail = async (user, token) => {
-  const url = `http://localhost:${process.env.PORT}/submit/verify/${token}`;
+const sendVerificationEmail = async (email, token) => {
+  const url = `http://localhost:${process.env.PORT}/fusion/submit/verify/${token}`;
   const emailBody = emailTemplate.replace("{{verificationUrl}}", url);
   await transporter.sendMail({
-    to: user.email,
+    to: email,
     subject: emailSubject,
     html: emailBody,
   });

@@ -9,13 +9,8 @@ const allRoutes = require("./router/allRoutes");
 const app = express();
 const port = process.env.PORT || 8080;
 const server = http.createServer(app);
-// const io = socketIo(server, {
-//   cors: {
-//     origin: "http://localhost:3000",
-//     methods: ["GET", "POST"],
-//   },
-// });
 require("dotenv").config();
+require("./config/cleanUp");
 database();
 
 app.use(express.json());

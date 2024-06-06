@@ -1,27 +1,11 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Card,
-  CardContent,
-  Pagination,
-  CardMedia,
-  CardActionArea,
-  Grid,
-} from "@mui/material";
+import { Box, Typography, Button, Card, CardContent, Pagination, CardMedia, CardActionArea, Grid } from "@mui/material";
 import RupeeIcon from "@mui/icons-material/CurrencyRupee";
 import { Form, Container, Col } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { useForm } from "react-hook-form";
 import AddIcon from "@mui/icons-material/Add";
-import {
-  fetchProductData,
-  deleteProduct,
-  fetchProduct,
-  updateProduct,
-  addProduct,
-} from "../utils/service";
+import { fetchProductData, deleteProduct, fetchProduct, updateProduct, addProduct } from "../utils/service";
 import {
   MultipleFileUpload,
   MultipleFileUploadMain,
@@ -96,19 +80,14 @@ const AllProducts = () => {
 
   const handleFileDrop = (_event, droppedFiles) => {
     const currentFileNames = selectedFiles.map((file) => file.name);
-    const reUploads = droppedFiles.filter((droppedFile) =>
-      currentFileNames.includes(droppedFile.name)
-    );
+    const reUploads = droppedFiles.filter((droppedFile) => currentFileNames.includes(droppedFile.name));
     Promise.resolve()
       .then(() => removeFiles(reUploads.map((file) => file.name)))
       .then(() => updateCurrentFiles(droppedFiles));
   };
 
   const handleReadSuccess = (data, file) => {
-    setReadFileData((prevReadFiles) => [
-      ...prevReadFiles,
-      { data, fileName: file.name, loadResult: "success" },
-    ]);
+    setReadFileData((prevReadFiles) => [...prevReadFiles, { data, fileName: file.name, loadResult: "success" }]);
   };
 
   const handleReadFail = (error, file) => {
@@ -120,13 +99,11 @@ const AllProducts = () => {
 
   const removeFiles = (namesOfFilesToRemove) => {
     const newCurrentFiles = selectedFiles.filter(
-      (currentFile) =>
-        !namesOfFilesToRemove.some((fileName) => fileName === currentFile.name)
+      (currentFile) => !namesOfFilesToRemove.some((fileName) => fileName === currentFile.name)
     );
     setSelectedFiles(newCurrentFiles);
     const newReadFiles = readFileData.filter(
-      (readFile) =>
-        !namesOfFilesToRemove.some((fileName) => fileName === readFile.fileName)
+      (readFile) => !namesOfFilesToRemove.some((fileName) => fileName === readFile.fileName)
     );
     setReadFileData(newReadFiles);
   };
@@ -137,15 +114,11 @@ const AllProducts = () => {
   };
 
   const createHelperText = (file) => {
-    const fileResult = readFileData.find(
-      (readFile) => readFile.fileName === file.name
-    );
+    const fileResult = readFileData.find((readFile) => readFile.fileName === file.name);
     if (fileResult?.loadError) {
       return (
         <HelperText isLiveRegion>
-          <HelperTextItem variant={"error"}>
-            {fileResult.loadError.toString()}
-          </HelperTextItem>
+          <HelperTextItem variant={"error"}>{fileResult.loadError.toString()}</HelperTextItem>
         </HelperText>
       );
     }
@@ -216,9 +189,7 @@ const AllProducts = () => {
       return;
     }
   };
-  const successfullyReadFileCount = readFileData.filter(
-    (fileData) => fileData.loadResult === "success"
-  ).length;
+  const successfullyReadFileCount = readFileData.filter((fileData) => fileData.loadResult === "success").length;
   return (
     <>
       <Box display={"flex"}>
@@ -236,13 +207,7 @@ const AllProducts = () => {
         </Button>
       </Box>
 
-      <Modal
-        show={open}
-        onHide={handleClose}
-        size="lg"
-        centered
-        style={{ zIndex: "9999" }}
-      >
+      <Modal show={open} onHide={handleClose} size="lg" centered style={{ zIndex: "9999" }}>
         <Box
           sx={{
             background: "#f5f5f5",
@@ -267,59 +232,31 @@ const AllProducts = () => {
                 placeholder="Enter product name"
                 {...register("productName", { required: true })}
               />
-              {errors.productName && (
-                <Form.Text className="text-danger">
-                  Product name is required.
-                </Form.Text>
-              )}
+              {errors.productName && <Form.Text className="text-danger">Product name is required.</Form.Text>}
             </Col>
 
             <Form.Label column sm={2}>
               Brand Name
             </Form.Label>
             <Col sm={4}>
-              <Form.Control
-                type="text"
-                placeholder="Enter brand name"
-                {...register("brandName", { required: true })}
-              />
-              {errors.brandName && (
-                <Form.Text className="text-danger">
-                  Brand name is required.
-                </Form.Text>
-              )}
+              <Form.Control type="text" placeholder="Enter brand name" {...register("brandName", { required: true })} />
+              {errors.brandName && <Form.Text className="text-danger">Brand name is required.</Form.Text>}
             </Col>
 
             <Form.Label column sm={2}>
               Category
             </Form.Label>
             <Col sm={4}>
-              <Form.Control
-                type="text"
-                placeholder="Enter category"
-                {...register("category", { required: true })}
-              />
-              {errors.category && (
-                <Form.Text className="text-danger">
-                  Category is required.
-                </Form.Text>
-              )}
+              <Form.Control type="text" placeholder="Enter category" {...register("category", { required: true })} />
+              {errors.category && <Form.Text className="text-danger">Category is required.</Form.Text>}
             </Col>
 
             <Form.Label column sm={2}>
               Stock
             </Form.Label>
             <Col sm={4}>
-              <Form.Control
-                type="number"
-                placeholder="Enter stock"
-                {...register("stock", { required: true })}
-              />
-              {errors.stock && (
-                <Form.Text className="text-danger">
-                  Stock is required.
-                </Form.Text>
-              )}
+              <Form.Control type="number" placeholder="Enter stock" {...register("stock", { required: true })} />
+              {errors.stock && <Form.Text className="text-danger">Stock is required.</Form.Text>}
             </Col>
             <Form.Label column sm={2}>
               Description
@@ -331,37 +268,21 @@ const AllProducts = () => {
                 placeholder="Enter description"
                 {...register("description", { required: true })}
               />
-              {errors.description && (
-                <Form.Text className="text-danger">
-                  Description is required.
-                </Form.Text>
-              )}
+              {errors.description && <Form.Text className="text-danger">Description is required.</Form.Text>}
             </Col>
 
             <Form.Label column sm={2}>
               Price
             </Form.Label>
             <Col sm={4}>
-              <Form.Control
-                type="number"
-                placeholder="Enter price"
-                {...register("price", { required: true })}
-              />
-              {errors.price && (
-                <Form.Text className="text-danger">
-                  Price is required.
-                </Form.Text>
-              )}
+              <Form.Control type="number" placeholder="Enter price" {...register("price", { required: true })} />
+              {errors.price && <Form.Text className="text-danger">Price is required.</Form.Text>}
             </Col>
             <Form.Label column sm={2}>
               Selling Price
             </Form.Label>
             <Col sm={4}>
-              <Form.Control
-                type="number"
-                placeholder="Enter selling price"
-                {...register("sellingPrice")}
-              />
+              <Form.Control type="number" placeholder="Enter selling price" {...register("sellingPrice")} />
             </Col>
 
             <Form.Label column sm={2}>
@@ -408,12 +329,7 @@ const AllProducts = () => {
               </MultipleFileUpload>
             </Col>
             <Modal.Footer>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={handleClose}
-                className="mx-2"
-              >
+              <Button variant="contained" color="secondary" onClick={handleClose} className="mx-2">
                 Close
               </Button>
               <Button variant="contained" color="success" type="submit">
@@ -428,12 +344,7 @@ const AllProducts = () => {
           <Grid item xs={3} key={product._id}>
             <Card sx={{ maxWidth: 175, width: "100%" }}>
               <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="100"
-                  image={product.productImage[0]}
-                  alt={product.productName}
-                />
+                <CardMedia component="img" height="100" image={product.productImage[0]} alt={product.productName} />
                 <CardContent>
                   <Typography
                     gutterBottom
@@ -454,26 +365,14 @@ const AllProducts = () => {
 
                   <Box sx={{ display: "flex" }}>
                     <div>
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        sx={{ display: "flex", alignItems: "center" }}
-                      >
+                      <Typography variant="h5" gutterBottom sx={{ display: "flex", alignItems: "center" }}>
                         <RupeeIcon fontSize="small" /> {product.sellingPrice}
                       </Typography>
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ marginRight: "8px" }}
-                        >
+                        <Typography variant="body2" color="text.secondary" sx={{ marginRight: "8px" }}>
                           M.R.P
                         </Typography>
-                        <Typography
-                          variant="body1"
-                          color="text.secondary"
-                          sx={{ textDecoration: "line-through" }}
-                        >
+                        <Typography variant="body1" color="text.secondary" sx={{ textDecoration: "line-through" }}>
                           {product.price}
                         </Typography>
                       </div>
@@ -511,13 +410,7 @@ const AllProducts = () => {
         ))}
       </Grid>
 
-      <Pagination
-        count={totalPages}
-        page={page}
-        onChange={handlePageChange}
-        color="primary"
-        sx={{ marginTop: 2 }}
-      />
+      <Pagination count={totalPages} page={page} onChange={handlePageChange} color="primary" sx={{ marginTop: 2 }} />
     </>
   );
 };

@@ -14,10 +14,11 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true, minlength: 8 },
     role: { type: String, required: true },
     imageUrl: { type: String },
+    verified: { type: Boolean, default: false },
+    createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
 
 const userModel = mongoose.model("User", userSchema);
-
 module.exports = userModel;

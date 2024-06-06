@@ -1,13 +1,12 @@
-.footer{
-    background-color: "#f5f5f5";
-        padding-top: "20px 0";
-        margin-top: "40px";
-        border-top: "1px solid #ddd";
+.footer {
+  background-color: "#f5f5f5";
+  padding-top: "20px 0";
+  margin-top: "40px";
+  border-top: "1px solid #ddd";
 }
 .profile-image {
-    width: 50%;
-    max-width: 100px; /* Adjust the max width as needed */
-    height: auto; /* Keeps the aspect ratio */
-    object-fit: cover; /* Ensures the image covers the area */ /* Makes the image a circle */
-  }
-  
+  width: 50%;
+  max-width: 100px; 
+  height: auto; 
+  object-fit: cover;
+}

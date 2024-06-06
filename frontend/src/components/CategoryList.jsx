@@ -41,11 +41,7 @@ const CategoryList = () => {
           {" "}
           {categoryProduct.map((category, index) => (
             <Box key={index} onClick={() => handleChange(category.category)}>
-              <Image
-                src={category.productImage[0]}
-                alt={category.productName}
-                className="round-image"
-              />
+              <Image src={category.productImage[0]} alt={category.productName} className="round-image" />
               <Typography variant="h6" align="center">
                 {category.category}
               </Typography>

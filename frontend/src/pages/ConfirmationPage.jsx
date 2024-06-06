@@ -3,14 +3,14 @@ import { useSelector } from "react-redux";
 import { Container, Typography, Box, Divider, Button } from "@mui/material";
 import axiosInstance from "../utils/axios";
 import { useDispatch } from "react-redux";
-import {clearCart} from "../redux/Slice/cartSlice"
+import { clearCart } from "../redux/Slice/cartSlice";
 import { useNavigate } from "react-router";
 
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
   const Cartdata = useSelector((state) => state.cart.items);
-const dispatch = useDispatch();
-const navigate=useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   if (!orderDetails || !Cartdata) {
     return (
@@ -23,10 +23,7 @@ const navigate=useNavigate();
   }
 
   const calculateTotal = () => {
-    return Cartdata.reduce(
-      (total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0),
-      0
-    );
+    return Cartdata.reduce((total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0), 0);
   };
 
   const onSubmit = async () => {
@@ -41,7 +38,7 @@ const navigate=useNavigate();
       if (response.status === 201) {
         alert("Order placed successfully");
         dispatch(clearCart());
-        navigate("/")
+        navigate("/");
       }
     } catch (error) {
       console.error("Error placing order:", error);
@@ -80,9 +77,7 @@ const navigate=useNavigate();
         </Box>
         <Divider />
         <Box mt={2}>
-          <Typography variant="h5">
-            Total Amount: ${calculateTotal()}
-          </Typography>
+          <Typography variant="h5">Total Amount: ${calculateTotal()}</Typography>
         </Box>
         <Box>
           <Button onClick={onSubmit} variant="contained" color="success">

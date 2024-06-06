@@ -42,9 +42,7 @@ const Footer = () => {
         </Row>
         <Row>
           <Col className="text-center mt-3">
-            <p>
-              &copy; {new Date().getFullYear()} Zen Fusion. All rights reserved.
-            </p>
+            <p>&copy; {new Date().getFullYear()} Zen Fusion. All rights reserved.</p>
           </Col>
         </Row>
       </Container>

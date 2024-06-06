@@ -3,9 +3,7 @@ const Order = require("../model/order.model");
 
 exports.fetchProductData_service = async (calc) => {
   try {
-    const productData = await Product.find({})
-      .skip(calc.skip)
-      .limit(calc.limit);
+    const productData = await Product.find({}).skip(calc.skip).limit(calc.limit);
     const totalItems = await Product.countDocuments();
     const totalPages = Math.ceil(totalItems / calc.limit);
     if (productData && productData.length > 0) {
@@ -37,16 +35,7 @@ exports.fetchProduct_service = async (id) => {
 
 exports.addProduct_service = async (productData) => {
   try {
-    const {
-      productName,
-      brandName,
-      category,
-      description,
-      price,
-      sellingPrice,
-      stock,
-      imageUrl,
-    } = productData;
+    const { productName, brandName, category, description, price, sellingPrice, stock, imageUrl } = productData;
 
     const newProduct = new Product({
       productName,
@@ -68,17 +57,8 @@ exports.addProduct_service = async (productData) => {
 
 exports.updateProduct_service = async (productData) => {
   try {
-    const {
-      productId,
-      productName,
-      brandName,
-      category,
-      description,
-      price,
-      sellingPrice,
-      stock,
-      imageUrl,
-    } = productData;
+    const { productId, productName, brandName, category, description, price, sellingPrice, stock, imageUrl } =
+      productData;
 
     const updateFields = {
       productName,
@@ -94,11 +74,7 @@ exports.updateProduct_service = async (productData) => {
       updateFields.productImage = imageUrl;
     }
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      updateFields,
-      { new: true }
-    );
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updateFields, { new: true });
     return updatedProduct;
   } catch (e) {
     throw e;

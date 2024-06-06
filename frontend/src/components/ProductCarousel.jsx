@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Typography,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  Button,
-} from "@mui/material";
+import { Typography, Card, CardMedia, CardContent, CardActions, Button } from "@mui/material";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { fetchProductsByCategory } from "../utils/service";
@@ -58,31 +51,17 @@ const ProductCarousel = ({ category }) => {
       <Typography variant="h6">Popular {category}</Typography>
       <Carousel showDots responsive={responsive}>
         {products?.map((item) => (
-          <Link to={`/product/${item._id}`}  style={{ textDecoration: "none", color: "inherit", }}>
+          <Link to={`/product/${item._id}`} style={{ textDecoration: "none", color: "inherit" }}>
             <Card key={item?.id} style={styles.card}>
-              <img
-                src={item?.productImage[0]}
-                alt={item?.name}
-                style={styles.productImage}
-              />
+              <img src={item?.productImage[0]} alt={item?.name} style={styles.productImage} />
               <CardContent style={styles.cardContent}>
                 <Typography style={styles.productName} variant="body1">
                   {item?.productName}
                 </Typography>
-                <Typography
-                  style={styles.productPrice}
-                  variant="body1"
-                  color="black"
-                  component="span"
-                >
+                <Typography style={styles.productPrice} variant="body1" color="black" component="span">
                   From
                 </Typography>
-                <Typography
-                  style={styles.productPrice}
-                  variant="body2"
-                  color="primary"
-                  component="span"
-                >
+                <Typography style={styles.productPrice} variant="body2" color="primary" component="span">
                   <CurrencyRupeeIcon fontSize="small" />
                   {item?.price}
                 </Typography>

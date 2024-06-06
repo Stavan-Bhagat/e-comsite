@@ -42,7 +42,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await updateUserData(user._id, formData);
-    console.log("aaaa",response);
+    console.log("aaaa", response);
     if (response) {
       console.log("respoce", response);
       dispatch(updateUser(response));
@@ -79,24 +79,11 @@ const Profile = () => {
       <Card sx={{ position: "relative", zIndex: 2, background: "none" }}>
         <Box p={3}>
           <Box display="flex" justifyContent="center" mb={2}>
-            <Avatar
-              alt={user ? user.name : ""}
-              src={user ? user.imageUrl : ""}
-              sx={{ width: 120, height: 120 }}
-            />
+            <Avatar alt={user ? user.name : ""} src={user ? user.imageUrl : ""} sx={{ width: 120, height: 120 }} />
             {editMode && (
-              <IconButton
-                aria-label="change-image"
-                component="label"
-                sx={{ marginLeft: 2 }}
-              >
+              <IconButton aria-label="change-image" component="label" sx={{ marginLeft: 2 }}>
                 <PhotoCameraIcon />
-                <input
-                  type="file"
-                  accept="image/*"
-                  hidden
-                  onChange={handleImageUpload}
-                />
+                <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
               </IconButton>
             )}
           </Box>

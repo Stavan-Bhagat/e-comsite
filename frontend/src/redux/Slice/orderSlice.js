@@ -1,11 +1,12 @@
-import { createSlice } from "@reduxjs/toolkit";
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   orderDetails: null,
 };
 
 const orderSlice = createSlice({
-  name: "order",
+  name: 'order',
   initialState,
   reducers: {
     placeOrder(state, action) {

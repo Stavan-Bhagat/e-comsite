@@ -1,5 +1,8 @@
-import axiosInstance from "axios";
+import axiosInstance from 'axios';
 
 export const fetchAllOrders = async () => {
-  return await axiosInstance.get("/fusion/order/fetch-order");
+  return axiosInstance.get('/fusion/order/fetch-order');
+};
+export const fetchOrders = async () => {
+  return axiosInstance.get('/fusion/order/fetch-orderr');
 };

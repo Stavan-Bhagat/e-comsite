@@ -24,7 +24,7 @@ const OrderDetails = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetchAllOrders();
-        setOrders(response.data);
+        setOrders(response.data.orders);
       } catch (error) {
         enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
           variant: 'error',

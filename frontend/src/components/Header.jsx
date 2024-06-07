@@ -19,10 +19,10 @@ import { useSnackbar } from 'notistack';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import { logout } from '../redux/Slice/authSlice';
+import { searchSuggestionProduct, searchProduct } from '../utils/services/product.service';
 import Profile from './Profile';
 // eslint-disable-next-line import/no-cycle
 import AdminPanel from '../pages/AdminPanel';
-import axiosInstance from '../utils/axios';
 
 const Header = () => {
   const user = useSelector((state) => state?.auth.user);
@@ -100,10 +100,8 @@ const Header = () => {
 
     if (query.length > 0) {
       try {
-        const response = await axiosInstance.get(`/product/suggestions`, {
-          params: { search: query },
-        });
-        setSuggestions(Array.isArray(response.data) ? response.data : []);
+        const response = await searchSuggestionProduct(query);
+        setSuggestions(Array.isArray(response) ? response : []);
       } catch (error) {
         enqueueSnackbar(`Failed to delete the data. Please try again later. ${error.message}`, {
           variant: 'error',
@@ -114,14 +112,26 @@ const Header = () => {
     }
   };
 
-  const handleSearchSubmit = () => {
-    // navigate(`/product/search/${suggestion.category}`);
+  const handleSearchSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await searchProduct(search);
+      const { type, term } = response;
+      navigate(`/product/search/${type}/${term}`);
+    } catch (error) {
+      enqueueSnackbar(`Error Fetching product: ${error.message}`, { variant: 'error' });
+    }
     setShowModal(false);
   };
 
-  const handleSuggestionClick = (suggestion) => {
-    setSearch(suggestion.productName);
-    navigate(`/product/search/${suggestion.category}`);
+  const handleSuggestionClick = async (suggestion) => {
+    try {
+      const response = await searchProduct(suggestion.productName);
+      const { type, term } = response;
+      navigate(`/product/search/${type}/${term}`);
+    } catch (error) {
+      enqueueSnackbar(`Error Fetching product: ${error.message}`, { variant: 'error' });
+    }
     setShowModal(false);
   };
 

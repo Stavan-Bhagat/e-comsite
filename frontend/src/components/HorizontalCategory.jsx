@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import React, { useEffect, useState } from 'react';
 import LinearProgress from '@mui/material/LinearProgress';
 import PropTypes from 'prop-types';
@@ -31,20 +32,28 @@ const HorizontalCategory = ({ category }) => {
   }, [category]);
 
   return (
-    // eslint-disable-next-line react/jsx-no-useless-fragment
     <>
       {loading ? (
         <LinearProgress color="secondary" />
       ) : (
-        <Container>
+        <Container fluid>
           <Grid container spacing={2}>
-            {products?.map((product) => (
-              <Grid item xs={3} key={product._id}>
+            {products.map((product) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={product._id}>
                 <Link
                   to={`/product/${product._id}`}
                   style={{ textDecoration: 'none', color: 'inherit' }}
                 >
-                  <Box sx={{ padding: 2 }}>
+                  <Box
+                    sx={{
+                      padding: 2,
+                      transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+                      },
+                    }}
+                  >
                     <img
                       src={product.productImage[0]}
                       alt={product.productName}
@@ -67,7 +76,7 @@ const HorizontalCategory = ({ category }) => {
                         component="span"
                         sx={{ textDecoration: 'line-through', marginLeft: 2 }}
                       >
-                        {product.price}{' '}
+                        {product.price}
                       </Typography>
                     </Typography>
                   </Box>
@@ -80,6 +89,7 @@ const HorizontalCategory = ({ category }) => {
     </>
   );
 };
+
 HorizontalCategory.propTypes = {
   category: PropTypes.string.isRequired,
 };

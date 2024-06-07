@@ -6,19 +6,19 @@ const Footer = () => {
   return (
     <footer className="footer">
       <Container>
-        <Row>
-          <Col md={4}>
+        <Row className="text-center text-md-left">
+          <Col xs={12} md={4} className="mb-3">
             <h5>Quick Links</h5>
-            <Nav className="flex-column">
+            <Nav className="flex-column align-items-center align-items-md-start">
               <Nav.Link href="#">Home</Nav.Link>
               <Nav.Link href="#">About Us</Nav.Link>
               <Nav.Link href="#">Contact Us</Nav.Link>
               <Nav.Link href="#">FAQ</Nav.Link>
             </Nav>
           </Col>
-          <Col md={4}>
+          <Col xs={12} md={4} className="mb-3">
             <h5>Follow Us</h5>
-            <Nav className="justify-content-start">
+            <Nav className="justify-content-center justify-content-md-start">
               <Nav.Link href="#">
                 <FaFacebook size={24} />
               </Nav.Link>
@@ -33,7 +33,7 @@ const Footer = () => {
               </Nav.Link>
             </Nav>
           </Col>
-          <Col md={4}>
+          <Col xs={12} md={4} className="mb-3">
             <h5>Contact Us</h5>
             <p>Email: info@zenfusion.com</p>
             <p>Phone: (123) 456-7890</p>

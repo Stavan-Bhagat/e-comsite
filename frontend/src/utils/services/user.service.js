@@ -6,7 +6,7 @@ export const fetchUserData = async () => {
 };
 
 export const updateUserData = async (id, data) => {
-  const response = await axiosInstance.patch(`/submit/update-user?id=${id}`, data);
+  const response = await axiosInstance.patch(`/fusion/submit/update-user?id=${id}`, data);
   return response.data;
 };
 

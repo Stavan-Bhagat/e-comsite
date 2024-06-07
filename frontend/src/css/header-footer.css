@@ -1,12 +1,38 @@
 .footer {
-  background-color: '#f5f5f5';
-  padding-top: '20px 0';
-  margin-top: '40px';
-  border-top: '1px solid #ddd';
+  background-color: #f9f9f9;
+  padding: 20px 0;
 }
-.profile-image {
-  width: 50%;
-  max-width: 100px;
-  height: auto;
-  object-fit: cover;
+
+.footer h5 {
+  margin-bottom: 15px;
+}
+
+.footer p {
+  margin: 0;
+}
+
+.footer .nav-link {
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.footer .nav-link:hover {
+  color: #007bff;
+}
+
+.footer .nav .justify-content-center .nav-link,
+.footer .nav .justify-content-start .nav-link {
+  margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+  .footer .nav .justify-content-start {
+    justify-content: center;
+  }
+  .footer .nav .align-items-md-start {
+    align-items: center;
+  }
+  .footer .nav .justify-content-md-start {
+    justify-content: center;
+  }
 }

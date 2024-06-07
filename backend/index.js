@@ -1,29 +1,22 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-const express=require('express')
-=======
-const express = require("express");
-const http = require("http");
-=======
 const express = require('express');
 const http = require('http');
->>>>>>> b1bb86dcfa3355159fb53bc806fcbf76003445a7
-// const socketIo = require("socket.io");
-const socket = require('./socket');
 const cors = require('cors');
-// const corsOrigins = process.env.CORS_ORIGIN.split(",");
+const socket = require('./socket');
 const database = require('./database/connection');
 const allRoutes = require('./router/allRoutes');
+require('dotenv').config();
+require('./config/cleanUp');
+
 const app = express();
 const port = process.env.PORT || 8080;
 const server = http.createServer(app);
-require('dotenv').config();
-require('./config/cleanUp');
+
 database();
 
 app.use(express.json());
-app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:3000/'] }));
-// app.use(cors({ origin: corsOrigins }));
+app.use(cors({
+  origin: ['http://localhost:3000', 'http://localhost:3000/']
+}));
 
 app.use('/fusion', allRoutes);
 app.use('/', (req, res) => {
@@ -32,6 +25,7 @@ app.use('/', (req, res) => {
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Resource not found' });
 });
+
 const io = socket.init(server);
 
 io.on('connection', (socket) => {
@@ -41,8 +35,9 @@ io.on('connection', (socket) => {
     console.log('user disconnected');
   });
 });
-module.exports = { app, server };
+
 server.listen(port, () => {
-  console.log(`Server is running on ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
->>>>>>> refactor
+
+module.exports = { app, server };

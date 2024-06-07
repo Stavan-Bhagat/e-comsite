@@ -8,7 +8,7 @@ const {
   MSG_INTERNAL_SERVER_ERROR
 } = require('../constant/errorMessage.constant');
 
-exports.createOrder = async(req, res) => {
+exports.createOrder = async (req, res) => {
   try {
     const { name, address, items, totalAmount } = req.body;
     const order = new Order({
@@ -24,7 +24,7 @@ exports.createOrder = async(req, res) => {
   }
 };
 
-exports.fetchOrder = async(req, res) => {
+exports.fetchOrder = async (req, res) => {
   try {
     const orders = await Order.find();
     res.status(STATUS_SUCCESS).json({ message: MSG_ORDERS_FETCHED, orders });

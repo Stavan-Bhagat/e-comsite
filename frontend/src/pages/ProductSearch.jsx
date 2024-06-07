@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
@@ -8,53 +9,63 @@ import {
   Checkbox,
   FormGroup,
   CardActionArea,
+  Card,
+  CardContent,
+  CardMedia,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Divider,
+  Collapse,
+  Select,
+  MenuItem,
 } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import AbcIcon from '@mui/icons-material/Abc';
+import { ExpandLess, ExpandMore } from '@mui/icons-material';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
-import Slider from '@mui/material/Slider';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import ExpandLess from '@mui/icons-material/ExpandLess';
-import ExpandMore from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
+import { useSnackbar } from 'notistack';
 import Header from '../components/Header';
-import { fetchProductsByCategory } from '../utils/services/product.service';
+import { searchProduct } from '../utils/services/product.service';
 
-// eslint-disable-next-line no-unused-vars
-const valuetext = (value) => `${value}`;
+const predefinedRanges = [
+  { label: 'Under 1000', min: 0, max: 1000 },
+  { label: '1000 - 5000', min: 1000, max: 5000 },
+  { label: '5000 - 10000', min: 5000, max: 10000 },
+  { label: '10000 - 20000', min: 10000, max: 20000 },
+  { label: '20000 and above', min: 20000, max: 30000 },
+];
 
 const ProductSearch = () => {
-  const { category } = useParams();
+  const { type, term } = useParams();
   const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const [products, setProducts] = useState([]);
-  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const { enqueueSnackbar } = useSnackbar();
 
-  const fetchProductsFromCategory = async (fetchCategory) => {
+  const fetchProducts = async (searchType, searchTerm) => {
     setLoading(true);
-    const response = await fetchProductsByCategory(fetchCategory);
-    setLoading(false);
-    setProducts(response.data);
-    setFilteredProducts(response.data);
+    try {
+      const response = await searchProduct(searchTerm);
+      setLoading(false);
+      setProducts(response.data);
+      setFilteredProducts(response.data);
+    } catch (error) {
+      setLoading(false);
+      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+        variant: 'error',
+      });
+    }
   };
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
   const filterProducts = (priceRangeProduct, selectedBrandsProduct) => {
     const filtered = products.filter((product) => {
       const isInPriceRange =
-        product.price >= priceRangeProduct[0] && product.price <= priceRange[1];
+        product.price >= priceRangeProduct[0] && product.price <= priceRangeProduct[1];
       const isBrandSelected =
         selectedBrandsProduct.length === 0 || selectedBrandsProduct.includes(product.brandName);
       return isInPriceRange && isBrandSelected;
@@ -62,9 +73,12 @@ const ProductSearch = () => {
     setFilteredProducts(filtered);
   };
 
-  const handlePriceChange = (event, newValue) => {
-    setPriceRange(newValue);
-    filterProducts(newValue, selectedBrands);
+  const handleRangeChange = (event) => {
+    const [min, max] = event.target.value.split('-').map(Number);
+    if (!Number.isNaN(min) && !Number.isNaN(max)) {
+      setPriceRange([min, max]);
+      filterProducts([min, max], selectedBrands);
+    }
   };
 
   const handleBrandChange = (event) => {
@@ -79,30 +93,25 @@ const ProductSearch = () => {
   const handleChange = (id) => {
     navigate(`/product/${id}`);
   };
+
   useEffect(() => {
-    fetchProductsFromCategory(category);
+    fetchProducts(type, term);
     setPriceRange([0, 10000]);
     setSelectedBrands([]);
-  }, [category]);
+  }, [type, term]);
 
-  // Get unique brands
   const uniqueBrands = [...new Set(products.map((product) => product.brandName))];
 
   return (
     <>
       <Header />
-      <Box className="mt-2" px={12}>
+      <Box className="mt-2" px={{ xs: 1, sm: 2 }} py={2}>
         <Grid container spacing={2}>
-          <Grid item xs={2}>
+          {/* Sidebar */}
+          <Grid item xs={12} sm={3} md={2}>
             <Box>
-              <List
-                sx={{
-                  width: '100%',
-                  maxWidth: 360,
-                  bgcolor: 'background.paper',
-                }}
-              >
-                <Typography variant="h5" gutterBottom>
+              <List>
+                <Typography variant="h6" gutterBottom>
                   Filters
                 </Typography>
                 <Divider />
@@ -112,19 +121,18 @@ const ProductSearch = () => {
                   </ListItemIcon>
                   <ListItemText primary="Price" />
                 </ListItemButton>
-                <Box>
-                  <Slider
-                    aria-label="Price"
-                    value={priceRange}
-                    onChange={handlePriceChange}
-                    valueLabelDisplay="auto"
-                    step={10}
-                    marks
-                    min={0}
-                    max={30000}
-                  />
-                </Box>
-                <ListItemButton onClick={handleClick}>
+                <Select
+                  fullWidth
+                  value={`${priceRange[0]}-${priceRange[1]}`}
+                  onChange={handleRangeChange}
+                >
+                  {predefinedRanges.map((range) => (
+                    <MenuItem key={range.label} value={`${range.min}-${range.max}`}>
+                      {range.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+                <ListItemButton onClick={() => setOpen(!open)}>
                   <ListItemIcon>
                     <AbcIcon />
                   </ListItemIcon>
@@ -133,29 +141,27 @@ const ProductSearch = () => {
                 </ListItemButton>
                 <Collapse in={open} timeout="auto" unmountOnExit>
                   <List component="div" disablePadding>
-                    <ListItemButton sx={{ pl: 4 }}>
-                      <ListItemIcon>
-                        <FormGroup>
-                          {uniqueBrands.map((brand) => (
-                            <FormControlLabel
-                              key={brand}
-                              control={<Checkbox value={brand} onChange={handleBrandChange} />}
-                              label={brand}
-                            />
-                          ))}
-                        </FormGroup>
-                      </ListItemIcon>
-                    </ListItemButton>
+                    <FormGroup>
+                      {uniqueBrands.map((brand) => (
+                        <FormControlLabel
+                          key={brand}
+                          control={<Checkbox value={brand} onChange={handleBrandChange} />}
+                          label={brand}
+                        />
+                      ))}
+                    </FormGroup>
                   </List>
                 </Collapse>
               </List>
             </Box>
           </Grid>
-          <Grid item xs={10}>
+
+          {/* Main content */}
+          <Grid item xs={12} sm={9} md={10}>
             <Grid container spacing={2}>
               {filteredProducts.map((product) => (
-                <Grid item xs={3} key={product.id}>
-                  <Card sx={{ maxWidth: 200 }} onClick={() => handleChange(product._id)}>
+                <Grid item xs={6} sm={4} md={3} key={product.id}>
+                  <Card sx={{ maxWidth: 345 }} onClick={() => handleChange(product._id)}>
                     <CardActionArea>
                       <CardMedia
                         component="img"
@@ -164,20 +170,11 @@ const ProductSearch = () => {
                         alt={product.productName}
                       />
                       <CardContent>
-                        <Typography
-                          gutterBottom
-                          variant="button"
-                          component="div"
-                          sx={{
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap',
-                          }}
-                        >
+                        <Typography gutterBottom variant="body2" noWrap>
                           {product.productName}
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          <CurrencyRupeeIcon fontSize="small" /> {product.price}
+                        <Typography variant="body2" color="textSecondary">
+                          <CurrencyRupeeIcon /> {product.price}
                         </Typography>
                       </CardContent>
                     </CardActionArea>

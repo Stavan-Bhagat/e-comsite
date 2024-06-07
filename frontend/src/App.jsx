@@ -24,7 +24,7 @@ const App = () => {
         <Route path="/verification-success" element={<VerificationSuccess />} />
         <Route path="/admin-panel" element={isAuthenticated ? <AdminPanel /> : <Home />} />
         <Route path="/product/:id" element={<ProductPage />} />
-        <Route path="/product/search/:category" element={<ProductSearch />} />
+        <Route path="/product/search/:type/:term" element={<ProductSearch />} />
         <Route path="/product/cart/" element={<Cart />} />
         <Route path="/checkout" element={<CheckOut />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />

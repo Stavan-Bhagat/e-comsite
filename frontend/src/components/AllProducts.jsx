@@ -191,16 +191,35 @@ const AllProducts = () => {
     }
   };
   const handleRemoveProduct = async (productId) => {
-    const confirmation = await confirmAlert('Are you sure you want to delete it?');
-    if (confirmation) {
-      try {
-        await deleteProduct(productId);
-        fetchProductsData(page);
-      } catch (error) {
-        enqueueSnackbar(`Error submitting product: ${error.message}`, { variant: 'error' });
-      }
-    }
+    confirmAlert({
+      title: 'Confirm to delete',
+      message: 'Are you sure you want to delete it?',
+      buttons: [
+        {
+          label: 'Yes',
+          onClick: async () => {
+            try {
+              await deleteProduct(productId);
+              await fetchProductsData(page);
+              enqueueSnackbar('Deleted Successfully', { variant: 'success' });
+            } catch (error) {
+              enqueueSnackbar(
+                `Failed to delete the data. Please try again later. ${error.message}`,
+                { variant: 'error' }
+              );
+            }
+          },
+        },
+        {
+          label: 'No',
+          onClick: () => {
+            enqueueSnackbar('Deletion canceled', { variant: 'info' });
+          },
+        },
+      ],
+    });
   };
+
   const successfullyReadFileCount = readFileData.filter(
     (fileData) => fileData.loadResult === 'success'
   ).length;

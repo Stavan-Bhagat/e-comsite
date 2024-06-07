@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 const jwtKey = process.env.JWT_SECRET;
 const {
   STATUS_UNAUTHORIZED,
@@ -8,22 +8,34 @@ const {
   MSG_INVALID_ACCESS_TOKEN
 } = require('../constant/errorMessage.constant');
 
-
 const authentication = async (req, res, next) => {
-  const accessToken = req.headers.authorization?.split(" ")[1];
-  if (!accessToken) {
-    return res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_ACCESS_TOKEN_MISSING });
-  }
   try {
-    const decoded = jwt.verify(accessToken, jwtKey);
-    req.userData = decoded;
-    next();
-  } catch (error) {
-    if (error.name === "TokenExpiredError") {
-      return res.status(STATUS_TOKEN_EXPIRED).json({ success: false, message: MSG_TOKEN_EXPIRED });
-    } else {
-      return res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_INVALID_ACCESS_TOKEN });
+    const accessToken = req.headers.authorization?.split(' ')[1];
+
+    if (!accessToken) {
+      return res
+        .status(STATUS_UNAUTHORIZED)
+        .json({ success: false, message: MSG_ACCESS_TOKEN_MISSING });
     }
+    try {
+      const decoded = jwt.verify(accessToken, jwtKey);
+      req.userData = decoded;
+      next();
+    } catch (error) {
+      if (error.name === 'TokenExpiredError') {
+        return res
+          .status(STATUS_TOKEN_EXPIRED)
+          .json({ success: false, message: MSG_TOKEN_EXPIRED });
+      } else {
+        console.error('JWT error:', error);
+        return res
+          .status(STATUS_UNAUTHORIZED)
+          .json({ success: false, message: MSG_INVALID_ACCESS_TOKEN });
+      }
+    }
+  } catch (error) {
+    console.error('Authentication middleware error:', error);
+    res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_INVALID_ACCESS_TOKEN });
   }
 };
 

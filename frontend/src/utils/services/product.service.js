@@ -46,3 +46,16 @@ export const addProduct = async (data) => {
   });
   return response.data;
 };
+
+export const searchSuggestionProduct = async (query) => {
+  const response = await axiosInstance.get(`/fusion/product/suggestions`, {
+    params: { search: query },
+  });
+
+  return response.data;
+};
+
+export const searchProduct = async (query) => {
+  const response = await axiosInstance.post('/fusion/product/search', { query });
+  return response.data;
+};

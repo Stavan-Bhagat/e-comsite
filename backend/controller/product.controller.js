@@ -21,7 +21,7 @@ const {
   MSG_CATEGORY_NOT_FOUND
 } = require('../constant/errorMessage.constant.js');
 
-exports.fetchProductData = async(req, res) => {
+exports.fetchProductData = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 8;
   const skip = (page - 1) * limit;
@@ -43,7 +43,7 @@ exports.fetchProductData = async(req, res) => {
   }
 };
 
-exports.fetchProduct = async(req, res) => {
+exports.fetchProduct = async (req, res) => {
   const { id } = req.params;
   try {
     const product = await Product.findById(id);
@@ -60,7 +60,7 @@ exports.fetchProduct = async(req, res) => {
   }
 };
 
-exports.addProduct = async(req, res) => {
+exports.addProduct = async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(STATUS_BAD_REQUEST).json({ message: MSG_BAD_REQUEST });
@@ -91,10 +91,10 @@ exports.addProduct = async(req, res) => {
   }
 };
 
-exports.updateProduct = async(req, res) => {
+exports.updateProduct = async (req, res) => {
   try {
-    const { productId, productName, brandName, category, description, price, sellingPrice, stock } = req.body;
-
+    const { productId, productName, brandName, category, description, price, sellingPrice, stock } =
+      req.body;
     const imageUrl = req.files ? req.files.map((file) => file.path) : undefined;
 
     const updateFields = {
@@ -112,14 +112,13 @@ exports.updateProduct = async(req, res) => {
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(productId, updateFields, { new: true });
-
     res.status(STATUS_SUCCESS).json({ message: MSG_PRODUCT_UPDATED, updatedProduct });
   } catch (e) {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 
-exports.deleteProduct = async(req, res) => {
+exports.deleteProduct = async (req, res) => {
   try {
     const { id } = req.query;
     const productData = await Product.findByIdAndDelete(id);
@@ -134,7 +133,7 @@ exports.deleteProduct = async(req, res) => {
   }
 };
 
-exports.fetchCategoryProduct = async(_req, res) => {
+exports.fetchCategoryProduct = async (_req, res) => {
   try {
     const productCategory = await Product.distinct('category');
 
@@ -160,7 +159,7 @@ exports.fetchCategoryProduct = async(_req, res) => {
   }
 };
 
-exports.fetchProductsByCategory = async(req, res) => {
+exports.fetchProductsByCategory = async (req, res) => {
   const { category } = req.query;
   try {
     const response = await Product.find({ category });
@@ -183,10 +182,9 @@ exports.fetchProductsByCategory = async(req, res) => {
   }
 };
 
-exports.suggestions = async(req, res) => {
+exports.suggestions = async (req, res) => {
   try {
     const searchQuery = req.query.search || '';
-    console.log('Search Query:', searchQuery);
 
     const response = await client.search({
       index: 'products',
@@ -218,12 +216,48 @@ exports.suggestions = async(req, res) => {
   }
 };
 
-exports.fetchOrders = async(req, res) => {
+exports.fetchOrders = async (req, res) => {
   try {
     const orders = await Order.find();
     res.status(STATUS_SUCCESS).json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
+  }
+};
+
+exports.searchProducts = async (req, res) => {
+  const { query } = req.body;
+  let searchType = 'product';
+  let term = query;
+
+  const categoryExists = await Product.findOne({ category: query }).exec();
+  if (categoryExists) {
+    searchType = 'category';
+  } else {
+    const brandExists = await Product.findOne({ brandName: query }).exec();
+    if (brandExists) {
+      searchType = 'brand';
+    }
+  }
+
+  let products;
+  try {
+    switch (searchType) {
+      case 'category':
+        products = await Product.find({ category: term }).exec();
+        break;
+      case 'brand':
+        products = await Product.find({ brandName: term }).exec();
+        break;
+      case 'product':
+      default:
+        products = await Product.find({ productName: { $regex: term, $options: 'i' } }).exec();
+        break;
+    }
+    res.status(STATUS_SUCCESS).json({ type: searchType, term, data: products });
+  } catch (error) {
+    console.error('Error fetching products:', error);
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };

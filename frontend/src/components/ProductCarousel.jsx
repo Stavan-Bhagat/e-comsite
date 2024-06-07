@@ -7,7 +7,6 @@ import 'react-multi-carousel/lib/styles.css';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { Link } from 'react-router-dom';
 import { fetchProductsByCategory } from '../utils/services/product.service';
-import { styles } from '../css/multiCarousel';
 
 const responsive = {
   superLargeDesktop: {
@@ -25,6 +24,39 @@ const responsive = {
   mobile: {
     breakpoint: { max: 464, min: 0 },
     items: 1,
+  },
+};
+
+const styles = {
+  card: {
+    margin: '10px',
+    borderRadius: '10px',
+    boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+    transition: 'transform 0.3s, box-shadow 0.3s',
+    '&:hover': {
+      transform: 'scale(1.05)',
+      boxShadow: '0 8px 16px rgba(0,0,0,0.2)',
+    },
+  },
+  productImage: {
+    width: '100%',
+    height: '200px',
+    objectFit: 'cover',
+    borderTopLeftRadius: '10px',
+    borderTopRightRadius: '10px',
+  },
+  cardContent: {
+    textAlign: 'center',
+  },
+  productName: {
+    fontWeight: 'bold',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  },
+  productPrice: {
+    display: 'inline-block',
+    margin: '5px 0',
   },
 };
 
@@ -52,8 +84,10 @@ const ProductCarousel = ({ category }) => {
   }, [category]);
 
   return (
-    <>
-      <Typography variant="h6">Popular {category}</Typography>
+    <Box my={4}>
+      <Typography variant="h6" gutterBottom>
+        Popular {category}
+      </Typography>
       {loading ? (
         <Box display="flex" justifyContent="center" alignItems="center" height={200}>
           <CircularProgress />
@@ -66,8 +100,12 @@ const ProductCarousel = ({ category }) => {
               style={{ textDecoration: 'none', color: 'inherit' }}
               key={item._id}
             >
-              <Card style={styles.card}>
-                <img src={item.productImage[0]} alt={item.name} style={styles.productImage} />
+              <Card sx={styles.card} className="product-card">
+                <img
+                  src={item.productImage[0]}
+                  alt={item.productName}
+                  style={styles.productImage}
+                />
                 <CardContent style={styles.cardContent}>
                   <Typography style={styles.productName} variant="body1">
                     {item.productName}
@@ -75,7 +113,7 @@ const ProductCarousel = ({ category }) => {
                   <Typography
                     style={styles.productPrice}
                     variant="body1"
-                    color="black"
+                    color="textSecondary"
                     component="span"
                   >
                     From
@@ -95,7 +133,7 @@ const ProductCarousel = ({ category }) => {
           ))}
         </Carousel>
       )}
-    </>
+    </Box>
   );
 };
 

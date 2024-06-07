@@ -25,18 +25,16 @@ const {
   MSG_REFRESH_TOKEN_EXPIRED,
   MSG_INVALID_REFRESH_TOKEN,
   MSG_INTERNAL_SERVER_ERROR
-} = require('../errorMessage.constant');
+} = require('../constant/errorMessage.constant');
 
-exports.register = async(req, res) => {
+exports.register = async (req, res) => {
   try {
     const { name, email, role, password } = req.body;
     let image;
     if (req.file) {
       image = req.file.path;
     }
-
     const token = jwt.sign({ email }, verifyKey, { expiresIn: '5m' });
-
     const newUser = new User({
       name,
       email,
@@ -55,26 +53,32 @@ exports.register = async(req, res) => {
   }
 };
 
-exports.login = async(req, res) => {
+exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(STATUS_NOT_FOUND).json({ success: false, message: MSG_USER_NOT_FOUND });
     }
-
-    const decryptedPassword = CryptoJS.AES.decrypt(user.password, secretKey).toString(CryptoJS.enc.Utf8);
-
+    const decryptedPassword = CryptoJS.AES.decrypt(user.password, secretKey).toString(
+      CryptoJS.enc.Utf8
+    );
     if (decryptedPassword !== password) {
-      return res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_INCORRECT_PASSWORD });
+      return res
+        .status(STATUS_UNAUTHORIZED)
+        .json({ success: false, message: MSG_INCORRECT_PASSWORD });
     }
-
     if (!user.verified) {
-      return res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_EMAIL_NOT_VERIFIED });
+      return res
+        .status(STATUS_UNAUTHORIZED)
+        .json({ success: false, message: MSG_EMAIL_NOT_VERIFIED });
     }
-
-    const accessToken = jwt.sign({ email }, jwtKey, { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME });
-    const refreshToken = jwt.sign({ email }, jwtRefreshKey, { expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME });
+    const accessToken = jwt.sign({ email }, jwtKey, {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME
+    });
+    const refreshToken = jwt.sign({ email }, jwtRefreshKey, {
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRE_TIME
+    });
 
     res.status(STATUS_SUCCESS).json({
       success: true,
@@ -89,7 +93,7 @@ exports.login = async(req, res) => {
   }
 };
 
-exports.verify = async(req, res) => {
+exports.verify = async (req, res) => {
   try {
     const { token } = req.params;
     const decoded = jwt.verify(token, verifyKey);
@@ -98,14 +102,11 @@ exports.verify = async(req, res) => {
     if (!user) {
       return res.status(STATUS_NOT_FOUND).json({ message: MSG_USER_NOT_FOUND });
     }
-
     if (user.verified) {
       return res.status(STATUS_BAD_REQUEST).json({ message: MSG_EMAIL_VERIFIED });
     }
-
     user.verified = true;
     await user.save();
-
     res.redirect(`${process.env.CLIENT_URL}/verification-success`);
   } catch (error) {
     console.error('Verification error:', error);
@@ -113,7 +114,7 @@ exports.verify = async(req, res) => {
   }
 };
 
-exports.getUserData = async(req, res) => {
+exports.getUserData = async (req, res) => {
   try {
     const userData = await User.find({});
     if (userData && userData.length > 0) {
@@ -127,18 +128,15 @@ exports.getUserData = async(req, res) => {
   }
 };
 
-exports.updateData = async(req, res) => {
+exports.updateData = async (req, res) => {
   const { id } = req.query;
   try {
     const { name, email, role } = req.body;
     const updateFields = { name, email, role };
-
     if (role) {
       updateFields.role = role.value;
     }
-
     const updatedUser = await User.findByIdAndUpdate(id, updateFields, { new: true });
-
     res.status(STATUS_SUCCESS).json({ message: MSG_USER_UPDATED, updatedUser });
   } catch (error) {
     console.error('Update user data error:', error);
@@ -146,7 +144,7 @@ exports.updateData = async(req, res) => {
   }
 };
 
-exports.deleteData = async(req, res) => {
+exports.deleteData = async (req, res) => {
   try {
     const { id } = req.query;
     const deletedUser = await User.findByIdAndDelete(id);
@@ -161,7 +159,10 @@ exports.refreshToken = (req, res) => {
   const refreshToken = req.headers['refresh-token'];
   try {
     const decoded = jwt.verify(refreshToken, jwtRefreshKey);
-    const newAccessToken = jwt.sign({ email: decoded.email }, jwtKey, { expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME });
+    const newAccessToken = jwt.sign({ email: decoded.email }, jwtKey, {
+      expiresIn: process.env.ACCESS_TOKEN_EXPIRE_TIME
+    });
+    console.log('hello bhai')
     return res.status(STATUS_SUCCESS).json({
       message: MSG_ACCESS_TOKEN_REFRESHED,
       accessToken: newAccessToken

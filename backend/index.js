@@ -1,3 +1,6 @@
+<<<<<<< HEAD
+const express=require('express')
+=======
 const express = require("express");
 const http = require("http");
 // const socketIo = require("socket.io");
@@ -37,3 +40,4 @@ module.exports = { app, server };
 server.listen(port, () => {
   console.log(`Server is running on ${port}`);
 });
+>>>>>>> refactor

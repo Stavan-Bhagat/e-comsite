@@ -1,10 +1,10 @@
-const mongoose = require("mongoose");
-require("dotenv").config();
-const elasticClient = require("../config/elasticClient.config");
+const mongoose = require('mongoose');
+require('dotenv').config();
+const elasticClient = require('../config/elasticClient.config');
 const dbUri = process.env.MONGODB_URI;
-const Product = require("../model/product.model");
+const Product = require('../model/product.model');
 
-const connectDB = async () => {
+const connectDB = async() => {
   try {
     await mongoose.connect(dbUri);
     const products = await Product.find();
@@ -12,12 +12,12 @@ const connectDB = async () => {
     for (const product of products) {
       const { _id, ...productData } = product.toObject();
       await elasticClient.index({
-        index: "products",
+        index: 'products',
         id: _id.toString(),
-        body: productData,
+        body: productData
       });
     }
-    console.log("MongoDB connected");
+    console.log('MongoDB connected');
   } catch (error) {
     console.error(`MongoDB connection failed: ${error}`);
     process.exit(1);

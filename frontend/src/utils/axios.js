@@ -19,8 +19,8 @@ axiosInstance.interceptors.request.use(
     if (refreshToken) {
       newConfig.headers['refresh-token'] = refreshToken;
     }
-    console.log('Request Interceptor:', config);
-    return config;
+    console.log('Request Interceptor:', newConfig);
+    return newConfig;
   },
   (error) => {
     console.error('Request Interceptor Error:', error);

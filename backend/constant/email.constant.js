@@ -1,2 +1,2 @@
-exports.serviceName="gmail";
-exports.emailSubject = "Verify your email";
+exports.serviceName = 'gmail';
+exports.emailSubject = 'Verify your email';

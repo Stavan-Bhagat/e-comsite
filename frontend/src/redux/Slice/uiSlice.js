@@ -1,4 +1,5 @@
-import { createSlice } from "@reduxjs/toolkit";
+/* eslint-disable no-param-reassign */
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   loading: false,
@@ -7,15 +8,15 @@ const initialState = {
 };
 
 const uiSlice = createSlice({
-  name: "ui",
+  name: 'ui',
   initialState,
   reducers: {
-    showLoading: (state, action) => {
+    showLoading: (state) => {
       state.loading = true;
       state.error = null;
       state.notification = null;
     },
-    hideLoading: (state, action) => {
+    hideLoading: (state) => {
       state.loading = false;
       state.error = null;
       state.notification = null;
@@ -25,7 +26,7 @@ const uiSlice = createSlice({
       state.error = action.payload;
       state.notification = null;
     },
-    hideError: (state, action) => {
+    hideError: (state) => {
       state.loading = false;
       state.error = null;
       state.notification = null;

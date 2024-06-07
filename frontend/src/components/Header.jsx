@@ -1,3 +1,5 @@
+/* eslint-disable react/button-has-type */
+/* eslint-disable react/jsx-no-comment-textnodes */
 import React, { useState, useRef, useEffect } from 'react';
 import { Navbar, Nav, Modal, Button, FormControl, Form } from 'react-bootstrap';
 import SearchIcon from '@mui/icons-material/SearchOutlined';
@@ -18,6 +20,7 @@ import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import { logout } from '../redux/Slice/authSlice';
 import Profile from './Profile';
+// eslint-disable-next-line import/no-cycle
 import AdminPanel from '../pages/AdminPanel';
 import axiosInstance from '../utils/axios';
 
@@ -196,6 +199,7 @@ const Header = () => {
             <ul style={{ listStyleType: 'none', padding: 0, marginTop: '15px' }}>
               {suggestions.slice(0, 5).map((suggestion) => (
                 <li key={suggestion._id}>
+                  // eslint-disable-next-line react/button-has-type, react/button-has-type
                   <button
                     onClick={() => handleSuggestionClick(suggestion)}
                     onKeyPress={(event) => {
@@ -203,7 +207,7 @@ const Header = () => {
                         handleSuggestionClick(suggestion);
                       }
                     }}
-                    tabIndex="0" // Make the button focusable
+                    tabIndex="0"
                     style={{
                       cursor: 'pointer',
                       padding: '5px 0',

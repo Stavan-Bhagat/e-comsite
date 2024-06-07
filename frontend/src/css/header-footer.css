@@ -1,12 +1,12 @@
 .footer {
-  background-color: "#f5f5f5";
-  padding-top: "20px 0";
-  margin-top: "40px";
-  border-top: "1px solid #ddd";
+  background-color: '#f5f5f5';
+  padding-top: '20px 0';
+  margin-top: '40px';
+  border-top: '1px solid #ddd';
 }
 .profile-image {
   width: 50%;
-  max-width: 100px; 
-  height: auto; 
+  max-width: 100px;
+  height: auto;
   object-fit: cover;
 }

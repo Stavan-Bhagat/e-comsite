@@ -2,9 +2,8 @@ import axios from 'axios';
 import { logout } from '../redux/Slice/authSlice';
 import store from '../redux/store/store';
 
-const { REACT_APP_BASEURL } = process.env;
 const axiosInstance = axios.create({
-  baseURL: REACT_APP_BASEURL,
+  baseURL: process.env.REACT_APP_BASEURL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -19,8 +18,8 @@ axiosInstance.interceptors.request.use(
     if (refreshToken) {
       newConfig.headers['refresh-token'] = refreshToken;
     }
-    console.log('Request Interceptor:', config);
-    return config;
+    console.log('Request Interceptor:', newConfig);
+    return newConfig;
   },
   (error) => {
     console.error('Request Interceptor Error:', error);

@@ -1,10 +1,18 @@
 const jwt = require("jsonwebtoken");
 const jwtKey = process.env.JWT_SECRET;
+const {
+  STATUS_UNAUTHORIZED,
+  STATUS_TOKEN_EXPIRED,
+  MSG_ACCESS_TOKEN_MISSING,
+  MSG_TOKEN_EXPIRED,
+  MSG_INVALID_ACCESS_TOKEN
+} = require('../constant/errorMessage.constant');
+
 
 const authentication = async (req, res, next) => {
   const accessToken = req.headers.authorization?.split(" ")[1];
   if (!accessToken) {
-    return res.status(401).json({ success: false, message: "Access token is missing" });
+    return res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_ACCESS_TOKEN_MISSING });
   }
   try {
     const decoded = jwt.verify(accessToken, jwtKey);
@@ -12,9 +20,9 @@ const authentication = async (req, res, next) => {
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      return res.status(419).json({ success: false, message: "Token expired" });
+      return res.status(STATUS_TOKEN_EXPIRED).json({ success: false, message: MSG_TOKEN_EXPIRED });
     } else {
-      return res.status(401).json({ success: false, message: "Invalid access token" });
+      return res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_INVALID_ACCESS_TOKEN });
     }
   }
 };

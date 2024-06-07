@@ -1,11 +1,17 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { set_session_user, get_session_user, remove_session_user } from "../../constant/localStorage.constant";
+/* eslint-disable no-param-reassign */
+/* eslint-disable camelcase */
+import { createSlice } from '@reduxjs/toolkit';
 import {
+  set_session_user,
+  get_session_user,
+  remove_session_user,
   set_is_authenticated,
   get_is_authenticated,
   remove_is_authenticated,
-} from "../../constant/localStorage.constant";
-import { set_token, get_token, remove_token } from "../../constant/localStorage.constant";
+  set_token,
+  get_token,
+  remove_token,
+} from '../../constant/localStorage.constant';
 
 const initialState = {
   isAuthenticated: get_is_authenticated() ? get_is_authenticated() : false,
@@ -16,7 +22,7 @@ const initialState = {
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     loginSuccess: (state, action) => {
@@ -30,7 +36,7 @@ const authSlice = createSlice({
       set_is_authenticated(true);
     },
 
-    loginFailure: (state, action) => {
+    loginFailure: (state) => {
       state.isAuthenticated = false;
       state.user = null;
       state.token = null;

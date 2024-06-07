@@ -1,7 +1,7 @@
-import axiosInstance from "axios";
+import axiosInstance from '../axios';
 
 export const fetchUserData = async () => {
-  const response = await axiosInstance.get("/fusion/submit/fetch-user");
+  const response = await axiosInstance.get('/fusion/submit/fetch-user');
   return response.data;
 };
 
@@ -21,9 +21,9 @@ export const loginUser = async (data) => {
 };
 
 export const registerUser = async (data) => {
-  const response = await axiosInstance.post("fusion/submit/register", data, {
+  const response = await axiosInstance.post('fusion/submit/register', data, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     },
   });
   return response.data;

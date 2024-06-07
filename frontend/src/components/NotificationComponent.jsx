@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
+import { useSnackbar } from 'notistack';
 import socketIOClient from 'socket.io-client';
 import {
   Dialog,
@@ -15,12 +15,15 @@ const SOCKET_SERVER_URL = 'http://localhost:5000';
 const NotificationComponent = () => {
   const [, setProducts] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const [dialogMessage, setDialogMessage] = useState('');
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
 
   useEffect(() => {
     if (!('Notification' in window)) {
-      console.error('This browser does not support desktop notifications.');
+      enqueueSnackbar(`browser does not support notification.`, {
+        variant: 'info',
+      });
     } else if (notificationPermission === 'default') {
       Notification.requestPermission().then((permission) => {
         setNotificationPermission(permission);

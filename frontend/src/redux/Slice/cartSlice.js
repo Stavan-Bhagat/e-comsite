@@ -1,5 +1,8 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { get_cart, set_cart, remove_cart } from "../../constant/localStorage.constant";
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
+/* eslint-disable camelcase */
+import { createSlice } from '@reduxjs/toolkit';
+import { get_cart, set_cart, remove_cart } from '../../constant/localStorage.constant';
 
 const initialState = {
   items: get_cart(),
@@ -8,7 +11,7 @@ const initialState = {
 };
 
 const cartSlice = createSlice({
-  name: "cart",
+  name: 'cart',
   initialState,
   reducers: {
     addToCart(state, action) {

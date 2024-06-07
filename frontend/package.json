@@ -48,7 +48,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "fix-js": "eslint-auto-fix"
+    "fix-js": "eslint-auto-fix",
+    "prettier:fix": "prettier --write ."
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",

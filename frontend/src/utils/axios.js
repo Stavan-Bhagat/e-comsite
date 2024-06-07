@@ -2,9 +2,8 @@ import axios from 'axios';
 import { logout } from '../redux/Slice/authSlice';
 import store from '../redux/store/store';
 
-const { REACT_APP_BASEURL } = process.env;
 const axiosInstance = axios.create({
-  baseURL: REACT_APP_BASEURL,
+  baseURL: process.env.REACT_APP_BASEURL,
 });
 
 axiosInstance.interceptors.request.use(

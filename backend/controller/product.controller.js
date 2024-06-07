@@ -3,6 +3,23 @@ const Product = require('../model/product.model.js');
 const Order = require('../model/order.model');
 const client = require('../config/elasticClient.config.js');
 const { io } = require('../socket');
+const {
+  STATUS_SUCCESS,
+  STATUS_CREATED,
+  STATUS_BAD_REQUEST,
+  STATUS_NOT_FOUND,
+  STATUS_INTERNAL_SERVER_ERROR,
+  MSG_BAD_REQUEST,
+  MSG_INTERNAL_SERVER_ERROR,
+  MSG_PRODUCT_FETCHED,
+  MSG_PRODUCT_NOT_FOUND,
+  MSG_PRODUCT_ADDED,
+  MSG_PRODUCT_UPDATED,
+  MSG_PRODUCT_DELETED,
+  MSG_NO_PRODUCTS_FOUND,
+  MSG_CATEGORY_PRODUCTS_FETCHED,
+  MSG_CATEGORY_NOT_FOUND
+} = require('../constant/errorMessage.constant.js');
 
 exports.fetchProductData = async(req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -13,16 +30,16 @@ exports.fetchProductData = async(req, res) => {
     const totalItems = await Product.countDocuments();
     const totalPages = Math.ceil(totalItems / limit);
     if (productData && productData.length > 0) {
-      res.status(200).json({
+      res.status(STATUS_SUCCESS).json({
         data: productData,
         totalPages,
         currentPage: page
       });
     } else {
-      res.status(404).json({ message: 'No product data found' });
+      res.status(STATUS_NOT_FOUND).json({ message: MSG_NO_PRODUCTS_FOUND });
     }
   } catch (e) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -31,22 +48,22 @@ exports.fetchProduct = async(req, res) => {
   try {
     const product = await Product.findById(id);
     if (product) {
-      res.status(200).json({
+      res.status(STATUS_SUCCESS).json({
         data: product,
-        message: 'Product fetched successfully'
+        message: MSG_PRODUCT_FETCHED
       });
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(STATUS_NOT_FOUND).json({ message: MSG_PRODUCT_NOT_FOUND });
     }
   } catch (e) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 
 exports.addProduct = async(req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({ error: 'No image files uploaded' });
+      return res.status(STATUS_BAD_REQUEST).json({ message: MSG_BAD_REQUEST });
     }
 
     const { productName, brandName, category, description, price, sellingPrice, stock } = req.body;
@@ -68,9 +85,9 @@ exports.addProduct = async(req, res) => {
     const io = socket.getIo();
     io.emit('newProduct', createdProduct);
 
-    res.status(201).json({ message: 'Product added successfully.', newProduct });
+    res.status(STATUS_CREATED).json({ message: MSG_PRODUCT_ADDED, newProduct });
   } catch (e) {
-    res.status(500).json({ message: 'Internal server error', error: e });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
   }
 };
 
@@ -96,9 +113,9 @@ exports.updateProduct = async(req, res) => {
 
     const updatedProduct = await Product.findByIdAndUpdate(productId, updateFields, { new: true });
 
-    res.status(200).json({ message: 'Product updated successfully.', updatedProduct });
+    res.status(STATUS_SUCCESS).json({ message: MSG_PRODUCT_UPDATED, updatedProduct });
   } catch (e) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 
@@ -107,17 +124,17 @@ exports.deleteProduct = async(req, res) => {
     const { id } = req.query;
     const productData = await Product.findByIdAndDelete(id);
     if (productData) {
-      res.status(200).json({ message: 'Product deleted successfully.' });
+      res.status(STATUS_SUCCESS).json({ message: MSG_PRODUCT_DELETED });
     } else {
-      res.status(404).json({ message: 'Product not found' });
+      res.status(STATUS_NOT_FOUND).json({ message: MSG_PRODUCT_NOT_FOUND });
     }
   } catch (error) {
     console.error(`Delete product controller error: ${error}`);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 
-exports.fetchCategoryProduct = async(req, res) => {
+exports.fetchCategoryProduct = async(_req, res) => {
   try {
     const productCategory = await Product.distinct('category');
 
@@ -128,14 +145,14 @@ exports.fetchCategoryProduct = async(req, res) => {
         productByCategory.push(product);
       }
     }
-    res.status(200).json({
-      message: 'Product categories fetched successfully',
+    res.status(STATUS_SUCCESS).json({
+      message: MSG_CATEGORY_PRODUCTS_FETCHED,
       data: productByCategory,
       success: true,
       error: false
     });
   } catch (err) {
-    res.status(400).json({
+    res.status(STATUS_BAD_REQUEST).json({
       message: err.message || err,
       error: true,
       success: false
@@ -148,17 +165,17 @@ exports.fetchProductsByCategory = async(req, res) => {
   try {
     const response = await Product.find({ category });
     if (response.length > 0) {
-      res.status(200).json({
-        message: 'Products by category fetched successfully',
+      res.status(STATUS_SUCCESS).json({
+        message: MSG_CATEGORY_PRODUCTS_FETCHED,
         data: response,
         success: true,
         error: false
       });
     } else {
-      res.status(404).json({ message: 'No products found for this category' });
+      res.status(STATUS_NOT_FOUND).json({ message: MSG_CATEGORY_NOT_FOUND });
     }
   } catch (e) {
-    res.status(400).json({
+    res.status(STATUS_BAD_REQUEST).json({
       message: e.message || e,
       error: true,
       success: false
@@ -191,22 +208,22 @@ exports.suggestions = async(req, res) => {
     if (responseBody && responseBody.hits && responseBody.hits.hits) {
       const suggestions = responseBody.hits.hits.map((hit) => hit._source);
       console.log('Suggestions:', suggestions);
-      res.status(200).json(suggestions);
+      res.status(STATUS_SUCCESS).json(suggestions);
     } else {
-      res.status(200).json([]);
+      res.status(STATUS_SUCCESS).json([]);
     }
   } catch (error) {
     console.error('Error fetching suggestions:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 
 exports.fetchOrders = async(req, res) => {
   try {
     const orders = await Order.find();
-    res.status(200).json(orders);
+    res.status(STATUS_SUCCESS).json(orders);
   } catch (error) {
     console.error('Error fetching orders:', error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };

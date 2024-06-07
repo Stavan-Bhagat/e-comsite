@@ -1,29 +1,43 @@
 const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
+const {
+  CLOUD_NAME,
+  API_KEY,
+  API_SECRET,
+  USER_IMAGE_FOLDER,
+  USER_IMAGE_FORMATS,
+  USER_IMAGE_TRANSFORMATION,
+  PRODUCT_IMAGE_FOLDER,
+  PRODUCT_IMAGE_FORMATS,
+  PRODUCT_IMAGE_TRANSFORMATION
+} = require('../constant/constant');
 
 cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET
+  cloud_name: CLOUD_NAME,
+  api_key: API_KEY,
+  api_secret: API_SECRET
 });
+
 const userStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'e-commerce/users',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-    transformation: [{ width: 500, height: 500, crop: 'fill' }]
+    folder: USER_IMAGE_FOLDER,
+    allowed_formats: USER_IMAGE_FORMATS,
+    transformation: USER_IMAGE_TRANSFORMATION
   }
 });
+
 const productStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'e-commerce/products',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-    transformation: [{ width: 500, height: 500, crop: 'fill' }]
+    folder: PRODUCT_IMAGE_FOLDER,
+    allowed_formats: PRODUCT_IMAGE_FORMATS,
+    transformation: PRODUCT_IMAGE_TRANSFORMATION
   }
 });
 
 const uploadUserImage = multer({ storage: userStorage });
 const uploadProductImages = multer({ storage: productStorage });
+
 module.exports = { uploadUserImage, uploadProductImages };

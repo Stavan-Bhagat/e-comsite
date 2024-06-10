@@ -1,101 +1,66 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-new */
 import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import socketIOClient from 'socket.io-client';
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Button,
-} from '@mui/material';
+import { addNotification } from '../redux/Slice/notificationSlice';
 
 const SOCKET_SERVER_URL = 'http://localhost:5000';
 
 const NotificationComponent = () => {
-  const [products, setProducts] = useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const { enqueueSnackbar } = useSnackbar();
-  const [dialogMessage, setDialogMessage] = useState('');
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
-  const [newProduct, setNewProduct] = useState(null);
+  const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch();
+
   useEffect(() => {
+    const requestNotificationPermission = async () => {
+      try {
+        if (Notification.permission === 'default') {
+          const permission = await Notification.requestPermission();
+          setNotificationPermission(permission);
+        }
+      } catch (error) {
+        console.error('Notification permission request failed:', error);
+        enqueueSnackbar('Failed to request notification permission.', { variant: 'error' });
+      }
+    };
+
     if (!('Notification' in window)) {
-      enqueueSnackbar(`browser does not support notification.`, {
-        variant: 'info',
-      });
-    } else if (notificationPermission === 'default') {
-      Notification.requestPermission().then((permission) => {
-        setNotificationPermission(permission);
-      });
+      enqueueSnackbar('Browser does not support notifications.', { variant: 'info' });
+    } else {
+      requestNotificationPermission();
     }
 
     const socket = socketIOClient(SOCKET_SERVER_URL);
 
-    socket.on('newProduct', (newProductData) => {
-      setNewProduct(newProductData);
-      setProducts((prevProducts) => [...prevProducts, newProductData]);
-      setDialogMessage(
-        `New product added: ${newProductData.productName}\nBrand: ${newProductData.brandName}`
-      );
-      setOpenDialog(true);
+    socket.on('newProduct', (notification) => {
+      try {
+        dispatch(addNotification(notification.createdProduct));
+        enqueueSnackbar(notification.message, { variant: 'info' });
 
-      if (Notification.permission === 'granted') {
-        const options = {
-          body: `ProductName: ${newProductData.productName}`,
-          icon: '/home/stavan/Documents/aspire/e-comsite/frontend/src/images/notification.svg',
-        };
-        // eslint-disable-next-line no-new
-        new Notification(`New product added: ${newProduct.productName}`, options);
+        if (Notification.permission === 'granted') {
+          const options = {
+            body: `ProductName: ${notification.createdProduct.productName}`,
+            icon: '/path/to/notification-icon.svg', // Ensure this path is correct and accessible
+          };
+          new Notification(
+            `New product added: ${notification.createdProduct.productName}`,
+            options
+          );
+        }
+      } catch (error) {
+        console.error('Error handling new product notification:', error);
+        enqueueSnackbar('Error handling new product notification.', { variant: 'error' });
       }
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [notificationPermission]);
+  }, [notificationPermission, enqueueSnackbar, dispatch]);
 
-  const handleCloseDialog = () => {
-    setOpenDialog(false);
-  };
-
-  return (
-    <div>
-      {products.map((product) => (
-        <div key={product._id}>
-          <h2>{product.productName}</h2>
-          <p>Brand: {product.brandName}</p>
-          {product.productImage && (
-            <img
-              src={product.productImage[0]}
-              alt={product.productName}
-              style={{ width: '100px', height: '100px' }}
-            />
-          )}
-        </div>
-      ))}
-      {openDialog && (
-        <Dialog open={openDialog} onClose={handleCloseDialog}>
-          <DialogTitle>New Product Notification</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{dialogMessage}</DialogContentText>
-            {newProduct.imageUrl && (
-              <img
-                src={newProduct.productImage[0]}
-                alt={newProduct.productName}
-                style={{ width: '100%', height: 'auto' }}
-              />
-            )}
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDialog} color="primary">
-              Close
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )}
-    </div>
-  );
+  return null;
 };
 
 export default NotificationComponent;

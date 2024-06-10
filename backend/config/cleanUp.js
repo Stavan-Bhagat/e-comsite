@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const User = require('../model/user.model');
 
-cron.schedule('0 0 * * *', async() => {
+cron.schedule('0 0 * * *', async () => {
   try {
     const expirationThreshold = new Date(Date.now() - 24 * 60 * 60 * 1000);
     await User.deleteMany({

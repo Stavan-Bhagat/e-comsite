@@ -13,7 +13,7 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const sendVerificationEmail = async(email, token) => {
+const sendVerificationEmail = async (email, token) => {
   const url = `http://localhost:${process.env.PORT}/fusion/submit/verify/${token}`;
   const emailBody = emailTemplate.replace('{{verificationUrl}}', url);
   await transporter.sendMail({

@@ -81,11 +81,10 @@ exports.addProduct = async (req, res) => {
     });
 
     const createdProduct = await newProduct.save();
-
     const io = socket.getIo();
-    io.emit('newProduct', createdProduct);
+    io.emit('newProduct', { message: MSG_PRODUCT_ADDED, createdProduct });
 
-    res.status(STATUS_CREATED).json({ message: MSG_PRODUCT_ADDED, newProduct });
+    res.status(STATUS_CREATED).json({ message: MSG_PRODUCT_ADDED, createdProduct });
   } catch (e) {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
   }

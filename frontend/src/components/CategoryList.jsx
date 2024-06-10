@@ -1,22 +1,24 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import React, { useState, useEffect } from 'react';
-import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, Box } from '@mui/material';
-import { Image } from 'react-bootstrap';
+import { Container, Grid, Box, CardContent, CardMedia, Typography, Skeleton } from '@mui/material';
 import { fetchCategoryProducts } from '../utils/services/product.service';
 import '../css/homeBody.css';
+import genz from '../images/sale.jpg';
 
 const CategoryList = () => {
-  const [categoryProduct, SetCategoryProduct] = useState([]);
-  const [loading, SetLoading] = useState(false);
+  const [categoryProduct, setCategoryProduct] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const fetchCategoryProduct = async () => {
-    SetLoading(true);
-    const response = await fetchCategoryProducts();
-    SetLoading(false);
-    SetCategoryProduct(response.data);
+    setLoading(true);
+    try {
+      const response = await fetchCategoryProducts();
+      setCategoryProduct(response.data.slice(0, 12));
+    } catch (error) {
+      console.error('Failed to fetch categories', error);
+    }
+    setLoading(false);
   };
 
   const handleChange = (category) => {
@@ -28,36 +30,67 @@ const CategoryList = () => {
   }, []);
 
   return (
-    <>
+    <Container sx={{ padding: 2 }}>
       {loading ? (
-        <CircularProgress centered />
+        <Skeleton variant="rectangular" width="100%" height={400} />
       ) : (
-        <Container
-          fluid
-          gap={2}
-          style={{
-            display: 'flex',
-            overflowX: 'auto',
-            whiteSpace: 'nowrap',
-            paddingTop: '2rem',
-            gap: '1rem',
-          }}
-        >
-          {categoryProduct.map((category) => (
-            <Box key={category._id} onClick={() => handleChange(category.category)}>
-              <Image
-                src={category.productImage[0]}
-                alt={category.productName}
-                className="pop-up-image round-image"
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Grid container spacing={2}>
+              {categoryProduct.map((category) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={category._id}>
+                  <Box
+                    onClick={() => handleChange(category.category)}
+                    sx={{
+                      cursor: 'pointer',
+                      transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
+                      '&:hover': {
+                        transform: 'scale(1.05)',
+                        boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.15 )',
+                      },
+                    }}
+                  >
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={category.productImage[0]}
+                      alt={category.productName}
+                      sx={{ padding: '10%' }}
+                    />
+                    <CardContent sx={{ padding: 0 }}>
+                      <Typography
+                        className="text-center"
+                        sx={{
+                          fontFamily: 'IBM Plex Serif,serif,',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          px: '5%',
+                        }}
+                      >
+                        {category.category}
+                      </Typography>
+                    </CardContent>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: '100%' }}>
+              <CardMedia
+                component="img"
+                height="100%"
+                image={genz}
+                alt="Descriptive text for the image"
+                sx={{ objectFit: 'cover', height: '100%', width: '100%' }}
               />
-              <Typography variant="h6" align="center">
-                {category.category}
-              </Typography>
             </Box>
-          ))}
-        </Container>
+          </Grid>
+        </Grid>
       )}
-    </>
+    </Container>
   );
 };
 

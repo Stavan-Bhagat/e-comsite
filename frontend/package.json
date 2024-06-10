@@ -21,6 +21,7 @@
     "bootstrap": "^5.3.3",
     "crypto-js": "^4.2.0",
     "notistack": "^3.0.1",
+    "prettier-eslint": "^16.3.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.2",
@@ -49,7 +50,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "fix-js": "eslint-auto-fix",
-    "prettier:fix": "prettier --write ."
+    "prettier:fix": "prettier --write .",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,html,css,json,md}\""
   },
   "devDependencies": {
     "@eslint/js": "^9.4.0",

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Typography, Card, CardContent, CircularProgress, Box } from '@mui/material';
+import { Typography, Card, CardContent, Skeleton, Box } from '@mui/material';
 import PropTypes from 'prop-types';
+import { Container } from 'react-bootstrap';
 import Carousel from 'react-multi-carousel';
 import { useSnackbar } from 'notistack';
 import 'react-multi-carousel/lib/styles.css';
@@ -84,54 +85,75 @@ const ProductCarousel = ({ category }) => {
   }, [category]);
 
   return (
-    <Box my={4}>
-      <Typography variant="h6" gutterBottom>
+    <Box my={4}> 
+      <Typography
+        variant="h6"
+        gutterBottom
+        className="text-center"
+        sx={{ fontFamily: 'Playfair Display,serif', fontWeight: 'bold', fontSize: '1.5rem' }}
+      >
         Popular {category}
       </Typography>
       {loading ? (
-        <Box display="flex" justifyContent="center" alignItems="center" height={200}>
-          <CircularProgress />
-        </Box>
-      ) : (
-        <Carousel showDots responsive={responsive}>
-          {products.map((item) => (
-            <Link
-              to={`/product/${item._id}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-              key={item._id}
-            >
-              <Card sx={styles.card} className="product-card">
-                <img
-                  src={item.productImage[0]}
-                  alt={item.productName}
-                  style={styles.productImage}
-                />
+        <Container sx={{ margin: 'auto' }}>
+          <Carousel showDots responsive={responsive}>
+            {Array.from(new Array(5)).map((_, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <Card sx={styles.card} key={index}>
+                <Skeleton variant="rectangular" width="100%" height={200} />
                 <CardContent style={styles.cardContent}>
-                  <Typography style={styles.productName} variant="body1">
-                    {item.productName}
-                  </Typography>
-                  <Typography
-                    style={styles.productPrice}
-                    variant="body1"
-                    color="textSecondary"
-                    component="span"
-                  >
-                    From
-                  </Typography>
-                  <Typography
-                    style={styles.productPrice}
-                    variant="body2"
-                    color="primary"
-                    component="span"
-                  >
-                    <CurrencyRupeeIcon fontSize="small" />
-                    {item.price}
-                  </Typography>
+                  <Skeleton width="60%" />
+                  <Skeleton width="40%" />
                 </CardContent>
               </Card>
-            </Link>
-          ))}
-        </Carousel>
+            ))}
+          </Carousel>
+        </Container>
+      ) : (
+        <Container sx={{ margin: 'auto' }}>
+          <Carousel showDots responsive={responsive}>
+            {products.map((item) => (
+              <Link
+                to={`/product/${item._id}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+                key={item._id}
+              >
+                <Card sx={styles.card} className="product-card">
+                  <img
+                    src={item.productImage[0]}
+                    alt={item.productName}
+                    style={styles.productImage}
+                  />
+                  <CardContent style={styles.cardContent}>
+                    <Typography
+                      style={styles.productName}
+                      sx={{ fontFamily: 'Hedvig Letters Serif' }}
+                    >
+                      {item.productName}
+                    </Typography>
+                    <Typography
+                      style={styles.productPrice}
+                      variant="body1"
+                      color="textSecondary"
+                      component="span"
+                    >
+                      From
+                    </Typography>
+                    <Typography
+                      style={styles.productPrice}
+                      variant="body2"
+                      color="primary"
+                      component="span"
+                    >
+                      <CurrencyRupeeIcon fontSize="small" />
+                      {item.price}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </Carousel>
+        </Container>
       )}
     </Box>
   );

@@ -1,5 +1,8 @@
 let io;
-const { MSG_SOCKET_IO_NOT_INITIALIZED, MSG_SERVER_INSTANCE_REQUIRED } = require('./constant/errorMessage.constant');
+const {
+  MSG_SOCKET_IO_NOT_INITIALIZED,
+  MSG_SERVER_INSTANCE_REQUIRED
+} = require('./constant/errorMessage.constant');
 
 module.exports = {
   init: (server) => {

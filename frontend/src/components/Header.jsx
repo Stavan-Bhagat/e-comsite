@@ -6,6 +6,7 @@ import SearchIcon from '@mui/icons-material/SearchOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import ClickAwayListener from '@mui/material/ClickAwayListener';
@@ -23,6 +24,8 @@ import { searchSuggestionProduct, searchProduct } from '../utils/services/produc
 import Profile from './Profile';
 // eslint-disable-next-line import/no-cycle
 import AdminPanel from '../pages/AdminPanel';
+import NotificationModal from './NotificationModal';
+import logo from '../images/logo.webp';
 
 const Header = () => {
   const user = useSelector((state) => state?.auth.user);
@@ -39,6 +42,9 @@ const Header = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const anchorRef = useRef(null);
   const prevOpen = useRef(open);
+  const [modalOpen, setModalOpen] = useState(false);
+  const unreadCount = useSelector((state) => state?.notifications?.unreadCount);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const handleToggle = () => {
@@ -142,7 +148,13 @@ const Header = () => {
         expand="lg"
         style={{ paddingLeft: '20px', paddingRight: '20px', zIndex: 9999 }}
       >
-        <Navbar.Brand href="/">Zen Fusion</Navbar.Brand>
+        <Navbar.Brand
+          href="/"
+          className="text-primary "
+          style={{ fontWeight: 'bold', fontFamily: 'IBM Plex Serif ' }}
+        >
+          <img src={logo} alt="Logo" style={{ width: '40px', height: '40px' }} /> Fusion
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto" style={{ alignItems: 'center' }}>
@@ -179,8 +191,14 @@ const Header = () => {
                 )}
               </div>
             )}
+            <IconButton onClick={() => setModalOpen(true)}>
+              <Badge badgeContent={unreadCount} color="error">
+                <NotificationsIcon className="text-warning" />
+              </Badge>
+            </IconButton>
+            <NotificationModal open={modalOpen} handleClose={() => setModalOpen(false)} />
             <IconButton aria-label="cart" onClick={handleCart}>
-              <Badge badgeContent={cart.length} color="secondary">
+              <Badge badgeContent={cart.length}>
                 <ShoppingCartIcon />
               </Badge>
             </IconButton>
@@ -235,7 +253,7 @@ const Header = () => {
           )}
         </Modal.Body>
       </Modal>
-
+      <NotificationModal open={modalOpen} handleClose={() => setModalOpen(false)} />
       <Popper
         open={open}
         anchorEl={anchorRef.current}

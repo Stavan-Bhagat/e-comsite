@@ -1,7 +1,7 @@
 /* categorylist */
 .pop-up-image {
   transition: transform 0.3s ease-in-out;
-  cursor: pointer; 
+  cursor: pointer;
 }
 
 .pop-up-image:hover {

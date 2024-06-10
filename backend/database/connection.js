@@ -4,7 +4,7 @@ const elasticClient = require('../config/elasticClient.config');
 const dbUri = process.env.MONGODB_URI;
 const Product = require('../model/product.model');
 
-const connectDB = async() => {
+const connectDB = async () => {
   try {
     await mongoose.connect(dbUri, { useNewUrlParser: true, useUnifiedTopology: true });
     console.log('MongoDB connected');

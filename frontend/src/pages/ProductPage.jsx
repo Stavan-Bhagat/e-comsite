@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, Button, Snackbar, Skeleton } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -52,6 +53,7 @@ const ProductPage = () => {
     dispatch(addToCart(product));
     setToast(true);
   };
+
   const handleBuyNow = (_id) => {
     const isProductInCart = cartData.find((item) => item._id === _id);
 
@@ -62,6 +64,7 @@ const ProductPage = () => {
       navigate('/product/cart/');
     }
   };
+
   useEffect(() => {
     fetchedProduct(id);
   }, [id]);
@@ -71,10 +74,10 @@ const ProductPage = () => {
       <Container>
         <Typography variant="h5">Product Details</Typography>
         <Grid container spacing={2}>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Skeleton variant="rectangular" height="90vh" />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <Skeleton variant="text" sx={{ fontSize: '2rem' }} />
             <Skeleton variant="text" sx={{ fontSize: '1.5rem' }} />
             <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
@@ -91,27 +94,28 @@ const ProductPage = () => {
   return (
     <>
       <Header />
-      <Container>
-        <Typography variant="h5">Product Details</Typography>
+      <Container className="p-5">
         <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Box sx={{ height: '90vh', display: 'flex' }}>
+          <Grid item xs={12} md={6}>
+            <Box
+              sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: 'auto' }}
+            >
               <Box
                 sx={{
-                  height: '100%',
-                  width: '20%',
-                  justifyContent: 'space-between',
-                  flexDirection: 'column',
                   display: 'flex',
-                  marginRight: '1rem',
+                  flexDirection: { xs: 'row', md: 'column' },
+                  width: { xs: '100%', md: '20%' },
+                  marginRight: { md: '1rem' },
+                  overflowX: { xs: 'scroll', md: 'unset' },
                 }}
-                component="div"
               >
-                {product.productImage.map((image) => (
+                {product.productImage.map((image, index) => (
                   <Box
-                    key={product._id}
-                    sx={{ marginBottom: '1rem' }}
-                    component="div"
+                    key={index}
+                    sx={{
+                      marginBottom: { xs: '0', md: '1rem' },
+                      marginRight: { xs: '1rem', md: '0' },
+                    }}
                     onMouseEnter={() => handleImage(image)}
                   >
                     <img
@@ -122,26 +126,34 @@ const ProductPage = () => {
                   </Box>
                 ))}
               </Box>
-              <img
-                src={
-                  product.productImage && product.productImage[0]
-                    ? clickImage || product.productImage[0]
-                    : fallbackImage
-                }
-                alt={product.productName}
-                style={{ width: '80%', height: 'auto' }}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = fallbackImage;
-                }}
-              />
+              <Box
+                sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+              >
+                <img
+                  src={
+                    product.productImage && product.productImage[0]
+                      ? clickImage || product.productImage[0]
+                      : fallbackImage
+                  }
+                  alt={product.productName}
+                  style={{ width: '100%', height: 'auto' }}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = fallbackImage;
+                  }}
+                />
+              </Box>
             </Box>
           </Grid>
-          <Grid item xs={6}>
-            <Box sx={{ height: '90vh' }}>
-              <Typography variant="h4">{product.productName}</Typography>
+          <Grid item xs={12} md={6}>
+            <Box sx={{ height: 'auto' }}>
+              <Typography variant="h4" sx={{ fontFamily: 'Roboto Condensed' }}>
+                {product.productName}
+              </Typography>
               <Typography variant="h6">${product.sellingPrice}</Typography>
-              <Typography variant="body1">{product.description}</Typography>
+              <Typography variant="body1" sx={{ fontFamily: 'sans-serif' }}>
+                {product.description}
+              </Typography>
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Button
                   variant="contained"
@@ -188,7 +200,6 @@ const ProductPage = () => {
           autoHideDuration={2000}
           message="Added to cart"
           key="bottomright"
-          className="bg-success"
         />
       </Container>
     </>

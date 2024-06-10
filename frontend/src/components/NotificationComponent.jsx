@@ -42,7 +42,7 @@ const NotificationComponent = () => {
         if (Notification.permission === 'granted') {
           const options = {
             body: `ProductName: ${notification.createdProduct.productName}`,
-            icon: '/path/to/notification-icon.svg', // Ensure this path is correct and accessible
+            icon: '/path/to/notification-icon.svg',
           };
           new Notification(
             `New product added: ${notification.createdProduct.productName}`,

@@ -5,6 +5,7 @@ import { Container, Typography, Box, Divider, Button } from '@mui/material';
 import { useNavigate } from 'react-router';
 import axiosInstance from '../utils/axios';
 import { clearCart } from '../redux/Slice/cartSlice';
+import PaymentForm from '../components/PaymentForm';
 
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
@@ -40,14 +41,14 @@ const ConfirmationPage = () => {
     try {
       const response = await axiosInstance.post(`/order/add-Order`, mergedData);
       if (response.status === 201) {
-        enqueueSnackbar(`order placed successfully.`, {
+        enqueueSnackbar(`Order placed successfully.`, {
           variant: 'info',
         });
         dispatch(clearCart());
         navigate('/');
       }
     } catch (error) {
-      enqueueSnackbar(`failed to placed the order.`, {
+      enqueueSnackbar(`Failed to place the order.`, {
         variant: 'info',
       });
     }
@@ -90,6 +91,11 @@ const ConfirmationPage = () => {
           <Button onClick={onSubmit} variant="contained" color="success">
             Place Order
           </Button>
+        </Box>
+        {/* Payment form */}
+        <Box mt={2}>
+          <Typography variant="h5">Payment</Typography>
+          <PaymentForm />
         </Box>
       </Box>
     </Container>

@@ -10,7 +10,9 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Drawer from '@mui/material/Drawer';
+import { Container } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
+import { useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import Header from '../components/Header';
 import AllUsers from '../components/AllUsers';
@@ -18,6 +20,7 @@ import AllProducts from '../components/AllProducts';
 import OrderDetails from '../components/OrderDetails';
 
 const AdminPanel = () => {
+  const theme = useTheme();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
@@ -62,58 +65,60 @@ const AdminPanel = () => {
   return (
     <>
       <Header />
-      <Box sx={{ display: 'flex' }}>
-        <Drawer
-          variant="permanent"
-          open
-          sx={{
-            width: '240px',
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: '240px',
-              boxSizing: 'border-box',
-              zIndex: 1201,
-              paddingTop: '4%',
-            },
-          }}
-        >
-          {renderSidebar()}
-        </Drawer>
-        <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              {renderContent()}
+      <Container>
+        <Box sx={{ display: 'flex' }}>
+          <Drawer
+            variant="permanent"
+            open
+            sx={{
+              width: '20%',
+              flexShrink: 0,
+              '& .MuiDrawer-paper': {
+                width: '20%',
+                boxSizing: 'border-box',
+                zIndex: theme.zIndex.drawer,
+                paddingTop: '4%',
+              },
+            }}
+          >
+            {renderSidebar()}
+          </Drawer>
+          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {renderContent()}
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
+          <IconButton
+            color="primary"
+            edge="start"
+            onClick={() => setDrawerOpen(!isDrawerOpen)}
+            sx={{
+              display: { sm: 'none' },
+              position: 'fixed',
+              top: '16px',
+              left: '16px',
+              zIndex: theme.zIndex.drawer + 1,
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Drawer
+            variant="temporary"
+            open={isDrawerOpen}
+            onClose={() => setDrawerOpen(false)}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              '& .MuiDrawer-paper': { width: '20%', zIndex: theme.zIndex.drawer + 1 },
+            }}
+          >
+            {renderSidebar()}
+          </Drawer>
         </Box>
-        <IconButton
-          color="primary"
-          edge="start"
-          onClick={() => setDrawerOpen(!isDrawerOpen)}
-          sx={{
-            display: { sm: 'none' },
-            position: 'fixed',
-            top: '16px',
-            left: '16px',
-            zIndex: 1300,
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Drawer
-          variant="temporary"
-          open={isDrawerOpen}
-          onClose={() => setDrawerOpen(false)}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            '& .MuiDrawer-paper': { width: '240px', zIndex: 1300 },
-          }}
-        >
-          {renderSidebar()}
-        </Drawer>
-      </Box>
+      </Container>
     </>
   );
 };

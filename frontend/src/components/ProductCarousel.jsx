@@ -85,7 +85,7 @@ const ProductCarousel = ({ category }) => {
   }, [category]);
 
   return (
-    <Box my={4}> 
+    <Box my={4}>
       <Typography
         variant="h6"
         gutterBottom

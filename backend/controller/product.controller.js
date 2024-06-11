@@ -261,20 +261,26 @@ exports.searchProducts = async (req, res) => {
   }
 };
 
-exports.payment = async (req, res) => {
-  const { amount } = req.body;
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
-      currency: 'usd'
-      // Add other parameters as needed
-    });
-
-    res.status(200).send({
-      clientSecret: paymentIntent.client_secret
-    });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-};
+  exports.payment = async (req, res) => {
+    const { amount } = req.body;
+    console.log('amounttt', amount);
+    try {
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount,
+        currency: 'usd'
+      });
+      console.log("paymentIntent",paymentIntent);
+      console.log("paymentIntent.client_secret",paymentIntent.client_secret);
+      res.status(200).json({
+        clientSecret: paymentIntent.client_secret
+      });
+    } catch (error) {
+      res.status(400).send({
+        error: {
+          message: error.message
+        }
+      });
+    }
+  };

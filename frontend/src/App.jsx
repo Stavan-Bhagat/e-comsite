@@ -16,6 +16,7 @@ import CheckOut from './pages/CheckOut';
 import ConfirmationPage from './pages/ConfirmationPage';
 import NotificationComponent from './components/NotificationComponent';
 import Cart from './pages/Cart';
+import StripeProvider from './components/StripProvider';
 import PaymentForm from './components/PaymentForm';
 
 const stripePromise = loadStripe(process.env.REACT_APP_PUBLISHABLE_KEY);
@@ -23,7 +24,8 @@ const App = () => {
   const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
   return (
     <Router>
-      <Elements stripe={stripePromise}>
+      {/* <Elements stripe={stripePromise}> */}
+      <StripeProvider>
         <NotificationComponent />
         <Routes>
           <Route path="/" element={<Home />} />
@@ -34,9 +36,11 @@ const App = () => {
           <Route path="/product/search/:type/:term" element={<ProductSearch />} />
           <Route path="/product/cart/" element={<Cart />} />
           <Route path="/checkout" element={<CheckOut />} />
+          <Route path="/paymentform" element={<PaymentForm />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
         </Routes>
-      </Elements>
+        {/* </Elements> */}
+      </StripeProvider>
     </Router>
   );
 };

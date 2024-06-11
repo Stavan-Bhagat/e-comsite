@@ -1,57 +1,79 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import axios from 'axios'; // Import axios library
+import { useNavigate } from 'react-router-dom';
 
-const PaymentForm = ({ calculateTotal, onSubmit }) => {
+const CheckoutForm = () => {
+  const [totalPrice, setTotalPrice] = useState(100); // Define totalPrice state
+  const [clientSecret, setClientSecret] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
   const stripe = useStripe();
   const elements = useElements();
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const totalPrice = 121;
+    const fetchClientSecret = async (totalPrice) => {
+      try {
+        const response = await axios.post(
+          'http://localhost:5000/fusion/product/create-payment-intent',
+          {
+            amount: totalPrice * 100, // Convert to cents
+          }
+        );
+        setClientSecret(response.data.clientSecret);
+      } catch (error) {
+        console.error('Error fetching client secret:', error.message);
+        setError('Failed to fetch client secret');
+      }
+    };
+
+    fetchClientSecret(totalPrice);
+  }, [totalPrice]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const cardElement = elements.getElement(CardElement);
+    setLoading(true);
 
-    try {
-      const { data } = await axios.post('product/create-payment-intent', {
-        amount: calculateTotal() * 100,
-      });
+    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+      payment_method: {
+        card: elements.getElement(CardElement),
+      },
+    });
 
-      const { clientSecret } = data;
-
-      const paymentResult = await stripe.confirmCardPayment(clientSecret, {
-        payment_method: {
-          card: cardElement,
-        },
-      });
-
-      if (paymentResult.error) {
-        setError(`Payment failed: ${paymentResult.error.message}`);
-        setSuccess(false);
-      } else {
-        setError(null);
-        setSuccess(true);
-        onSubmit();
-      }
-    } catch (error) {
-      setError(`Payment failed: ${error.message}`);
-      setSuccess(false);
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      console.log('Payment successful', paymentIntent);
+      navigate('/PaymentSuccess');
+      setLoading(false);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CardElement />
-      <button type="submit" disabled={!stripe}>
-        Pay
-      </button>
-      {error && <div>{error}</div>}
-      {success && <div>Payment Successful!</div>}
-    </form>
+    <div className="container">
+      <h1>Checkout</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="cardElement">Card Details</label>
+          <CardElement id="cardElement" />
+        </div>
+        <button
+          type="submit"
+          className="btn btn-primary"
+          disabled={!stripe || !elements || loading}
+        >
+          {loading ? 'Processing...' : 'Pay'}
+        </button>
+      </form>
+      {error && <div className="alert alert-danger mt-3">{error}</div>}
+    </div>
   );
 };
 
-export default PaymentForm;
+export default CheckoutForm;

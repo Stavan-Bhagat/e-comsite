@@ -10,16 +10,31 @@ const {
 
 exports.createOrder = async (req, res) => {
   try {
-    const { name, address, items, totalAmount } = req.body;
+    const { name, address, items, totalAmount, paymentData } = req.body;
+    const paymentInfo = {
+      ...paymentData,
+      created: new Date(paymentData.created * 1000)
+    };
+
     const order = new Order({
       name,
       address,
       items,
-      totalAmount
+      totalAmount,
+      paymentInfo
     });
+
     await order.save();
+
+    const orderDetails = {
+      message: MSG_ORDER_CREATED,
+      order
+    };
+    io.to(userId).emit('orderCreated', orderDetails);
+    
     res.status(STATUS_CREATED).json({ message: MSG_ORDER_CREATED, order });
   } catch (error) {
+    console.error('Error creating order:', error);
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };

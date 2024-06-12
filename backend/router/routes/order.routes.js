@@ -4,6 +4,6 @@ const { createOrder, fetchOrder } = require('../../controller/order.controller')
 const authentication = require('../../middleware/authentication.middleware');
 
 orderRouter.get('/fetch-order', authentication, fetchOrder);
-orderRouter.post('/add-Order', createOrder);
+orderRouter.post('/add-order', createOrder);
 
 module.exports = orderRouter;

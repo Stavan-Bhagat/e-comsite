@@ -27,14 +27,12 @@ const authentication = async (req, res, next) => {
           .status(STATUS_TOKEN_EXPIRED)
           .json({ success: false, message: MSG_TOKEN_EXPIRED });
       } else {
-        console.error('JWT error:', error);
         return res
           .status(STATUS_UNAUTHORIZED)
           .json({ success: false, message: MSG_INVALID_ACCESS_TOKEN });
       }
     }
   } catch (error) {
-    console.error('Authentication middleware error:', error);
     res.status(STATUS_UNAUTHORIZED).json({ success: false, message: MSG_INVALID_ACCESS_TOKEN });
   }
 };

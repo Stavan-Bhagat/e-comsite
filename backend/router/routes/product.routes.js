@@ -16,7 +16,7 @@ const {
 const { uploadProductImages } = require('../../config/multer.config.js');
 const authentication = require('../../middleware/authentication.middleware');
 
-productRouter.get('/fetch-product-data', fetchProductData);
+productRouter.get('/fetch-product-data', authentication, fetchProductData);
 productRouter.get('/fetch-product/:id', fetchProduct);
 productRouter.get('/fetch-category-product', fetchCategoryProduct);
 productRouter.get('/fetch-product-by-category', fetchProductsByCategory);

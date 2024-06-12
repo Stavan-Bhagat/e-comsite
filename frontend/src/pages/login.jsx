@@ -12,7 +12,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import { loginSuccess, loginFailure } from '../redux/Slice/authSlice';
 // eslint-disable-next-line camelcase
-import { set_token } from '../constant/localStorage.constant';
 import { loginUser, registerUser } from '../utils/services/user.service';
 import checkEmail from '../images/checkEmail.jpg';
 import loginImage from '../images/login.avif';
@@ -55,11 +54,8 @@ const Login = () => {
     try {
       const response = await loginUser(data);
       const { success, message, accessToken, refreshToken, user } = response;
-      set_token(accessToken);
-      localStorage.setItem('refreshToken', refreshToken);
-
       if (success) {
-        dispatch(loginSuccess({ user, accessToken }));
+        dispatch(loginSuccess({ user, accessToken, refreshToken }));
       } else {
         return `login failed' ${message}`;
       }

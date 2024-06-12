@@ -1,16 +1,12 @@
 // src/components/BuyNowPage.js
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Typography, TextField, Button, Box } from '@mui/material';
+import { Container, Typography, TextField, Button, Box, Paper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
+import { useForm, Controller } from 'react-hook-form';
 import { placeOrder } from '../redux/Slice/orderSlice';
 
 const CheckOut = () => {
-  const [shippingDetails, setShippingDetails] = useState({
-    name: '',
-    address: '',
-  });
-
   const cartItems = useSelector((state) => state.cart.items);
   const totalAmount = useSelector((state) =>
     state.cart.items.reduce((total, item) => total + item.sellingPrice * item.quantity, 0)
@@ -19,70 +15,81 @@ const CheckOut = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setShippingDetails((prevDetails) => ({
-      ...prevDetails,
-      [name]: value,
-    }));
-  };
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      name: '',
+      address: '',
+    },
+  });
 
-  const handlePlaceOrder = () => {
+  const onSubmit = (data) => {
     const orderDetails = {
-      ...shippingDetails,
+      ...data,
       items: cartItems,
       totalAmount,
     };
 
     dispatch(placeOrder(orderDetails));
-    setShippingDetails({
-      name: '',
-      address: '',
-    });
-
     navigate('/confirmation');
   };
 
   return (
     <Container
       sx={{
-        width: '40%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        minHeight: '100vh',
+        padding: 4,
       }}
     >
-      <Box>
-        <Typography variant="h4" gutterBottom>
+      <Paper elevation={3} sx={{ padding: 4, width: '100%', maxWidth: 600 }}>
+        <Typography variant="h4" gutterBottom align="center">
           Checkout
         </Typography>
-        <TextField
-          name="name"
-          label="Name"
-          value={shippingDetails.name}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
-        <TextField
-          name="address"
-          label="Address"
-          value={shippingDetails.address}
-          onChange={handleInputChange}
-          fullWidth
-          margin="normal"
-        />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Controller
+            name="name"
+            control={control}
+            rules={{ required: 'Name is required' }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Name"
+                fullWidth
+                margin="normal"
+                error={!!errors.name}
+                helperText={errors.name ? errors.name.message : ''}
+              />
+            )}
+          />
+          <Controller
+            name="address"
+            control={control}
+            rules={{ required: 'Address is required' }}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Address"
+                fullWidth
+                margin="normal"
+                error={!!errors.address}
+                helperText={errors.address ? errors.address.message : ''}
+              />
+            )}
+          />
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handlePlaceOrder}
-          fullWidth
-          size="large"
-        >
-          Place Order
-        </Button>
-      </Box>
+          <Box sx={{ textAlign: 'center', mt: 2 }}>
+            <Button variant="contained" color="primary" type="submit" size="large">
+              Submit
+            </Button>
+          </Box>
+        </form>
+      </Paper>
     </Container>
   );
 };

@@ -22,13 +22,13 @@ export const remove_is_authenticated = () => {
 };
 // token
 export const get_token = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem('accessToken');
 };
 export const set_token = (setValue) => {
-  return localStorage.setItem('token', setValue);
+  return localStorage.setItem('accessToken', setValue);
 };
 export const remove_token = () => {
-  return localStorage.removeItem('token');
+  return localStorage.removeItem('accessToken');
 };
 // orders
 export const get_orders = () => {

@@ -54,7 +54,23 @@ const NotificationComponent = () => {
         enqueueSnackbar('Error handling new product notification.', { variant: 'error' });
       }
     });
+    socket.on('orderConfirmed', (orderNotification) => {
+      try {
+        dispatch(addNotification(orderNotification.orderDetails));
+        enqueueSnackbar('Your order has been placed successfully!', { variant: 'success' });
 
+        if (Notification.permission === 'granted') {
+          const options = {
+            body: `Order ID: ${orderNotification.orderDetails.orderId}`,
+            icon: '/path/to/notification-icon.svg',
+          };
+          new Notification(`Order Confirmed: ${orderNotification.orderDetails.orderId}`, options);
+        }
+      } catch (error) {
+        console.error('Error handling order confirmation notification:', error);
+        enqueueSnackbar('Error handling order confirmation notification.', { variant: 'error' });
+      }
+    });
     return () => {
       socket.disconnect();
     };

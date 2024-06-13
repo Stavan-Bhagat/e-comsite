@@ -2,7 +2,6 @@ const socket = require('../socket');
 const Product = require('../model/product.model.js');
 const Order = require('../model/order.model');
 const client = require('../config/elasticClient.config.js');
-const { io } = require('../socket');
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,

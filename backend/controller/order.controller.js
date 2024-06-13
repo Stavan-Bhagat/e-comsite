@@ -1,4 +1,6 @@
 const Order = require('../model/order.model');
+const User = require('../model/user.model');
+const socket = require('../socket');
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -8,9 +10,11 @@ const {
   MSG_INTERNAL_SERVER_ERROR
 } = require('../constant/errorMessage.constant');
 
+// const { io } = require('../socket');
+
 exports.createOrder = async (req, res) => {
   try {
-    const { name, address, items, totalAmount, paymentData } = req.body;
+    const { name, address, items, totalAmount, paymentData, userId } = req.body;
     const paymentInfo = {
       ...paymentData,
       created: new Date(paymentData.created * 1000)
@@ -30,15 +34,21 @@ exports.createOrder = async (req, res) => {
       message: MSG_ORDER_CREATED,
       order
     };
+
+    const io = socket.getIo();
     io.to(userId).emit('orderCreated', orderDetails);
-    
+    const admins = await User.find({ role: 'Admin' });
+
+    admins.forEach((admin) => {
+      io.to(admin._id).emit('orderCreated', orderDetails);
+    });
+
     res.status(STATUS_CREATED).json({ message: MSG_ORDER_CREATED, order });
   } catch (error) {
     console.error('Error creating order:', error);
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
-
 exports.fetchOrder = async (req, res) => {
   try {
     const orders = await Order.find();

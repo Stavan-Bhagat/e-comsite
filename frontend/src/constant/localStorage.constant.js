@@ -2,7 +2,11 @@
 
 // current user
 export const get_session_user = () => {
-  return JSON.parse(localStorage.getItem('user'));
+  const value = JSON.parse(localStorage.getItem('user'));
+  if (value) {
+    return value;
+  }
+  return null;
 };
 export const set_session_user = (setValue) => {
   return localStorage.setItem('user', JSON.stringify(setValue));

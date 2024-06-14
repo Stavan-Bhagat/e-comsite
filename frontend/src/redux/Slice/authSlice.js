@@ -15,7 +15,7 @@ import {
 
 const initialState = {
   isAuthenticated: get_is_authenticated() ? get_is_authenticated() : false,
-  user: get_session_user() ? get_session_user() : null,
+  user: get_session_user(),
   accessToken: get_token() ? get_token() : null,
   loading: false,
   error: null,

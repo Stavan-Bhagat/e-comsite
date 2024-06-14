@@ -15,6 +15,7 @@ const {
 exports.createOrder = async (req, res) => {
   try {
     const { name, address, items, totalAmount, paymentData, userId } = req.body;
+    console.log('uid', userId);
     const paymentInfo = {
       ...paymentData,
       created: new Date(paymentData.created * 1000)
@@ -27,28 +28,30 @@ exports.createOrder = async (req, res) => {
       totalAmount,
       paymentInfo
     });
-
+    console.log('order', order);
     await order.save();
 
     const orderDetails = {
-      message: MSG_ORDER_CREATED,
+      message: 'Order created',
       order
     };
 
     const io = socket.getIo();
     io.to(userId).emit('orderCreated', orderDetails);
-    const admins = await User.find({ role: 'Admin' });
 
+    const admins = await User.find({ role: 'Admin' });
+    console.log('admin', admins);
     admins.forEach((admin) => {
       io.to(admin._id).emit('orderCreated', orderDetails);
     });
 
-    res.status(STATUS_CREATED).json({ message: MSG_ORDER_CREATED, order });
+    res.status(STATUS_CREATED).json({ message: 'Order created', order });
   } catch (error) {
     console.error('Error creating order:', error);
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
   }
 };
+
 exports.fetchOrder = async (req, res) => {
   try {
     const orders = await Order.find();

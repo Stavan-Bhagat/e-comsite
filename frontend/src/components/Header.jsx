@@ -44,7 +44,7 @@ const Header = () => {
   const prevOpen = useRef(open);
   const [modalOpen, setModalOpen] = useState(false);
   const unreadCount = useSelector((state) => state?.notifications?.unreadCount);
-
+  console.log('1111111111111', unreadCount);
   const { enqueueSnackbar } = useSnackbar();
 
   const handleToggle = () => {

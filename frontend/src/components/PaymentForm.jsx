@@ -18,12 +18,12 @@ import {
   DialogTitle,
   Paper,
 } from '@mui/material';
-import image from '../images/successfinal.gif';
+import image from '../images/success.gif';
 import { clearCart } from '../redux/Slice/cartSlice';
 import axiosInstance from '../utils/axios';
 
 const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
-  const userId = useSelector((state) => state?.user?._id);
+  const userId = useSelector((state) => state?.auth?.user?._id);
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -154,7 +154,7 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
       >
         <DialogTitle id="alert-dialog-title">Order Placed Successfully</DialogTitle>
         <DialogContent>
-          <div className="w-75 h-75">
+          <div className="w-50 h-50">
             <img src={image} alt="success" />
           </div>
         </DialogContent>

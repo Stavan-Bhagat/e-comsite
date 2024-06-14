@@ -13,8 +13,8 @@ const NotificationComponent = () => {
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
-  const userId = useSelector((state) => state?.user?._id);
-  const isAdmin = useSelector((state) => state?.user?.role === 'Admin');
+  const userId = useSelector((state) => state?.auth?.user?._id);
+  const isAdmin = useSelector((state) => state?.auth?.user?.role === 'Admin');
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -40,7 +40,7 @@ const NotificationComponent = () => {
     // Listen for orderCreated event specific to the user
     socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
-        console.log('odietaileuser', orderNotification);
+        console.log('User order notification:', orderNotification);
         dispatch(addNotification(orderNotification.order));
         enqueueSnackbar('Your order has been placed successfully!', { variant: 'success' });
 
@@ -61,7 +61,7 @@ const NotificationComponent = () => {
     if (isAdmin) {
       socket.on('orderCreated', (orderNotification) => {
         try {
-          console.log('odietaile', orderNotification);
+          console.log('Admin order notification:', orderNotification);
           dispatch(addNotification(orderNotification.order));
           enqueueSnackbar(`New order placed by ${orderNotification.order.name}`, {
             variant: 'info',
@@ -80,6 +80,26 @@ const NotificationComponent = () => {
         }
       });
     }
+
+    // Listen for newProduct event
+    socket.on('newProduct', (productNotification) => {
+      try {
+        console.log('Product notification:', productNotification);
+        dispatch(addNotification(productNotification.product));
+        enqueueSnackbar('New product added!', { variant: 'info' });
+
+        if (Notification.permission === 'granted') {
+          const options = {
+            body: `Product: ${productNotification.product.productName}`,
+            icon: { notification },
+          };
+          new Notification('New Product Added', options);
+        }
+      } catch (error) {
+        console.error('Error handling new product notification:', error);
+        enqueueSnackbar('Error handling new product notification.', { variant: 'error' });
+      }
+    });
 
     return () => {
       socket.disconnect();

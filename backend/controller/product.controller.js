@@ -1,7 +1,6 @@
 const socket = require('../socket');
 const Product = require('../model/product.model.js');
 const Order = require('../model/order.model');
-const client = require('../config/elasticClient.config.js');
 const { io } = require('../socket');
 const {
   STATUS_SUCCESS,
@@ -183,35 +182,36 @@ exports.fetchProductsByCategory = async (req, res) => {
 
 exports.suggestions = async (req, res) => {
   try {
-    const searchQuery = req.query.search || '';
-
-    const response = await client.search({
-      index: 'products',
-      body: {
-        query: {
-          multi_match: {
-            query: searchQuery,
-            fields: ['productName', 'brandName', 'category']
-          }
-        }
-      }
-    });
-
-    console.log('Elasticsearch Response:', JSON.stringify(response, null, 2));
-
-    const responseBody = response.body || response;
-    console.log('Response Body:', JSON.stringify(responseBody, null, 2));
-
-    if (responseBody && responseBody.hits && responseBody.hits.hits) {
-      const suggestions = responseBody.hits.hits.map((hit) => hit._source);
-      console.log('Suggestions:', suggestions);
-      res.status(STATUS_SUCCESS).json(suggestions);
-    } else {
-      res.status(STATUS_SUCCESS).json([]);
+    const { search } = req.query;
+    console.log('Received query:', search);
+    if (!search) {
+      return res.status(400).json({ message: 'Query is required' });
     }
+
+    let type = 'text';
+    let products = [];
+
+    if (await Product.exists({ category: new RegExp(`^${search}$`, 'i') })) {
+      type = 'category';
+      products = await Product.find({ category: new RegExp(search, 'i') }).limit(10);
+    } else if (await Product.exists({ brandName: new RegExp(`^${search}$`, 'i') })) {
+      type = 'brandName';
+      products = await Product.find({ brandName: new RegExp(search, 'i') }).limit(10);
+    } else {
+      type = 'productName';
+      products = await Product.find({
+        $or: [
+          { productName: new RegExp(search, 'i') },
+          { brandName: new RegExp(search, 'i') },
+          { category: new RegExp(search, 'i') }
+        ]
+      }).limit(10);
+    }
+
+    res.status(200).json({ products, type, term: search });
   } catch (error) {
     console.error('Error fetching suggestions:', error);
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -226,61 +226,54 @@ exports.fetchOrders = async (req, res) => {
 };
 
 exports.searchProducts = async (req, res) => {
-  const { query } = req.body;
-  let searchType = 'product';
-  let term = query;
-
-  const categoryExists = await Product.findOne({ category: query }).exec();
-  if (categoryExists) {
-    searchType = 'category';
-  } else {
-    const brandExists = await Product.findOne({ brandName: query }).exec();
-    if (brandExists) {
-      searchType = 'brand';
-    }
-  }
-
-  let products;
   try {
-    switch (searchType) {
-      case 'category':
-        products = await Product.find({ category: term }).exec();
-        break;
-      case 'brand':
-        products = await Product.find({ brandName: term }).exec();
-        break;
-      case 'product':
-      default:
-        products = await Product.find({ productName: { $regex: term, $options: 'i' } }).exec();
-        break;
+    const { query } = req.query;
+    let searchQuery = {};
+    let type = 'text';
+    console.log('Received again query:', query);
+    const isCategory = await Product.exists({ category: query });
+    const isBrand = await Product.exists({ brandName: query });
+
+    if (isCategory) {
+      searchQuery = { category: query };
+      type = 'category';
+    } else if (isBrand) {
+      searchQuery = { brandName: query };
+      type = 'brand';
+    } else {
+      searchQuery = { productName: new RegExp(query, 'i') };
+      type = 'product';
     }
-    res.status(STATUS_SUCCESS).json({ type: searchType, term, data: products });
+
+    const products = await Product.find(searchQuery);
+    console.log('products', products);
+    res.status(200).json({ data: products, type, term: query });
   } catch (error) {
     console.error('Error fetching products:', error);
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const stripe = require('stripe')(process.env.STRIP_SECRET_KEY);
 
-  exports.payment = async (req, res) => {
-    const { amount } = req.body;
-    console.log('amounttt', amount);
-    try {
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount,
-        currency: 'usd'
-      });
-      console.log("paymentIntent",paymentIntent);
-      console.log("paymentIntent.client_secret",paymentIntent.client_secret);
-      res.status(200).json({
-        clientSecret: paymentIntent.client_secret
-      });
-    } catch (error) {
-      res.status(400).send({
-        error: {
-          message: error.message
-        }
-      });
-    }
-  };
+exports.payment = async (req, res) => {
+  const { amount } = req.body;
+  console.log('amounttt', amount);
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: 'usd'
+    });
+    console.log('paymentIntent', paymentIntent);
+    console.log('paymentIntent.client_secret', paymentIntent.client_secret);
+    res.status(200).json({
+      clientSecret: paymentIntent.client_secret
+    });
+  } catch (error) {
+    res.status(400).send({
+      error: {
+        message: error.message
+      }
+    });
+  }
+};

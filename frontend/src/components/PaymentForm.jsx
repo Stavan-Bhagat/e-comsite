@@ -2,9 +2,10 @@
 /* eslint-disable no-shadow */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios'; // Import axios library
-import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axios';
 
 const CheckoutForm = () => {
   const [totalPrice, setTotalPrice] = useState(100); // Define totalPrice state
@@ -14,15 +15,14 @@ const CheckoutForm = () => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-
   useEffect(() => {
     const totalPrice = 121;
     const fetchClientSecret = async (totalPrice) => {
       try {
-        const response = await axios.post(
+        const response = await axiosInstance.post(
           'http://localhost:5000/fusion/product/create-payment-intent',
           {
-            amount: totalPrice * 100, // Convert to cents
+            amount: totalPrice * 100,
           }
         );
         setClientSecret(response.data.clientSecret);

@@ -56,6 +56,8 @@ export const searchSuggestionProduct = async (query) => {
 };
 
 export const searchProduct = async (query) => {
-  const response = await axiosInstance.post('/fusion/product/search', { query });
+  const response = await axiosInstance.get('/fusion/product/search', {
+    params: { query },
+  });
   return response.data;
 };

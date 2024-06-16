@@ -8,16 +8,17 @@ import {
   List,
   ListItem,
   ListItemText,
+  Divider,
+  ListItemAvatar,
+  Avatar,
 } from '@mui/material';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
 import NewIcon from '@mui/icons-material/FiberNew';
-import Avatar from '@mui/material/Avatar';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearNotifications } from '../redux/Slice/notificationSlice';
 
 const NotificationModal = ({ open, handleClose }) => {
-  const notifications = useSelector((state) => state.notifications.items);
+  const notifications = useSelector((state) => state?.notifications?.items);
   const dispatch = useDispatch();
 
   const handleClear = () => {
@@ -30,18 +31,45 @@ const NotificationModal = ({ open, handleClose }) => {
       <DialogTitle sx={{ background: '#8e24aa', color: '#ffffff' }}>Notifications</DialogTitle>
       <DialogContent>
         <List>
-          {notifications.map((notification) => (
-            <ListItem key={notification._id}>
-              <ListItemText primary={<NewIcon sx={{ color: '#f44336' }} />} />
-              <ListItemText primary={notification.productName} sx={{ textOverflow: 'ellipsis' }} />
-              <ListItemAvatar>
-                <Avatar
-                  src={notification.productImage[0]}
-                  alt={notification.productName}
-                  style={{ borderRadius: '0%' }}
-                />
-              </ListItemAvatar>
-            </ListItem>
+          {notifications?.map((notification, index) => (
+            <React.Fragment key={notification._id}>
+              <ListItem>
+                {notification.type === 'product' ? (
+                  <>
+                    <ListItemAvatar>
+                      <Avatar src={notification.productImage[0]} alt={notification.productName} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      sx={{ textOverflow: 'ellipsis' }}
+                      primary={
+                        <>
+                          <NewIcon sx={{ color: '#f44336' }} />
+                          {` Product Is Here : ${notification.productName}`}
+                        </>
+                      }
+                      secondary={`Price: ₹ ${notification.sellingPrice}`}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ListItemAvatar>
+                      <Avatar alt="order Avatar" src={notification.items[0].productImage[0]} />
+                    </ListItemAvatar>
+                    <ListItemText
+                      sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
+                      primary={
+                        <>
+                          <span className="text-primary">Order Placed </span>{' '}
+                          {notification.items[0].productName}
+                        </>
+                      }
+                      secondary={`Price: ₹ ${notification.items[0].sellingPrice}, Quantity: ${notification.items[0].quantity}`}
+                    />
+                  </>
+                )}
+              </ListItem>
+              {index < notifications.length - 1 && <Divider />}
+            </React.Fragment>
           ))}
         </List>
       </DialogContent>

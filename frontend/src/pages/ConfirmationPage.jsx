@@ -9,6 +9,7 @@ import receiptTexture from '../images/texture.jpg';
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
   const cartData = useSelector((state) => state.cart.items);
+  console.log('cartdata', cartData);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 

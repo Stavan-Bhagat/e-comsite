@@ -56,3 +56,15 @@ export const set_cart = (setValue) => {
 export const remove_cart = () => {
   return localStorage.removeItem('cart');
 };
+// notification
+export const get_notification = () => {
+  const notification = localStorage.getItem('notification');
+  return notification ? JSON.parse(notification) : [];
+};
+
+export const set_notification = (setValue) => {
+  return localStorage.setItem('notification', JSON.stringify(setValue));
+};
+export const remove_notification = () => {
+  return localStorage.removeItem('notification');
+};

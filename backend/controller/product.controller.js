@@ -1,11 +1,7 @@
 const socket = require('../socket');
 const Product = require('../model/product.model.js');
 const Order = require('../model/order.model');
-
 const { io } = require('../socket');
-
-const client = require('../config/elasticClient.config.js');
-
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -84,8 +80,12 @@ exports.addProduct = async (req, res) => {
     });
 
     const createdProduct = await newProduct.save();
+
     const io = socket.getIo();
-    io.emit('newProduct', { message: 'New product added', product: createdProduct });
+    io.emit('newProduct', {
+      message: 'New product added',
+      product: createdProduct
+    });
 
     res.status(STATUS_CREATED).json({ message: 'New product added', createdProduct });
   } catch (e) {
@@ -112,8 +112,8 @@ exports.updateProduct = async (req, res) => {
     if (imageUrl && imageUrl.length > 0) {
       updateFields.productImage = imageUrl;
     }
-
     const updatedProduct = await Product.findByIdAndUpdate(productId, updateFields, { new: true });
+
     res.status(STATUS_SUCCESS).json({ message: MSG_PRODUCT_UPDATED, updatedProduct });
   } catch (e) {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
@@ -137,7 +137,7 @@ exports.deleteProduct = async (req, res) => {
 
 exports.fetchCategoryProduct = async (_req, res) => {
   try {
-    const productCategory = await Product.distinct('category');
+    const productCategory = await Product.distinct('category').limit(9);
 
     const productByCategory = [];
     for (const category of productCategory) {
@@ -164,7 +164,8 @@ exports.fetchCategoryProduct = async (_req, res) => {
 exports.fetchProductsByCategory = async (req, res) => {
   const { category } = req.query;
   try {
-    const response = await Product.find({ category });
+    const limit = 10;
+    const response = await Product.find({ category }).limit(limit);
     if (response.length > 0) {
       res.status(STATUS_SUCCESS).json({
         message: MSG_CATEGORY_PRODUCTS_FETCHED,
@@ -219,16 +220,6 @@ exports.suggestions = async (req, res) => {
   }
 };
 
-exports.fetchOrders = async (req, res) => {
-  try {
-    const orders = await Order.find();
-    res.status(STATUS_SUCCESS).json(orders);
-  } catch (error) {
-    console.error('Error fetching orders:', error);
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
-  }
-};
-
 exports.searchProducts = async (req, res) => {
   try {
     const { query } = req.query;
@@ -265,8 +256,6 @@ exports.searchProducts = async (req, res) => {
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
-
-const stripe = require('stripe')(process.env.STRIP_SECRET_KEY);
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 

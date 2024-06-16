@@ -2,11 +2,7 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-
-import axios from 'axios'; // Import axios library
-
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -24,7 +20,6 @@ import {
 } from '@mui/material';
 import image from '../images/success.gif';
 import { clearCart } from '../redux/Slice/cartSlice';
-
 import axiosInstance from '../utils/axios';
 
 const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
@@ -35,24 +30,16 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-
-
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
 
-
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const response = await axiosInstance.post(
+        const response = await axios.post(
           'http://localhost:5000/fusion/product/create-payment-intent',
-        {
-            amount: totalPrice * 100,
-          }
-
           { amount: totalAmount }
-
         );
         setClientSecret(response.data.clientSecret);
       } catch (error) {

@@ -23,6 +23,10 @@ const orderSchema = new mongoose.Schema(
         sellingPrice: {
           type: Number,
           required: true
+        },
+        productImage: {
+          type: [String],
+          required: true
         }
       }
     ],

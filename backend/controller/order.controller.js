@@ -40,9 +40,7 @@ exports.createOrder = async (req, res) => {
 
     const io = socket.getIo();
 
-    io.to(userId).emit('orderCreated:${userId}', orderDetails);
-
-    io.to(userId).emit('orderCreated', orderDetails);
+    io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
 
     const admins = await User.find({ role: 'Admin' });
     console.log('admin', admins);

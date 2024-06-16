@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-new */
 import React, { useEffect, useState } from 'react';
@@ -37,7 +38,13 @@ const NotificationComponent = () => {
 
     const socket = socketIOClient(SOCKET_SERVER_URL);
 
-    // Listen for orderCreated event specific to the user
+    if (userId) {
+      socket.emit('joinRoom', userId);
+    }
+    if (isAdmin) {
+      socket.emit('joinRoom', 'adminRoom');
+    }
+
     socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
         console.log('User order notification:', orderNotification);
@@ -47,7 +54,7 @@ const NotificationComponent = () => {
         if (Notification.permission === 'granted') {
           const options = {
             body: `Order ID: ${orderNotification.order._id}`,
-            icon: '../',
+            icon: '../', // Ensure this path is correct
           };
           new Notification(`Order Confirmed: ${orderNotification.order._id}`, options);
         }
@@ -57,7 +64,6 @@ const NotificationComponent = () => {
       }
     });
 
-    // Listen for orderCreated event for admins
     if (isAdmin) {
       socket.on('orderCreated', (orderNotification) => {
         try {
@@ -75,33 +81,26 @@ const NotificationComponent = () => {
             new Notification(`New Order: ${orderNotification.order._id}`, options);
           }
         } catch (error) {
-          console.error('Error handling new order notification:', error);
           enqueueSnackbar('Error handling new order notification.', { variant: 'error' });
         }
       });
     }
 
-    // Listen for newProduct event
     socket.on('newProduct', (productNotification) => {
       try {
-        console.log('Product notification:', productNotification);
-
-        dispatch(addNotification(productNotification.createdProduct));
-
-        dispatch(addNotification(productNotification.product));
+        const newProduct = { ...productNotification.product, type: 'product' };
+        dispatch(addNotification(newProduct));
 
         enqueueSnackbar('New product added!', { variant: 'info' });
 
         if (Notification.permission === 'granted') {
           const options = {
-            body: `Product: ${productNotification.createdProduct.productName}`,
-
+            body: `Product: ${productNotification.productName}`,
             icon: { notification },
           };
           new Notification('New Product Added', options);
         }
       } catch (error) {
-        console.error('Error handling new product notification:', error);
         enqueueSnackbar('Error handling new product notification.', { variant: 'error' });
       }
     });

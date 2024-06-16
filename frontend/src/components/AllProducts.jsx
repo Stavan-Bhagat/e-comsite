@@ -196,6 +196,12 @@ const AllProducts = () => {
       message: 'Are you sure you want to delete it?',
       buttons: [
         {
+          label: 'No',
+          onClick: () => {
+            enqueueSnackbar('Deletion canceled', { variant: 'info' });
+          },
+        },
+        {
           label: 'Yes',
           onClick: async () => {
             try {
@@ -208,12 +214,6 @@ const AllProducts = () => {
                 { variant: 'error' }
               );
             }
-          },
-        },
-        {
-          label: 'No',
-          onClick: () => {
-            enqueueSnackbar('Deletion canceled', { variant: 'info' });
           },
         },
       ],

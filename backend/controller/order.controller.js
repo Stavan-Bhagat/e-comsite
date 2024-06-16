@@ -1,4 +1,6 @@
 const Order = require('../model/order.model');
+const User = require('../model/user.model');
+const socket = require('../socket');
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -7,6 +9,8 @@ const {
   MSG_ORDERS_FETCHED,
   MSG_INTERNAL_SERVER_ERROR
 } = require('../constant/errorMessage.constant');
+
+// const { io } = require('../socket');
 
 exports.createOrder = async (req, res) => {
   try {
@@ -35,7 +39,10 @@ exports.createOrder = async (req, res) => {
     };
 
     const io = socket.getIo();
+
     io.to(userId).emit('orderCreated:${userId}', orderDetails);
+
+    io.to(userId).emit('orderCreated', orderDetails);
 
     const admins = await User.find({ role: 'Admin' });
     console.log('admin', admins);

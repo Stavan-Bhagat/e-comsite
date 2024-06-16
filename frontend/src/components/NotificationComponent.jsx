@@ -85,12 +85,17 @@ const NotificationComponent = () => {
     socket.on('newProduct', (productNotification) => {
       try {
         console.log('Product notification:', productNotification);
+
         dispatch(addNotification(productNotification.createdProduct));
+
+        dispatch(addNotification(productNotification.product));
+
         enqueueSnackbar('New product added!', { variant: 'info' });
 
         if (Notification.permission === 'granted') {
           const options = {
             body: `Product: ${productNotification.createdProduct.productName}`,
+
             icon: { notification },
           };
           new Notification('New Product Added', options);

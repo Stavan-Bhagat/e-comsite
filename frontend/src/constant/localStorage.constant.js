@@ -2,7 +2,11 @@
 
 // current user
 export const get_session_user = () => {
-  return JSON.parse(localStorage.getItem('user'));
+  const value = JSON.parse(localStorage.getItem('user'));
+  if (value) {
+    return value;
+  }
+  return null;
 };
 export const set_session_user = (setValue) => {
   return localStorage.setItem('user', JSON.stringify(setValue));
@@ -22,13 +26,13 @@ export const remove_is_authenticated = () => {
 };
 // token
 export const get_token = () => {
-  return localStorage.getItem('token');
+  return localStorage.getItem('accessToken');
 };
 export const set_token = (setValue) => {
-  return localStorage.setItem('token', setValue);
+  return localStorage.setItem('accessToken', setValue);
 };
 export const remove_token = () => {
-  return localStorage.removeItem('token');
+  return localStorage.removeItem('accessToken');
 };
 // orders
 export const get_orders = () => {

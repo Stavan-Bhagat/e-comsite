@@ -24,7 +24,6 @@ const App = () => {
   const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
   return (
     <Router>
-      {/* <Elements stripe={stripePromise}> */}
       <StripeProvider>
         <NotificationComponent />
         <Routes>
@@ -39,7 +38,6 @@ const App = () => {
           <Route path="/paymentform" element={<PaymentForm />} />
           <Route path="/confirmation" element={<ConfirmationPage />} />
         </Routes>
-        {/* </Elements> */}
       </StripeProvider>
     </Router>
   );

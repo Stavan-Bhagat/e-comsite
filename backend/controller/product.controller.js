@@ -1,7 +1,11 @@
 const socket = require('../socket');
 const Product = require('../model/product.model.js');
 const Order = require('../model/order.model');
+
 const { io } = require('../socket');
+
+const client = require('../config/elasticClient.config.js');
+
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -81,11 +85,11 @@ exports.addProduct = async (req, res) => {
 
     const createdProduct = await newProduct.save();
     const io = socket.getIo();
-    io.emit('newProduct', { message: MSG_PRODUCT_ADDED, createdProduct });
+    io.emit('newProduct', { message: 'New product added', product: createdProduct });
 
-    res.status(STATUS_CREATED).json({ message: MSG_PRODUCT_ADDED, createdProduct });
+    res.status(STATUS_CREATED).json({ message: 'New product added', createdProduct });
   } catch (e) {
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error: e });
   }
 };
 
@@ -264,6 +268,8 @@ exports.searchProducts = async (req, res) => {
 
 const stripe = require('stripe')(process.env.STRIP_SECRET_KEY);
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 exports.payment = async (req, res) => {
   const { amount } = req.body;
   console.log('amounttt', amount);
@@ -272,8 +278,10 @@ exports.payment = async (req, res) => {
       amount,
       currency: 'usd'
     });
+
     console.log('paymentIntent', paymentIntent);
     console.log('paymentIntent.client_secret', paymentIntent.client_secret);
+
     res.status(200).json({
       clientSecret: paymentIntent.client_secret
     });

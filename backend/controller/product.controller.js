@@ -228,25 +228,33 @@ exports.fetchOrders = async (req, res) => {
 exports.searchProducts = async (req, res) => {
   try {
     const { query } = req.query;
-    let searchQuery = {};
-    let type = 'text';
+    if (!query) {
+      return res.status(400).json({ message: 'Query is required' });
+    }
+
     console.log('Received again query:', query);
-    const isCategory = await Product.exists({ category: query });
-    const isBrand = await Product.exists({ brandName: query });
+
+    const searchRegex = new RegExp(query, 'i');
+
+    const isCategory = await Product.exists({ category: searchRegex });
+    const isBrand = await Product.exists({ brandName: searchRegex });
+
+    let searchQuery = {};
+    let type = 'productName';
 
     if (isCategory) {
-      searchQuery = { category: query };
+      searchQuery = { category: searchRegex };
       type = 'category';
     } else if (isBrand) {
-      searchQuery = { brandName: query };
-      type = 'brand';
+      searchQuery = { brandName: searchRegex };
+      type = 'brandName';
     } else {
-      searchQuery = { productName: new RegExp(query, 'i') };
-      type = 'product';
+      searchQuery = { productName: searchRegex };
     }
 
     const products = await Product.find(searchQuery);
     console.log('products', products);
+
     res.status(200).json({ data: products, type, term: query });
   } catch (error) {
     console.error('Error fetching products:', error);

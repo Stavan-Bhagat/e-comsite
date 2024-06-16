@@ -111,7 +111,7 @@ const Header = () => {
         const response = await searchSuggestionProduct(query);
         setSuggestions(Array.isArray(response.products) ? response.products : []);
       } catch (error) {
-        enqueueSnackbar('Failed to fetch suggestions.', { variant: 'error' });
+        enqueueSnackbar('Product Not found', { variant: 'error' });
       }
     } else {
       setSuggestions([]);
@@ -122,11 +122,11 @@ const Header = () => {
     e.preventDefault();
     try {
       const response = await searchProduct(search);
-
-      if (response.data.length > 1) {
-        navigate(`/product/details/${response.data[0]._id}`);
+      const { type, term } = response;
+      if (response.data.length > 0) {
+        navigate(`/product/search/${type}/${term}`);
       } else {
-        navigate(`/product/search/${search}`);
+        enqueueSnackbar(`Product Not Found`, { variant: 'error' });
       }
     } catch (error) {
       enqueueSnackbar(`Error fetching products: ${error.message}`, { variant: 'error' });

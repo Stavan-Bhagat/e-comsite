@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
 import socketIOClient from 'socket.io-client';
 import { addNotification } from '../redux/Slice/notificationSlice';
+import notification from '../images/notification.svg';
 
 const SOCKET_SERVER_URL = 'http://localhost:5000';
 
@@ -12,6 +13,8 @@ const NotificationComponent = () => {
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
+  const userId = useSelector((state) => state?.auth?.user?._id);
+  const isAdmin = useSelector((state) => state?.auth?.user?.role === 'Admin');
 
   useEffect(() => {
     const requestNotificationPermission = async () => {
@@ -34,20 +37,63 @@ const NotificationComponent = () => {
 
     const socket = socketIOClient(SOCKET_SERVER_URL);
 
-    socket.on('newProduct', (notification) => {
+    // Listen for orderCreated event specific to the user
+    socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
-        dispatch(addNotification(notification.createdProduct));
-        enqueueSnackbar(notification.message, { variant: 'info' });
+        console.log('User order notification:', orderNotification);
+        dispatch(addNotification(orderNotification.order));
+        enqueueSnackbar('Your order has been placed successfully!', { variant: 'success' });
 
         if (Notification.permission === 'granted') {
           const options = {
-            body: `ProductName: ${notification.createdProduct.productName}`,
-            icon: '/path/to/notification-icon.svg',
+            body: `Order ID: ${orderNotification.order._id}`,
+            icon: '../',
           };
-          new Notification(
-            `New product added: ${notification.createdProduct.productName}`,
-            options
-          );
+          new Notification(`Order Confirmed: ${orderNotification.order._id}`, options);
+        }
+      } catch (error) {
+        console.error('Error handling order confirmation notification:', error);
+        enqueueSnackbar('Error handling order confirmation notification.', { variant: 'error' });
+      }
+    });
+
+    // Listen for orderCreated event for admins
+    if (isAdmin) {
+      socket.on('orderCreated', (orderNotification) => {
+        try {
+          console.log('Admin order notification:', orderNotification);
+          dispatch(addNotification(orderNotification.order));
+          enqueueSnackbar(`New order placed by ${orderNotification.order.name}`, {
+            variant: 'info',
+          });
+
+          if (Notification.permission === 'granted') {
+            const options = {
+              body: `Order ID: ${orderNotification.order._id}`,
+              icon: { notification },
+            };
+            new Notification(`New Order: ${orderNotification.order._id}`, options);
+          }
+        } catch (error) {
+          console.error('Error handling new order notification:', error);
+          enqueueSnackbar('Error handling new order notification.', { variant: 'error' });
+        }
+      });
+    }
+
+    // Listen for newProduct event
+    socket.on('newProduct', (productNotification) => {
+      try {
+        console.log('Product notification:', productNotification);
+        dispatch(addNotification(productNotification.createdProduct));
+        enqueueSnackbar('New product added!', { variant: 'info' });
+
+        if (Notification.permission === 'granted') {
+          const options = {
+            body: `Product: ${productNotification.createdProduct.productName}`,
+            icon: { notification },
+          };
+          new Notification('New Product Added', options);
         }
       } catch (error) {
         console.error('Error handling new product notification:', error);
@@ -58,7 +104,7 @@ const NotificationComponent = () => {
     return () => {
       socket.disconnect();
     };
-  }, [notificationPermission, enqueueSnackbar, dispatch]);
+  }, [notificationPermission, enqueueSnackbar, dispatch, userId, isAdmin]);
 
   return null;
 };

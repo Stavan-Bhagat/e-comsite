@@ -137,8 +137,8 @@ exports.deleteProduct = async (req, res) => {
 
 exports.fetchCategoryProduct = async (_req, res) => {
   try {
-    const productCategory = await Product.distinct('category').limit(9);
-
+    const allCategories = await Product.distinct('category');
+    const productCategory = allCategories.slice(0, 12);
     const productByCategory = [];
     for (const category of productCategory) {
       const product = await Product.findOne({ category });

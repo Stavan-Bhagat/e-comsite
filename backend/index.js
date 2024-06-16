@@ -16,7 +16,12 @@ database();
 app.use(express.json());
 app.use(
   cors({
-    origin: ['http://localhost:3000', 'http://localhost:3000/']
+    origin: [
+      'http://localhost:3000',
+      'http://localhost:3000/',
+      'e-comsite-three.vercel.app',
+      'e-comsite-three.vercel.app/'
+    ]
   })
 );
 

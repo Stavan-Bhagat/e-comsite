@@ -7,7 +7,6 @@ const {
   deleteProduct,
   updateProduct,
   fetchCategoryProduct,
-  fetchOrders,
   fetchProductsByCategory,
   suggestions,
   searchProducts,
@@ -21,7 +20,6 @@ productRouter.get('/fetch-product/:id', fetchProduct);
 productRouter.get('/fetch-category-product', fetchCategoryProduct);
 productRouter.get('/fetch-product-by-category', fetchProductsByCategory);
 productRouter.get('/suggestions', suggestions);
-productRouter.get('/orders', authentication, fetchOrders);
 productRouter.get('/search', searchProducts);
 productRouter.post('/add-product', uploadProductImages.array('images', 5), addProduct);
 productRouter.post('/create-payment-intent', payment);

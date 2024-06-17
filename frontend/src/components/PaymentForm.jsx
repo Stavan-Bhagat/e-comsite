@@ -38,7 +38,8 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
     const fetchClientSecret = async () => {
       try {
         const response = await axios.post(
-          'http://localhost:5000/fusion/product/create-payment-intent',
+          // 'http://localhost:5000/fusion/product/create-payment-intent',
+          `${process.env.REACT_APP_BASEURL}/fusion/product/create-payment-intent`,
           { amount: totalAmount }
         );
         setClientSecret(response.data.clientSecret);

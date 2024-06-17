@@ -261,7 +261,6 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.payment = async (req, res) => {
   const { amount } = req.body;
-  console.log('amounttt', amount);
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,

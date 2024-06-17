@@ -19,8 +19,8 @@ app.use(
     origin: [
       'http://localhost:3000',
       'http://localhost:3000/',
-      'e-comsite-three.vercel.app',
-      'e-comsite-three.vercel.app/'
+      'https://e-comsite-three.vercel.app',
+      'https://e-comsite-three.vercel.app/'
     ]
   })
 );

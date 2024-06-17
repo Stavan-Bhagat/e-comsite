@@ -25,7 +25,6 @@ const NotificationComponent = () => {
           setNotificationPermission(permission);
         }
       } catch (error) {
-        console.error('Notification permission request failed:', error);
         enqueueSnackbar('Failed to request notification permission.', { variant: 'error' });
       }
     };
@@ -47,7 +46,6 @@ const NotificationComponent = () => {
 
     socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
-        console.log('User order notification:', orderNotification);
         dispatch(addNotification(orderNotification.order));
         enqueueSnackbar('Your order has been placed successfully!', { variant: 'success' });
 

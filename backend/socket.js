@@ -20,7 +20,6 @@ module.exports = {
 
     io = socketIo;
 
-    // Initialize socket event handling
     io.on('connection', (socket) => {
       console.log('A user connected');
 

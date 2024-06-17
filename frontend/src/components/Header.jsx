@@ -22,6 +22,7 @@ import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
 import { logout } from '../redux/Slice/authSlice';
 import { searchSuggestionProduct, searchProduct } from '../utils/services/product.service';
+import { addCartData } from '../utils/services/cart.service';
 import Profile from './Profile';
 // eslint-disable-next-line import/no-cycle
 import AdminPanel from '../pages/AdminPanel';
@@ -85,7 +86,8 @@ const Header = () => {
     prevOpen.current = open;
   }, [open]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await addCartData(user._id, cart);
     dispatch(logout());
     navigate('/');
   };

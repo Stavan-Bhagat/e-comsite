@@ -8,7 +8,7 @@ import socketIOClient from 'socket.io-client';
 import { addNotification } from '../redux/Slice/notificationSlice';
 import notification from '../images/notification.svg';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';
+const SOCKET_SERVER_URL = process.env.REACT_APP_BASEURL;
 
 const NotificationComponent = () => {
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);

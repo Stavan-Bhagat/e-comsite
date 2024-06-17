@@ -13,7 +13,7 @@ module.exports = {
 
     const socketIo = require('socket.io')(server, {
       cors: {
-        origin: process.env.CLIENT_ORIGIN || 'http://localhost:3000',
+        origin: [process.env.CLIENT_ORIGIN, 'http://localhost:3000'],
         methods: ['GET', 'POST']
       }
     });

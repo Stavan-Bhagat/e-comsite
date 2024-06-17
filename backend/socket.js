@@ -1,5 +1,5 @@
 let io;
-const User = require('./model/user.model'); // Adjust the path to your User model
+const User = require('./model/user.model');
 const {
   MSG_SOCKET_IO_NOT_INITIALIZED,
   MSG_SERVER_INSTANCE_REQUIRED

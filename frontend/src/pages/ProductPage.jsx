@@ -1,4 +1,5 @@
 /* eslint-disable react/no-array-index-key */
+
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, Button, Snackbar, Skeleton } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -51,6 +52,7 @@ const ProductPage = () => {
 
   const handleCart = () => {
     dispatch(addToCart(product));
+    console.log('cart', product);
     setToast(true);
   };
 

@@ -1,8 +1,14 @@
 const Cart = require('../model/cart.model');
 const User = require('../model/user.model');
+const {
+  STATUS_BAD_REQUEST,
+  STATUS_SUCCESS,
+  STATUS_INTERNAL_SERVER_ERROR,
+  MSG_INTERNAL_SERVER_ERROR
+} = require('../constant/errorMessage.constant');
 exports.fetchCart = async (req, res) => {
-  const { userId } = req.params;
-
+  const { userId } = req.query;
+  console.log('ddddd', userId);
   try {
     const cart = await Cart.findOne({ userId }).populate('items.productId');
     if (!cart) {
@@ -19,54 +25,53 @@ exports.fetchCart = async (req, res) => {
 exports.addToCart = async (req, res) => {
   const { userId } = req.query;
   const { cartData } = req.body;
-
-  console.log('Adding to cart for user', userId, cartData);
+  console.log(cartData);
 
   try {
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(STATUS_BAD_REQUEST).json({ message: 'User not found' });
+      return res.status(400).json({ message: 'User not found' });
     }
 
     let cart = await Cart.findOne({ userId });
-    if (cart) {
-      console.log('Existing cart found:', cart);
-
-      cartData.forEach((item) => {
-        if (item.productName && item.sellingPrice) {
-          cart.items.push({
-            productId: item._id,
-            productName: item.productName,
-            productImage: item.productImage,
-            quantity: item.quantity || 1,
-            sellingPrice: item.sellingPrice
-          });
-        }
-      });
-
-      await cart.save();
+    if (!cart) {
+      cart = new Cart({ userId, items: [] });
     } else {
-      console.log('No existing cart, creating new one.');
-      cart = new Cart({
-        userId,
-        items: cartData.map((item) => ({
+      // Clear existing items if the cart is to be reset
+      cart.items = [];
+    }
+
+    // Add items to cart only if they are not empty
+    if (cartData && Array.isArray(cartData) && cartData.length > 0) {
+      cartData.forEach((item) => {
+        if (!item._id || !item.productName || !item.sellingPrice) {
+          return res.status(400).json({ message: 'Cart item is missing required fields' });
+        }
+        cart.items.push({
           productId: item._id,
           productName: item.productName,
           productImage: item.productImage,
           quantity: item.quantity || 1,
           sellingPrice: item.sellingPrice
-        }))
+        });
       });
-
-      await cart.save();
     }
 
-    return res.status(201).json({ message: 'Cart updated successfully', cart });
+    // Only save the cart if it has items
+    if (cart.items.length > 0) {
+      await cart.save();
+      res.status(201).json({ message: 'Cart updated successfully', cart });
+    } else {
+      // Optionally, remove the cart from the database if it's empty
+      await Cart.deleteOne({ userId });
+      res.status(204).json({ message: 'Cart is empty and has been removed' });
+    }
   } catch (error) {
-    console.error('Error adding cart data:', error);
-    return res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
+    console.error('Error adding cart data:', error.message);
+    res.status(500).json({ message: 'Internal server error', details: error.message });
   }
 };
+
 exports.removeCart = async (req, res) => {
   const { userId } = req.params;
   try {

@@ -1,5 +1,7 @@
+/* eslint-disable import/no-cycle */
 /* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
+
 import { createSlice } from '@reduxjs/toolkit';
 import {
   set_session_user,
@@ -42,7 +44,7 @@ const authSlice = createSlice({
       state.user = null;
       state.accessToken = null;
       state.loading = false;
-      state.error = null;
+      state.error = 'Login failed';
     },
 
     logout: (state) => {

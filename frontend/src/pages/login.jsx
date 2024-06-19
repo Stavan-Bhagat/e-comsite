@@ -6,16 +6,17 @@ import '../css/register.css';
 import CryptoJS from 'crypto-js';
 import { useNavigate } from 'react-router';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
-import { useDispatch } from 'react-redux';
 import Grid from '@mui/material/Grid';
+import { useDispatch } from 'react-redux';
 import CircularProgress from '@mui/material/CircularProgress';
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import { fetchCartData } from '../utils/services/cart.service';
 import { loginSuccess, loginFailure } from '../redux/Slice/authSlice';
-// eslint-disable-next-line camelcase
 import { loginUser, registerUser } from '../utils/services/user.service';
 import checkEmail from '../images/checkEmail.jpg';
 import loginImage from '../images/login.avif';
 import Header from '../components/Header';
+import { addToCart } from '../redux/Slice/cartSlice';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -50,17 +51,37 @@ const Login = () => {
     setSelectedFile(event.target.files[0]);
   };
 
+  const fetchCart = async (userId) => {
+    try {
+      const data = await fetchCartData(userId);
+      data.items.forEach((cartItem) => {
+        const item = {
+          _id: cartItem.productId._id,
+          productName: cartItem.productId.productName,
+          productImage: cartItem.productId.productImage,
+          quantity: cartItem.quantity,
+          sellingPrice: cartItem.sellingPrice,
+        };
+        dispatch(addToCart(item));
+      });
+    } catch (error) {
+      console.error('Error fetching cart data:', error);
+    }
+  };
+
   const handleLogin = async (data) => {
     try {
       const response = await loginUser(data);
       const { success, message, accessToken, refreshToken, user } = response;
       if (success) {
         dispatch(loginSuccess({ user, accessToken, refreshToken }));
+        await fetchCart(user._id);
       } else {
-        return `login failed' ${message}`;
+        enqueueSnackbar(`Login failed: ${message}`, { variant: 'error' });
       }
     } catch (e) {
       dispatch(loginFailure(e.message));
+      enqueueSnackbar(`Login failed: ${e.message}`, { variant: 'error' });
     }
   };
 

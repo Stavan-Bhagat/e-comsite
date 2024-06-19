@@ -44,17 +44,15 @@ const NotificationComponent = () => {
     if (isAdmin) {
       socket.emit('joinRoom', 'adminRoom');
     }
-
     socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
-        console.log('User order notification:', orderNotification);
         dispatch(addNotification(orderNotification.order));
         enqueueSnackbar('Your order has been placed successfully!', { variant: 'success' });
 
         if (Notification.permission === 'granted') {
           const options = {
             body: `Order ID: ${orderNotification.order._id}`,
-            icon: '../', // Ensure this path is correct
+            icon: '../images/notification.svg',
           };
           new Notification(`Order Confirmed: ${orderNotification.order._id}`, options);
         }
@@ -67,7 +65,6 @@ const NotificationComponent = () => {
     if (isAdmin) {
       socket.on('orderCreated', (orderNotification) => {
         try {
-          console.log('Admin order notification:', orderNotification);
           dispatch(addNotification(orderNotification.order));
           enqueueSnackbar(`New order placed by ${orderNotification.order.name}`, {
             variant: 'info',

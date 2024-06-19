@@ -19,6 +19,7 @@ import { clearNotifications } from '../redux/Slice/notificationSlice';
 
 const NotificationModal = ({ open, handleClose }) => {
   const notifications = useSelector((state) => state?.notifications?.items);
+  console.log('notification', notifications);
   const dispatch = useDispatch();
 
   const handleClear = () => {
@@ -59,7 +60,13 @@ const NotificationModal = ({ open, handleClose }) => {
                       sx={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}
                       primary={
                         <>
-                          <span className="text-primary">Order Placed </span>{' '}
+                          {notification.userName ? (
+                            <span className="text-primary">
+                              Order Placed by {notification.name}
+                            </span>
+                          ) : (
+                            <span className="text-primary">Order Placed</span>
+                          )}
                           {notification.items[0].productName}
                         </>
                       }

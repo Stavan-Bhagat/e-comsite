@@ -8,7 +8,7 @@ import socketIOClient from 'socket.io-client';
 import { addNotification } from '../redux/Slice/notificationSlice';
 import notification from '../images/notification.svg';
 
-const SOCKET_SERVER_URL = process.env.REACT_APP_BASEURL;
+const SOCKET_SERVER_URL = 'http://localhost:5000';
 
 const NotificationComponent = () => {
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
@@ -25,6 +25,7 @@ const NotificationComponent = () => {
           setNotificationPermission(permission);
         }
       } catch (error) {
+        console.error('Notification permission request failed:', error);
         enqueueSnackbar('Failed to request notification permission.', { variant: 'error' });
       }
     };
@@ -43,7 +44,6 @@ const NotificationComponent = () => {
     if (isAdmin) {
       socket.emit('joinRoom', 'adminRoom');
     }
-
     socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
         dispatch(addNotification(orderNotification.order));
@@ -52,7 +52,7 @@ const NotificationComponent = () => {
         if (Notification.permission === 'granted') {
           const options = {
             body: `Order ID: ${orderNotification.order._id}`,
-            icon: '../', // Ensure this path is correct
+            icon: '../images/notification.svg',
           };
           new Notification(`Order Confirmed: ${orderNotification.order._id}`, options);
         }
@@ -65,7 +65,6 @@ const NotificationComponent = () => {
     if (isAdmin) {
       socket.on('orderCreated', (orderNotification) => {
         try {
-          console.log('Admin order notification:', orderNotification);
           dispatch(addNotification(orderNotification.order));
           enqueueSnackbar(`New order placed by ${orderNotification.order.name}`, {
             variant: 'info',

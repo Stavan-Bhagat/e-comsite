@@ -18,6 +18,7 @@ import Header from '../components/Header';
 import AllUsers from '../components/AllUsers';
 import AllProducts from '../components/AllProducts';
 import OrderDetails from '../components/OrderDetails';
+import { MESSAGES } from '../constant/messages.constant';
 
 const AdminPanel = () => {
   const theme = useTheme();
@@ -29,9 +30,9 @@ const AdminPanel = () => {
   };
 
   const sidebarItems = [
-    { text: 'All Users', icon: <PeopleIcon /> },
-    { text: 'All Products', icon: <ShoppingBasketIcon /> },
-    { text: 'Order Details', icon: <ReceiptIcon /> },
+    { text: MESSAGES.CONSTANT_NAME.USERS, icon: <PeopleIcon /> },
+    { text: MESSAGES.CONSTANT_NAME.PRODUCTS, icon: <ShoppingBasketIcon /> },
+    { text: MESSAGES.CONSTANT_NAME.ORDERS, icon: <ReceiptIcon /> },
   ];
 
   const renderSidebar = () => (

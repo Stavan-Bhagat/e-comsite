@@ -17,6 +17,7 @@ import checkEmail from '../images/checkEmail.jpg';
 import loginImage from '../images/login.avif';
 import Header from '../components/Header';
 import { addToCart } from '../redux/Slice/cartSlice';
+import { MESSAGES } from '../constant/messages.constant';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ const Login = () => {
         dispatch(addToCart(item));
       });
     } catch (error) {
-      console.error('Error fetching cart data:', error);
+      console.error(MESSAGES.ERROR.CART_FETCH_FAILED, error);
     }
   };
 
@@ -77,11 +78,11 @@ const Login = () => {
         dispatch(loginSuccess({ user, accessToken, refreshToken }));
         await fetchCart(user._id);
       } else {
-        enqueueSnackbar(`Login failed: ${message}`, { variant: 'error' });
+        enqueueSnackbar(`${MESSAGES.ERROR.LOGIN_FAILED} ${message}`, { variant: 'error' });
       }
     } catch (e) {
       dispatch(loginFailure(e.message));
-      enqueueSnackbar(`Login failed: ${e.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.ERROR.LOGIN_FAILED} ${e.message}`, { variant: 'error' });
     }
   };
 
@@ -105,7 +106,7 @@ const Login = () => {
       setLoading(false);
       setVerificationSent(true);
     } catch (error) {
-      enqueueSnackbar(`Failed to register the user. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.REGISTER_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }
@@ -118,6 +119,7 @@ const Login = () => {
       handleRegister(data);
     }
   };
+
   if (loading) {
     return (
       <Box
@@ -130,7 +132,7 @@ const Login = () => {
       >
         <CircularProgress color="secondary" />
         <Typography mt={2}>
-          Processing your request
+          {MESSAGES.INFO.PROCESSING_REQUEST}
           <SentimentVerySatisfiedIcon className="px-2" />
         </Typography>
       </Box>
@@ -177,8 +179,7 @@ const Login = () => {
                       Verify Your Email
                     </Typography>
                     <Typography variant="body1" align="center" gutterBottom>
-                      Please check your email to verify your account within 5 minutes, If you
-                      haven&apos;t received the email, please register again
+                      {MESSAGES.INFO.VERIFY_EMAIL}
                     </Typography>
                     <Card sx={{ maxWidth: 400, margin: 'auto' }}>
                       <CardMedia
@@ -201,10 +202,10 @@ const Login = () => {
                         label="Email"
                         variant="outlined"
                         {...register('email', {
-                          required: 'Email is required',
+                          required: MESSAGES.FORMS.VALIDATION.EMAIL_REQUIRED,
                           pattern: {
                             value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                            message: 'Invalid email address',
+                            message: MESSAGES.FORMS.VALIDATION.EMAIL_INVALID,
                           },
                         })}
                         error={!!errors.email}
@@ -217,10 +218,10 @@ const Login = () => {
                         type="password"
                         variant="outlined"
                         {...register('password', {
-                          required: 'Password is required',
+                          required: MESSAGES.FORMS.VALIDATION.PASSWORD_REQUIRED,
                           minLength: {
                             value: 6,
-                            message: 'Password must be at least 6 characters',
+                            message: MESSAGES.FORMS.VALIDATION.PASSWORD_MIN_LENGTH,
                           },
                         })}
                         error={!!errors.password}
@@ -256,7 +257,7 @@ const Login = () => {
                         label="Name"
                         variant="outlined"
                         {...register('name', {
-                          required: 'Name is required',
+                          required: MESSAGES.FORMS.VALIDATION.NAME_REQUIRED,
                         })}
                         error={!!errors.name}
                         helperText={errors.name ? errors.name.message : ''}
@@ -267,10 +268,10 @@ const Login = () => {
                         label="Email"
                         variant="outlined"
                         {...register('email', {
-                          required: 'Email is required',
+                          required: MESSAGES.FORMS.VALIDATION.EMAIL_REQUIRED,
                           pattern: {
                             value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                            message: 'Invalid email address',
+                            message: MESSAGES.FORMS.VALIDATION.EMAIL_INVALID,
                           },
                         })}
                         error={!!errors.email}
@@ -283,16 +284,15 @@ const Login = () => {
                         type="password"
                         variant="outlined"
                         {...register('password', {
-                          required: 'Password is required',
+                          required: MESSAGES.FORMS.VALIDATION.PASSWORD_REQUIRED,
                           minLength: {
                             value: 8,
-                            message: 'Password must be at least 8 characters',
+                            message: MESSAGES.FORMS.VALIDATION.PASSWORD_MIN_LENGTH,
                           },
                           pattern: {
                             value:
                               /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/,
-                            message:
-                              'Password must include upper and lower case letters, a number, and a special character',
+                            message: MESSAGES.FORMS.VALIDATION.PASSWORD_COMPLEXITY,
                           },
                         })}
                         error={!!errors.password}
@@ -305,9 +305,10 @@ const Login = () => {
                         type="password"
                         variant="outlined"
                         {...register('confirmPassword', {
-                          required: 'Confirm Password is required',
+                          required: MESSAGES.FORMS.VALIDATION.PASSWORD_CONFIRM_REQUIRED,
                           validate: (value) =>
-                            value === getValues('password') || 'Passwords do not match',
+                            value === getValues('password') ||
+                            MESSAGES.FORMS.VALIDATION.PASSWORD_CONFIRM_MATCH,
                         })}
                         error={!!errors.confirmPassword}
                         helperText={errors.confirmPassword ? errors.confirmPassword.message : ''}

@@ -1,10 +1,8 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
 import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
@@ -26,7 +24,7 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
   const userId = useSelector((state) => state?.auth?.user?._id);
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [formError, setFormError] = useState('');
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -42,8 +40,8 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
           { amount: totalAmount }
         );
         setClientSecret(response.data.clientSecret);
-      } catch (error) {
-        setError('Failed to fetch client secret');
+      } catch (err) {
+        setFormError('Failed to fetch client secret');
       }
     };
 
@@ -53,14 +51,14 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+    const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
       },
     });
 
-    if (error) {
-      setError(error.message);
+    if (stripeError) {
+      setFormError(stripeError.message);
       setLoading(false);
     } else {
       const paymentData = {
@@ -85,8 +83,8 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
         if (response.status === 201) {
           setOpen(true);
         }
-      } catch (error) {
-        setError(`Failed to place the order: ${error.response?.data?.message || error.message}`);
+      } catch (err) {
+        setFormError(`Failed to place the order: ${err.response?.data?.message || err.message}`);
       } finally {
         setLoading(false);
       }
@@ -128,9 +126,9 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
             <CardElement id="cardElement" />
           </Box>
         </Box>
-        {error && (
+        {formError && (
           <Box mb={3}>
-            <Alert severity="error">{error}</Alert>
+            <Alert severity="error">{formError}</Alert>
           </Box>
         )}
         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -168,4 +166,18 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
   );
 };
 
+PaymentForm.propTypes = {
+  totalAmount: PropTypes.number.isRequired,
+  orderDetails: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+  }).isRequired,
+  cartData: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      quantity: PropTypes.number.isRequired,
+      price: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+};
 export default PaymentForm;

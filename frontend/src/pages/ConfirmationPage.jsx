@@ -5,17 +5,17 @@ import { Container, Typography, Box, Divider, Grid, Paper } from '@mui/material'
 import { useNavigate } from 'react-router';
 import PaymentForm from '../components/PaymentForm';
 import receiptTexture from '../images/texture.jpg';
+import { MESSAGES } from '../constant/messages.constant';
 
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
   const cartData = useSelector((state) => state.cart.items);
-  console.log('cartdata', cartData);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!orderDetails || !cartData.length) {
-      enqueueSnackbar('No order details available.', { variant: 'warning' });
+      enqueueSnackbar(MESSAGES.ERROR.NO_ORDER_DETAILS, { variant: 'warning' });
       navigate('/cart');
     }
   }, [orderDetails, cartData, navigate, enqueueSnackbar]);
@@ -36,7 +36,7 @@ const ConfirmationPage = () => {
   return (
     <Container>
       <Typography variant="h4" gutterBottom className="text-center mb-3 bg-light text-black">
-        Order Confirmation
+        {MESSAGES.INFO.ORDER_CONFIRMATION}
       </Typography>
       <Grid container spacing={4}>
         <Grid item xs={12} md={6}>

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Container, Grid, Box, CardContent, CardMedia, Typography, Skeleton } from '@mui/material';
 import { fetchCategoryProducts } from '../utils/services/product.service';
 import '../css/homeBody.css';
-import genz from '../images/sale.jpg';
+import genz from '../images/shopping.jpg';
 
 const CategoryList = () => {
   const [categoryProduct, setCategoryProduct] = useState([]);
@@ -16,7 +16,7 @@ const CategoryList = () => {
       const response = await fetchCategoryProducts();
       setCategoryProduct(response.data.slice(0, 12));
     } catch (error) {
-      console.error('Failed to fetch categories', error);
+      return error;
     }
     setLoading(false);
   };

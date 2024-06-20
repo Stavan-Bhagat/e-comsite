@@ -14,6 +14,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { fetchAllOrders } from '../utils/services/order.service';
+import { MESSAGES } from '../constant/messages.constant';
 
 const OrderDetails = () => {
   const [orders, setOrders] = useState([]);
@@ -26,7 +27,7 @@ const OrderDetails = () => {
         const response = await fetchAllOrders();
         setOrders(response.data.orders);
       } catch (error) {
-        enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+        enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED} ${error.message}`, {
           variant: 'error',
         });
       }

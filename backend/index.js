@@ -10,18 +10,14 @@ require('./config/cleanUp');
 const app = express();
 const port = process.env.PORT || 8080;
 const server = http.createServer(app);
-
+const corsOrigins = process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+console.log('cors', corsOrigins);
 database();
 
 app.use(express.json());
 app.use(
   cors({
-    origin: [
-      'http://localhost:3000',
-      'http://localhost:3000/',
-      'https://e-comsite-three.vercel.app',
-      'https://e-comsite-three.vercel.app/'
-    ]
+    origin: corsOrigins
   })
 );
 

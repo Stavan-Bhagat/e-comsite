@@ -36,6 +36,7 @@ import {
   updateProduct,
   addProduct,
 } from '../utils/services/product.service';
+import { MESSAGES } from '../constant/messages.constant';
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -76,7 +77,7 @@ const AllProducts = () => {
       setProducts(response.data);
       setTotalPages(response.totalPages);
     } catch (error) {
-      enqueueSnackbar(`Error Fetching product: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED} ${error.message}`, { variant: 'error' });
     }
   };
 
@@ -175,7 +176,7 @@ const AllProducts = () => {
       fetchProductsData(page);
       resetForm();
     } catch (error) {
-      enqueueSnackbar(`Error submitting product: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, { variant: 'error' });
     }
   };
   const handleUpdateProduct = async (productId) => {
@@ -187,18 +188,18 @@ const AllProducts = () => {
       setOpen(true);
       reset(product.data);
     } catch (error) {
-      enqueueSnackbar(`Error submitting product: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, { variant: 'error' });
     }
   };
   const handleRemoveProduct = async (productId) => {
     confirmAlert({
-      title: 'Confirm to delete',
-      message: 'Are you sure you want to delete it?',
+      title: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.TITLE,
+      message: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.MESSAGE,
       buttons: [
         {
           label: 'No',
           onClick: () => {
-            enqueueSnackbar('Deletion canceled', { variant: 'info' });
+            enqueueSnackbar(MESSAGES.INFO.CRUD.CANCELLED.DELETE, { variant: 'info' });
           },
         },
         {
@@ -207,12 +208,11 @@ const AllProducts = () => {
             try {
               await deleteProduct(productId);
               await fetchProductsData(page);
-              enqueueSnackbar('Deleted Successfully', { variant: 'success' });
+              enqueueSnackbar(MESSAGES.INFO.CRUD.SUCCESS.DELETED, { variant: 'success' });
             } catch (error) {
-              enqueueSnackbar(
-                `Failed to delete the data. Please try again later. ${error.message}`,
-                { variant: 'error' }
-              );
+              enqueueSnackbar(`${MESSAGES.INFO.CRUD.FAILED.DELETE} ${error.message}`, {
+                variant: 'error',
+              });
             }
           },
         },

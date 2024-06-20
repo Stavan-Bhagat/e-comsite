@@ -10,7 +10,6 @@ export const fetchCartData = async (userId) => {
     const response = await axiosInstance.get(`/fusion/cart/fetch-cart?userId=${userId}`);
     return response.data.cart;
   } catch (error) {
-    console.error('Failed to add cart data', error);
     throw error;
   }
 };
@@ -21,7 +20,6 @@ export const addCartData = async (userId, cartData) => {
       cartData,
     });
     return response.data;
-    // return cartData;
   } catch (error) {
     console.error('Failed to add cart data', error);
     throw error;

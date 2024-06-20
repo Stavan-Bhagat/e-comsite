@@ -16,6 +16,7 @@ import {
   Box,
 } from '@mui/material';
 import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { MESSAGES } from '../constant/messages.constant';
 
 const AdminOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -26,7 +27,7 @@ const AdminOrdersPage = () => {
       const response = await axios.get('/api/orders');
       setOrders(response.data);
     } catch (error) {
-      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }

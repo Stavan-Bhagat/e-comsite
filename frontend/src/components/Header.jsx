@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/button-has-type */
 /* eslint-disable react/jsx-no-comment-textnodes */
 /* eslint-disable no-shadow */
@@ -30,11 +29,13 @@ import Profile from './Profile';
 import AdminPanel from '../pages/AdminPanel';
 import NotificationModal from './NotificationModal';
 import logo from '../images/logo.webp';
+import { MESSAGES } from '../constant/messages.constant';
+import ThemeToggle from '../css/theme/themeToggle';
 
 const Header = () => {
   const user = useSelector((state) => state?.auth.user);
   const cart = useSelector((state) => state?.cart.items);
-  console.log("cartbhai",cart);
+  console.log('cartbhai', cart);
   const isAuthenticated = useSelector((state) => state?.auth.isAuthenticated);
   const [search, setSearch] = useState('');
   const [suggestions, setSuggestions] = useState([]);
@@ -114,7 +115,7 @@ const Header = () => {
         const response = await searchSuggestionProduct(query);
         setSuggestions(Array.isArray(response.products) ? response.products : []);
       } catch (error) {
-        enqueueSnackbar('Product Not found', { variant: 'error' });
+        enqueueSnackbar(MESSAGES.ERROR.NOT_FOUND, { variant: 'error' });
       }
     } else {
       setSuggestions([]);
@@ -129,10 +130,10 @@ const Header = () => {
       if (response.data.length > 0) {
         navigate(`/product/search/${type}/${term}`);
       } else {
-        enqueueSnackbar(`Product Not Found`, { variant: 'error' });
+        enqueueSnackbar(MESSAGES.ERROR.NOT_FOUND, { variant: 'error' });
       }
     } catch (error) {
-      enqueueSnackbar(`Error fetching products: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED}: ${error.message}`, { variant: 'error' });
     }
     setShowModal(false);
   };
@@ -143,7 +144,7 @@ const Header = () => {
       const { type, term } = response;
       navigate(`/product/search/${type}/${term}`);
     } catch (error) {
-      enqueueSnackbar(`Error Fetching product: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED} : ${error.message}`, { variant: 'error' });
     }
     setShowModal(false);
   };
@@ -285,6 +286,9 @@ const Header = () => {
                   ) : (
                     user?.role === 'Admin' && <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
                   )}
+                  <MenuItem>
+                    <ThemeToggle />
+                  </MenuItem>
                   <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </MenuList>
               </ClickAwayListener>

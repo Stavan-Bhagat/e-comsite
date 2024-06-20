@@ -4,6 +4,7 @@ import authSlice from '../Slice/authSlice';
 import uiSlice from '../Slice/uiSlice';
 import cartSlice from '../Slice/cartSlice';
 import orderSlice from '../Slice/orderSlice';
+import themeSlice from '../Slice/themeSlice';
 import notificationsSlice from '../Slice/notificationSlice';
 
 const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ const rootReducer = combineReducers({
   cart: cartSlice,
   ui: uiSlice,
   order: orderSlice,
+  theme:themeSlice,
   notifications: notificationsSlice,
 });
 

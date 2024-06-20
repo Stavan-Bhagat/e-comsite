@@ -1,6 +1,4 @@
-/* eslint-disable indent */
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable react/jsx-no-useless-fragment */
+// /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
@@ -8,6 +6,7 @@ import { Container, Grid, Box, Typography, Skeleton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { fetchProductsByCategory } from '../utils/services/product.service';
+import { MESSAGES } from '../constant/messages.constant';
 
 const HorizontalCategory = ({ category }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -20,7 +19,7 @@ const HorizontalCategory = ({ category }) => {
       const response = await fetchProductsByCategory(category);
       setProducts(response.data);
     } catch (error) {
-      enqueueSnackbar(`Failed to fetch the product. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED} ${error.message}`, {
         variant: 'error',
       });
     } finally {

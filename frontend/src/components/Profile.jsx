@@ -26,8 +26,6 @@ const Profile = () => {
   const [editMode, setEditMode] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(true);
 
-  // const handleClose = () => {};
-
   const handleEdit = () => {
     setEditMode(!editMode);
   };

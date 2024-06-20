@@ -11,6 +11,7 @@ import { fetchProduct } from '../utils/services/product.service';
 import fallbackImage from '../images/ai.jpeg';
 import { addToCart } from '../redux/Slice/cartSlice';
 import Header from '../components/Header';
+import { MESSAGES } from '../constant/messages.constant';
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const ProductPage = () => {
         setProduct(null);
       }
     } catch (error) {
-      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
         variant: 'error',
       });
     } finally {

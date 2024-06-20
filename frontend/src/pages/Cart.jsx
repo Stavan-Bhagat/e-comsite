@@ -1,4 +1,3 @@
-// src/components/Cart.js
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Grid, Box, Typography, Button, IconButton, Divider } from '@mui/material';
@@ -11,8 +10,6 @@ import Header from '../components/Header';
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.items);
-  // eslint-disable-next-line no-unused-vars
-  const cartamount = useSelector((state) => state.cart.totalAmount);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

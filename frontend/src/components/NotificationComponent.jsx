@@ -7,8 +7,9 @@ import { useSnackbar } from 'notistack';
 import socketIOClient from 'socket.io-client';
 import { addNotification } from '../redux/Slice/notificationSlice';
 import notification from '../images/notification.svg';
+import { MESSAGES } from '../constant/messages.constant';
 
-const SOCKET_SERVER_URL = 'http://localhost:5000';
+const SOCKET_SERVER_URL = process.env.REACT_APP_SOCKET_SERVER_URL;
 
 const NotificationComponent = () => {
   const [notificationPermission, setNotificationPermission] = useState(Notification.permission);
@@ -25,13 +26,12 @@ const NotificationComponent = () => {
           setNotificationPermission(permission);
         }
       } catch (error) {
-        console.error('Notification permission request failed:', error);
-        enqueueSnackbar('Failed to request notification permission.', { variant: 'error' });
+        enqueueSnackbar(MESSAGES.ERROR.FAILED_NOTIFICATION_PERMISSION, { variant: 'error' });
       }
     };
 
     if (!('Notification' in window)) {
-      enqueueSnackbar('Browser does not support notifications.', { variant: 'info' });
+      enqueueSnackbar(MESSAGES.INFO.NOTIFICATION_NOT_SUPPORT, { variant: 'info' });
     } else {
       requestNotificationPermission();
     }
@@ -47,18 +47,20 @@ const NotificationComponent = () => {
     socket.on(`orderCreated:${userId}`, (orderNotification) => {
       try {
         dispatch(addNotification(orderNotification.order));
-        enqueueSnackbar('Your order has been placed successfully!', { variant: 'success' });
+        enqueueSnackbar(MESSAGES.INFO.ORDER.ORDER_PLACED, { variant: 'success' });
 
         if (Notification.permission === 'granted') {
           const options = {
             body: `Order ID: ${orderNotification.order._id}`,
             icon: '../images/notification.svg',
           };
-          new Notification(`Order Confirmed: ${orderNotification.order._id}`, options);
+          new Notification(
+            `${MESSAGES.INFO.ORDER.ORDER_CONFIRMED}: ${orderNotification.order._id}`,
+            options
+          );
         }
       } catch (error) {
-        console.error('Error handling order confirmation notification:', error);
-        enqueueSnackbar('Error handling order confirmation notification.', { variant: 'error' });
+        enqueueSnackbar(MESSAGES.INFO.FAILED_NOTIFICATION_PERMISSION, { variant: 'error' });
       }
     });
 
@@ -78,7 +80,7 @@ const NotificationComponent = () => {
             new Notification(`New Order: ${orderNotification.order._id}`, options);
           }
         } catch (error) {
-          enqueueSnackbar('Error handling new order notification.', { variant: 'error' });
+          enqueueSnackbar(MESSAGES.INFO.FAILED_NOTIFICATION, { variant: 'error' });
         }
       });
     }
@@ -88,17 +90,17 @@ const NotificationComponent = () => {
         const newProduct = { ...productNotification.product, type: 'product' };
         dispatch(addNotification(newProduct));
 
-        enqueueSnackbar('New product added!', { variant: 'info' });
+        enqueueSnackbar(MESSAGES.INFO.PRODUCT_ADDED, { variant: 'info' });
 
         if (Notification.permission === 'granted') {
           const options = {
             body: `Product: ${productNotification.productName}`,
             icon: { notification },
           };
-          new Notification('New Product Added', options);
+          new Notification(MESSAGES.INFO.PRODUCT_ADDED, options);
         }
       } catch (error) {
-        enqueueSnackbar('Error handling new product notification.', { variant: 'error' });
+        enqueueSnackbar(MESSAGES.INFO.FAILED_NOTIFICATION, { variant: 'error' });
       }
     });
 

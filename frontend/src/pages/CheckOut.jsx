@@ -1,10 +1,10 @@
-// src/components/BuyNowPage.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography, TextField, Button, Box, Paper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { placeOrder } from '../redux/Slice/orderSlice';
+import { MESSAGES } from '../constant/messages.constant';
 
 const CheckOut = () => {
   const cartItems = useSelector((state) => state.cart.items);
@@ -55,7 +55,7 @@ const CheckOut = () => {
           <Controller
             name="name"
             control={control}
-            rules={{ required: 'Name is required' }}
+            rules={{ required: MESSAGES.FORMS.VALIDATION.NAME_REQUIRED }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -70,7 +70,7 @@ const CheckOut = () => {
           <Controller
             name="address"
             control={control}
-            rules={{ required: 'Address is required' }}
+            rules={{ required: MESSAGES.FORMS.VALIDATION.ADDRESS_REQUIRED }}
             render={({ field }) => (
               <TextField
                 {...field}

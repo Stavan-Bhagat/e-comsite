@@ -12,6 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useForm, Controller } from 'react-hook-form';
 import { fetchUserData, updateUserData, deleteUserData } from '../utils/services/user.service';
+import { MESSAGES } from '../constant/messages.constant';
 
 const style = {
   position: 'absolute',
@@ -56,7 +57,7 @@ const AllUsers = () => {
       }));
       setRowData(rowDataWithId);
     } catch (error) {
-      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }
@@ -72,8 +73,8 @@ const AllUsers = () => {
 
   const handleDeleteClick = async (deleteData) => {
     confirmAlert({
-      title: 'Confirm to delete',
-      message: 'Are you sure you want to delete it?',
+      title: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.TITLE,
+      message: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.MESSAGE,
       buttons: [
         {
           label: 'Yes',
@@ -81,19 +82,18 @@ const AllUsers = () => {
             try {
               await deleteUserData(deleteData._id);
               await fetchData();
-              enqueueSnackbar('Deleted Successfully', { variant: 'success' });
+              enqueueSnackbar(MESSAGES.INFO.CRUD.DELETED, { variant: 'success' });
             } catch (error) {
-              enqueueSnackbar(
-                `Failed to delete the data. Please try again later. ${error.message}`,
-                { variant: 'error' }
-              );
+              enqueueSnackbar(`${MESSAGES.INFO.CRUD.FAILED.CREATE} ${error.message}`, {
+                variant: 'error',
+              });
             }
           },
         },
         {
           label: 'No',
           onClick: () => {
-            enqueueSnackbar('Deletion canceled', { variant: 'info' });
+            enqueueSnackbar(MESSAGES.INFO.CRUD.CANCELLED.DELETE, { variant: 'info' });
           },
         },
       ],
@@ -125,7 +125,7 @@ const AllUsers = () => {
       handleClose();
       fetchData();
     } catch (error) {
-      enqueueSnackbar(`Failed to submit the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }
@@ -189,7 +189,7 @@ const AllUsers = () => {
                 required: 'Email is required',
                 pattern: {
                   value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                  message: 'Invalid email address',
+                  message: MESSAGES.FORMS.VALIDATION.EMAIL_INVALID,
                 },
               })}
               error={!!errors.email}

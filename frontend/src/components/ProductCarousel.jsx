@@ -8,6 +8,7 @@ import 'react-multi-carousel/lib/styles.css';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { Link } from 'react-router-dom';
 import { fetchProductsByCategory } from '../utils/services/product.service';
+import { MESSAGES } from '../constant/messages.constant';
 
 const responsive = {
   superLargeDesktop: {
@@ -72,7 +73,7 @@ const ProductCarousel = ({ category }) => {
       const response = await fetchProductsByCategory(categoryType);
       setProducts(response.data);
     } catch (error) {
-      enqueueSnackbar(`Failed to fetch the product. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED} ${error.message}`, {
         variant: 'error',
       });
     } finally {
@@ -98,8 +99,7 @@ const ProductCarousel = ({ category }) => {
         <Container sx={{ margin: 'auto' }}>
           <Carousel showDots responsive={responsive}>
             {Array.from(new Array(5)).map((_, index) => (
-              // eslint-disable-next-line react/no-array-index-key
-              <Card sx={styles.card} key={index}>
+              <Card sx={styles.card} key={`Skeleton${index + 1}`}>
                 <Skeleton variant="rectangular" width="100%" height={200} />
                 <CardContent style={styles.cardContent}>
                   <Skeleton width="60%" />

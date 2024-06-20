@@ -27,6 +27,7 @@ import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { useSnackbar } from 'notistack';
 import Header from '../components/Header';
 import { searchProduct } from '../utils/services/product.service';
+import { MESSAGES } from '../constant/messages.constant';
 
 const predefinedRanges = [
   { label: 'Under 1000', min: 0, max: 1000 },
@@ -56,7 +57,7 @@ const ProductSearch = () => {
       setFilteredProducts(response.data);
     } catch (error) {
       setLoading(false);
-      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }

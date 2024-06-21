@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -100,7 +99,6 @@ const AllUsers = () => {
     });
   };
 
-  // eslint-disable-next-line react/no-unstable-nested-components
   const ActionRenderer = ({ data }) => (
     <div>
       <IconButton onClick={() => handleEditClick(data)}>
@@ -112,7 +110,6 @@ const AllUsers = () => {
     </div>
   );
 
-  // eslint-disable-next-line react/no-unstable-nested-components
   const ImageRenderer = ({ value }) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img src={value} alt="User" style={{ height: 50, width: 50 }} />

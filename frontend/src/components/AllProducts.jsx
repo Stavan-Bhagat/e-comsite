@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-// eslint-disable-next-line import/no-unresolved
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import {

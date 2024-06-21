@@ -10,7 +10,19 @@ const ThemeToggle = () => {
     dispatch(setThemeMode(themeMode === 'dark' ? 'light' : 'dark'));
   };
 
-  return <span onClick={toggleTheme}> {themeMode === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>;
+  return (
+    <span
+      role="button"
+      tabIndex={0}
+      onClick={toggleTheme}
+      onKeyPress={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') toggleTheme();
+      }}
+      aria-label="Toggle theme"
+    >
+      {themeMode === 'dark' ? 'Light Mode' : 'Dark Mode'}
+    </span>
+  );
 };
 
 export default ThemeToggle;

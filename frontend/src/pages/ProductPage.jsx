@@ -1,5 +1,3 @@
-/* eslint-disable react/no-array-index-key */
-
 import React, { useState, useEffect } from 'react';
 import { Grid, Typography, Box, Button, Snackbar, Skeleton } from '@mui/material';
 import { useSnackbar } from 'notistack';
@@ -94,6 +92,10 @@ const ProductPage = () => {
     return <Typography>No product found.</Typography>;
   }
 
+  const { productImage, productName, sellingPrice, description } = product;
+  const [firstImage] = productImage || [];
+  const imageToDisplay = clickImage || firstImage || fallbackImage;
+
   return (
     <>
       <Header />
@@ -112,20 +114,16 @@ const ProductPage = () => {
                   overflowX: { xs: 'scroll', md: 'unset' },
                 }}
               >
-                {product.productImage.map((image, index) => (
+                {productImage.map((image) => (
                   <Box
-                    key={index}
+                    key={image}
                     sx={{
                       marginBottom: { xs: '0', md: '1rem' },
                       marginRight: { xs: '1rem', md: '0' },
                     }}
                     onMouseEnter={() => handleImage(image)}
                   >
-                    <img
-                      src={image}
-                      alt={product.productName}
-                      style={{ width: '100%', height: 'auto' }}
-                    />
+                    <img src={image} alt={productName} style={{ width: '100%', height: 'auto' }} />
                   </Box>
                 ))}
               </Box>
@@ -133,16 +131,13 @@ const ProductPage = () => {
                 sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
               >
                 <img
-                  src={
-                    product.productImage && product.productImage[0]
-                      ? clickImage || product.productImage[0]
-                      : fallbackImage
-                  }
-                  alt={product.productName}
+                  src={imageToDisplay}
+                  alt={productName}
                   style={{ width: '100%', height: 'auto' }}
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = fallbackImage;
+                  onError={(event) => {
+                    const target = event.target;
+                    target.onerror = null;
+                    target.src = fallbackImage;
                   }}
                 />
               </Box>
@@ -151,11 +146,11 @@ const ProductPage = () => {
           <Grid item xs={12} md={6}>
             <Box sx={{ height: 'auto' }}>
               <Typography variant="h4" sx={{ fontFamily: 'Roboto Condensed' }}>
-                {product.productName}
+                {productName}
               </Typography>
-              <Typography variant="h6">${product.sellingPrice}</Typography>
+              <Typography variant="h6">${sellingPrice}</Typography>
               <Typography variant="body1" sx={{ fontFamily: 'sans-serif' }}>
-                {product.description}
+                {description}
               </Typography>
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Button

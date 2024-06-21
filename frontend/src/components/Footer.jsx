@@ -1,3 +1,5 @@
+// Footer.js
+
 import React from 'react';
 import { Container, Grid, Typography } from '@mui/material';
 import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
@@ -13,7 +15,7 @@ const Footer = () => {
   return (
     <FooterContainer component="footer">
       <Container>
-        <Grid container spacing={3} className="text-center text-md-left">
+        <Grid container spacing={3} justifyContent="center">
           <Grid item xs={12} md={4}>
             <FooterTitle variant="h5">Quick Links</FooterTitle>
             <nav>

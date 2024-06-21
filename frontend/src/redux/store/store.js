@@ -12,7 +12,7 @@ const rootReducer = combineReducers({
   cart: cartSlice,
   ui: uiSlice,
   order: orderSlice,
-  theme:themeSlice,
+  theme: themeSlice,
   notifications: notificationsSlice,
 });
 

@@ -1,5 +1,8 @@
 {
   "eslint.alwaysShowStatus": true,
   "eslint.run": "onSave",
-  "eslint.autoFixOnSave": true
+  "eslint.autoFixOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  }
 }

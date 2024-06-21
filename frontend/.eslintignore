@@ -1,5 +1,13 @@
 # Ignore specific files or directories
+node_modules/
+dist/
+build/
+coverage/
+
+# Ignore specific file
 **/sonarqube-scanner.js
 
-# Ignore specific ESLint errors
-**/*.js
+# Ignore specific patterns
+# For example, to ignore all test files
+**/*.test.js
+**/*.spec.js

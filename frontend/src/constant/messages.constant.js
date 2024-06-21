@@ -73,7 +73,7 @@ export const MESSAGES = {
       PASSWORD_CONFIRM_MATCH: 'Passwords do not match',
       NAME_REQUIRED: 'Name is required',
       ADDRESS_REQUIRED: 'Address is required',
-      //product add/update
+      // product add/update
       PRODUCT_NAME_REQUIRED: 'Product name is required.',
       BRAND_NAME_REQUIRED: 'Brand name is required.',
       CATEGORY_REQUIRED: 'Category is required.',
@@ -92,3 +92,5 @@ export const MESSAGES = {
     ORDERS: 'Order Details',
   },
 };
+
+export const a = 6;

@@ -3,7 +3,10 @@ const {
   MSG_SOCKET_IO_NOT_INITIALIZED,
   MSG_SERVER_INSTANCE_REQUIRED
 } = require('./constant/errorMessage.constant');
+require('dotenv').config();
 
+const socketCorsOrigins = process.env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
+console.log('socketCorsOrigins', socketCorsOrigins);
 module.exports = {
   init: (server) => {
     if (!server) {
@@ -12,7 +15,7 @@ module.exports = {
 
     const socketIo = require('socket.io')(server, {
       cors: {
-        origin: [process.env.CLIENT_ORIGIN, 'http://localhost:3000'],
+        origin: socketCorsOrigins,
         methods: ['GET', 'POST']
       }
     });

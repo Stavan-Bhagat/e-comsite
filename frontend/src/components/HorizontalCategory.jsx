@@ -8,6 +8,7 @@ import { MESSAGES } from '../constant/messages.constant';
 import {
   CategoryHeader,
   ProductContainer,
+  OuterContainer,
   ProductBox,
   ProductImage,
   ProductName,
@@ -43,8 +44,13 @@ const HorizontalCategory = ({ category }) => {
   }, [category]);
 
   return (
-    <Container className="text-center" style={{ padding: '1%' }} fluid>
-      <CategoryHeader gutterBottom variant="h5">
+    <OuterContainer fluid="true">
+      <CategoryHeader
+        gutterBottom
+        variant="h5"
+        align="center"
+        sx={{ fontFamily: 'Playfair Display, serif', fontWeight: 'bold', fontSize: '1.5rem' }}
+      >
         Best Of Electronics
       </CategoryHeader>
 
@@ -75,7 +81,7 @@ const HorizontalCategory = ({ category }) => {
               ))}
         </Grid>
       </ProductContainer>
-    </Container>
+    </OuterContainer>
   );
 };
 

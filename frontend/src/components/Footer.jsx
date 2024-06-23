@@ -1,5 +1,3 @@
-// Footer.js
-
 import React from 'react';
 import { Container, Grid, Typography } from '@mui/material';
 import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';

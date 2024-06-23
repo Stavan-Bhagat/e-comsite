@@ -86,6 +86,8 @@ export const MESSAGES = {
     DELETE_CONFIRMATION: {
       TITLE: 'Confirm to delete',
       MESSAGE: 'Are you sure you want to delete it?',
+      YES: 'Yes',
+      NO: 'no',
     },
     USERS: 'All Users',
     PRODUCTS: 'All Products',

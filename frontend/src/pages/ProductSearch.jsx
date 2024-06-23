@@ -1,25 +1,25 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   Grid,
   Box,
   Typography,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
-  CardActionArea,
-  Card,
-  CardContent,
-  CardMedia,
+  FormControl,
+  Select,
+  MenuItem,
   List,
   ListItemButton,
+  FormControlLabel,
   ListItemIcon,
   ListItemText,
   Divider,
   Collapse,
-  Select,
-  MenuItem,
+  Checkbox,
+  FormGroup,
+  Card,
+  CardActionArea,
+  CardContent,
+  CardMedia,
 } from '@mui/material';
 import AbcIcon from '@mui/icons-material/Abc';
 import { ExpandLess, ExpandMore } from '@mui/icons-material';
@@ -28,6 +28,12 @@ import { useSnackbar } from 'notistack';
 import Header from '../components/Header';
 import { searchProduct } from '../utils/services/product.service';
 import { MESSAGES } from '../constant/messages.constant';
+import {
+  CategoryHeader,
+  OuterContainer,
+  StyledCard,
+  sidebarContainer,
+} from '../css/styles/searchPage.style';
 
 const predefinedRanges = [
   { label: 'Under 1000', min: 0, max: 1000 },
@@ -106,15 +112,14 @@ const ProductSearch = () => {
   return (
     <>
       <Header />
-      <Box className="mt-2" px={{ xs: 1, sm: 2 }} py={2}>
+      <OuterContainer className="mt-2" px={{ xs: 1, sm: 2 }} py={2}>
         <Grid container spacing={2}>
-          {/* Sidebar */}
           <Grid item xs={12} sm={3} md={2}>
-            <Box>
+            <sidebarContainer>
               <List>
-                <Typography variant="h6" gutterBottom>
+                <CategoryHeader variant="h6" gutterBottom>
                   Filters
-                </Typography>
+                </CategoryHeader>
                 <Divider />
                 <ListItemButton>
                   <ListItemIcon>
@@ -122,17 +127,15 @@ const ProductSearch = () => {
                   </ListItemIcon>
                   <ListItemText primary="Price" />
                 </ListItemButton>
-                <Select
-                  fullWidth
-                  value={`${priceRange[0]}-${priceRange[1]}`}
-                  onChange={handleRangeChange}
-                >
-                  {predefinedRanges.map((range) => (
-                    <MenuItem key={range.label} value={`${range.min}-${range.max}`}>
-                      {range.label}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <FormControl fullWidth>
+                  <Select value={`${priceRange[0]}-${priceRange[1]}`} onChange={handleRangeChange}>
+                    {predefinedRanges.map((range) => (
+                      <MenuItem key={range.label} value={`${range.min}-${range.max}`}>
+                        {range.label}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <ListItemButton onClick={() => setOpen(!open)}>
                   <ListItemIcon>
                     <AbcIcon />
@@ -154,7 +157,7 @@ const ProductSearch = () => {
                   </List>
                 </Collapse>
               </List>
-            </Box>
+            </sidebarContainer>
           </Grid>
 
           {/* Main content */}
@@ -162,7 +165,7 @@ const ProductSearch = () => {
             <Grid container spacing={2}>
               {filteredProducts.map((product) => (
                 <Grid item xs={6} sm={4} md={3} key={product.id}>
-                  <Card sx={{ maxWidth: 345 }} onClick={() => handleChange(product._id)}>
+                  <StyledCard component={ListItemButton} onClick={() => handleChange(product._id)}>
                     <CardActionArea>
                       <CardMedia
                         component="img"
@@ -171,7 +174,7 @@ const ProductSearch = () => {
                         alt={product.productName}
                       />
                       <CardContent>
-                        <Typography gutterBottom variant="body2" noWrap>
+                        <Typography variant="body2" noWrap>
                           {product.productName}
                         </Typography>
                         <Typography variant="body2" color="textSecondary">
@@ -179,13 +182,13 @@ const ProductSearch = () => {
                         </Typography>
                       </CardContent>
                     </CardActionArea>
-                  </Card>
+                  </StyledCard>
                 </Grid>
               ))}
             </Grid>
           </Grid>
         </Grid>
-      </Box>
+      </OuterContainer>
     </>
   );
 };

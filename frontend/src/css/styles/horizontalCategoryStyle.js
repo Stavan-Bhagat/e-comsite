@@ -1,6 +1,4 @@
-// horizontalCategoryStyles.js
-
-import styled from 'styled-components';
+import { styled } from '@mui/material/styles';
 import { Box, Typography, Grid, Skeleton } from '@mui/material';
 import { Link } from 'react-router-dom';
 
@@ -9,35 +7,39 @@ export const CategoryHeader = styled(Typography)({
   fontWeight: 'bold',
   fontSize: '1.5rem',
 });
+export const OuterContainer = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  padding: '1rem',
+}));
 
-export const ProductContainer = styled(Box)({
+export const ProductContainer = styled(Box)(({ theme }) => ({
   margin: 'auto',
   padding: '2rem',
-  background: 'white',
-  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-  height: '80%',
-  width: '90%',
-});
+  backgroundColor: theme.palette.background.default,
+  width: '70%',
+}));
 
 export const ProductBox = styled(Box)({
   padding: '2rem',
+  border: '1px solid #bdbdbd',
+  borderTop: 0,
+  borderLeft: 0,
+  borderRadius: '5%',
+});
+
+export const ProductImage = styled('img')({
+  width: '100%',
+  height: 'auto',
   transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
   '&:hover': {
     transform: 'scale(1.05)',
-    boxShadow: '0 6px 16px rgba(0, 0, 0, 0.2)',
   },
-});
-
-export const ProductImage = styled.img({
-  width: '100%',
-  height: 'auto',
 });
 
 export const ProductName = styled(Typography)({
   textOverflow: 'ellipsis',
   overflow: 'hidden',
   whiteSpace: 'nowrap',
-  fontWeight: 'bold',
   fontFamily: 'Hedvig Letters Serif, serif',
 });
 
@@ -48,7 +50,7 @@ export const ProductPrice = styled(Typography)({
   marginTop: '8px',
 });
 
-export const StrikedPrice = styled.span({
+export const StrikedPrice = styled('span')({
   textDecoration: 'line-through',
   marginLeft: '2px',
   color: '#e53935',

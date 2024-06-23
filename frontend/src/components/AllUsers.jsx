@@ -5,25 +5,19 @@ import { useSnackbar } from 'notistack';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { Container, IconButton, TextField, Box, Button, Typography, Modal } from '@mui/material';
+import { Container, TextField, Typography, Modal } from '@mui/material';
 import Select from 'react-select';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useForm, Controller } from 'react-hook-form';
 import { fetchUserData, updateUserData, deleteUserData } from '../utils/services/user.service';
 import { MESSAGES } from '../constant/messages.constant';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 4,
-};
+import {
+  StyledModalContainer,
+  StyledForm,
+  StyledButton,
+  StyledIconButton,
+} from '../css/styles/allUser.style';
 
 const AllUsers = () => {
   const [rowData, setRowData] = useState(null);
@@ -101,12 +95,15 @@ const AllUsers = () => {
 
   const ActionRenderer = ({ data }) => (
     <div>
-      <IconButton onClick={() => handleEditClick(data)}>
+      <StyledIconButton onClick={() => handleEditClick(data)}>
         <EditIcon />
-      </IconButton>
-      <IconButton onClick={() => handleDeleteClick(data)} disabled={currentUser._id === data._id}>
+      </StyledIconButton>
+      <StyledIconButton
+        onClick={() => handleDeleteClick(data)}
+        disabled={currentUser._id === data._id}
+      >
         <DeleteIcon />
-      </IconButton>
+      </StyledIconButton>
     </div>
   );
 
@@ -154,7 +151,7 @@ const AllUsers = () => {
 
   return (
     <Container maxWidth="xl">
-      <div className="ag-theme-quartz" style={{ height: 500, width: '100%' }}>
+      <div className="ag-theme-quartz custom-ag-theme" style={{ height: 500, width: '100%' }}>
         <AgGridReact rowData={rowData} columnDefs={colDefs} ref={gridRef} />
       </div>
       <Modal
@@ -163,11 +160,11 @@ const AllUsers = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <StyledModalContainer>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Edit User
           </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
             <TextField
               fullWidth
               margin="normal"
@@ -206,18 +203,11 @@ const AllUsers = () => {
                 />
               )}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              size="large"
-              sx={{ mt: 2 }}
-            >
+            <StyledButton type="submit" variant="contained" color="primary" fullWidth size="large">
               Save
-            </Button>
-          </form>
-        </Box>
+            </StyledButton>
+          </StyledForm>
+        </StyledModalContainer>
       </Modal>
     </Container>
   );

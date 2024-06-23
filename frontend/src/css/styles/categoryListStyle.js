@@ -6,8 +6,11 @@ export const CategoryCard = styled(Box)(({ theme }) => ({
   transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
   '&:hover': {
     transform: 'scale(1.05)',
-    boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.15)',
+    boxShadow: `1px 1px 1px ${theme.boxShadow.main}`,
   },
+  boxShadow: `1px 1px 1px  ${theme.boxShadow.main}`,
+
+  borderEndEndRadius: 3,
 }));
 
 export const CategoryImage = styled(CardMedia)({
@@ -15,12 +18,12 @@ export const CategoryImage = styled(CardMedia)({
 });
 
 export const CategoryTitle = styled(Typography)({
-  fontFamily: 'IBM Plex Serif, serif',
-  textOverflow: 'ellipsis',
-  whiteSpace: 'nowrap',
-  overflow: 'hidden',
   paddingLeft: '5%',
   paddingRight: '5%',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  fontFamily: 'Roboto, serif',
 });
 
 export const CategoryCardContent = styled(CardContent)({

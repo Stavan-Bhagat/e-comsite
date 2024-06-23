@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Typography, Box, Button, Snackbar, Skeleton } from '@mui/material';
+import { Grid, Typography, Box, Button, Snackbar } from '@mui/material';
 import { useSnackbar } from 'notistack';
-import { Container } from 'react-bootstrap';
+import { Container } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
@@ -10,6 +10,54 @@ import fallbackImage from '../images/ai.jpeg';
 import { addToCart } from '../redux/Slice/cartSlice';
 import Header from '../components/Header';
 import { MESSAGES } from '../constant/messages.constant';
+import { styled } from '@mui/material/styles';
+import themeSlice from '../redux/Slice/themeSlice';
+
+// Styled Components
+const StyledContainer = styled(Container)({
+  paddingTop: '5rem',
+});
+
+const StyledTitle = styled(Typography)({
+  textAlign: 'center',
+  marginBottom: '2rem',
+  fontFamily: 'Playfair Display, serif',
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  textTransform: 'uppercase',
+});
+
+const ProductImageWrapper = styled(Box)({
+  display: 'flex',
+  flexDirection: { xs: 'column', md: 'row' },
+  height: 'auto',
+});
+
+const ThumbnailImage = styled(Box)({
+  marginBottom: { xs: '0', md: '1rem' },
+  marginRight: { xs: '1rem', md: '0' },
+  '& img': {
+    width: '100%',
+    height: 'auto',
+    transition: 'transform 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
+  },
+});
+
+const MainImageContainer = styled(Box)({
+  flex: 1,
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '& img': {
+    width: '100%',
+    height: 'auto',
+    maxWidth: '100%',
+    maxHeight: '100%',
+  },
+});
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -22,24 +70,28 @@ const ProductPage = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
-  const fetchedProduct = async (_id) => {
-    setLoading(true);
-    try {
-      const response = await fetchProduct(_id);
+  useEffect(() => {
+    const fetchedProduct = async (_id) => {
+      setLoading(true);
+      try {
+        const response = await fetchProduct(_id);
 
-      if (response.data) {
-        setProduct(response.data);
-      } else {
-        setProduct(null);
+        if (response.data) {
+          setProduct(response.data);
+        } else {
+          setProduct(null);
+        }
+      } catch (error) {
+        enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
+          variant: 'error',
+        });
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
-        variant: 'error',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    fetchedProduct(id);
+  }, [id, enqueueSnackbar]);
 
   const handleClose = () => {
     setToast(false);
@@ -50,9 +102,10 @@ const ProductPage = () => {
   };
 
   const handleCart = () => {
-    dispatch(addToCart(product));
-    console.log('cart', product);
-    setToast(true);
+    if (product) {
+      dispatch(addToCart(product));
+      setToast(true);
+    }
   };
 
   const handleBuyNow = (_id) => {
@@ -61,35 +114,37 @@ const ProductPage = () => {
     if (isProductInCart) {
       navigate('/product/cart/');
     } else {
-      dispatch(addToCart(product));
-      navigate('/product/cart/');
+      if (product) {
+        dispatch(addToCart(product));
+        navigate('/product/cart/');
+      }
     }
   };
 
-  useEffect(() => {
-    fetchedProduct(id);
-  }, [id]);
-
   if (loading) {
     return (
-      <Container>
+      <StyledContainer>
         <Typography variant="h5">Product Details</Typography>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Skeleton variant="rectangular" height="90vh" />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Skeleton variant="text" sx={{ fontSize: '2rem' }} />
-            <Skeleton variant="text" sx={{ fontSize: '1.5rem' }} />
-            <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
+            <Box sx={{ p: 2 }}>
+              <Typography variant="body1">Loading...</Typography>
+            </Box>
           </Grid>
         </Grid>
-      </Container>
+      </StyledContainer>
     );
   }
 
   if (!product) {
-    return <Typography>No product found.</Typography>;
+    return (
+      <StyledContainer>
+        <Typography variant="h5">Product Details</Typography>
+        <Box sx={{ p: 2 }}>
+          <Typography variant="body1">Product not found.</Typography>
+        </Box>
+      </StyledContainer>
+    );
   }
 
   const { productImage, productName, sellingPrice, description } = product;
@@ -99,12 +154,11 @@ const ProductPage = () => {
   return (
     <>
       <Header />
-      <Container className="p-5">
+      <StyledContainer>
+        {/* <StyledTitle variant="h4">Product Details</StyledTitle> */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Box
-              sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, height: 'auto' }}
-            >
+            <ProductImageWrapper>
               <Box
                 sx={{
                   display: 'flex',
@@ -115,79 +169,64 @@ const ProductPage = () => {
                 }}
               >
                 {productImage.map((image) => (
-                  <Box
+                  <ThumbnailImage
                     key={image}
-                    sx={{
-                      marginBottom: { xs: '0', md: '1rem' },
-                      marginRight: { xs: '1rem', md: '0' },
-                    }}
                     onMouseEnter={() => handleImage(image)}
+                    onClick={() => handleImage(image)}
                   >
-                    <img src={image} alt={productName} style={{ width: '100%', height: 'auto' }} />
-                  </Box>
+                    <img src={image} alt={productName} />
+                  </ThumbnailImage>
                 ))}
               </Box>
-              <Box
-                sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-              >
+              <MainImageContainer>
                 <img
                   src={imageToDisplay}
                   alt={productName}
-                  style={{ width: '100%', height: 'auto' }}
                   onError={(event) => {
                     const target = event.target;
                     target.onerror = null;
                     target.src = fallbackImage;
                   }}
                 />
-              </Box>
-            </Box>
+              </MainImageContainer>
+            </ProductImageWrapper>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Box sx={{ height: 'auto' }}>
-              <Typography variant="h4" sx={{ fontFamily: 'Roboto Condensed' }}>
+            <Box sx={{ p: 2 }}>
+              <Typography
+                gutterBottom
+                variant="h5"
+                sx={{ fontFamily: 'Hedvig Letters Serif, serif' }}
+              >
                 {productName}
               </Typography>
-              <Typography variant="h6">${sellingPrice}</Typography>
+              <Typography variant="h6" gutterBottom>
+                ₹{sellingPrice}
+              </Typography>
               <Typography variant="body1" sx={{ fontFamily: 'sans-serif' }}>
                 {description}
               </Typography>
+
               <Box sx={{ mt: 2, mb: 2 }}>
                 <Button
                   variant="contained"
                   color="secondary"
                   size="medium"
                   fullWidth
-                  sx={{
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    '&:hover': {
-                      transform: 'scale(1.01)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                    },
-                  }}
                   onClick={handleCart}
                 >
                   <AddShoppingCartIcon />
-                  <Typography sx={{ ml: 1 }}>Add to Cart</Typography>
+                  <Typography ml={1}>Add to Cart</Typography>
                 </Button>
               </Box>
-              <Box>
-                <Button
-                  variant="outlined"
-                  sx={{
-                    color: 'black',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    '&:hover': {
-                      transform: 'scale(1.01)',
-                      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-                    },
-                  }}
-                  fullWidth
-                  onClick={() => handleBuyNow(product._id)}
-                >
-                  Buy Now
-                </Button>
-              </Box>
+              <Button
+                variant="outlined"
+                sx={{ mt: 2, mb: 2 }}
+                fullWidth
+                onClick={() => handleBuyNow(product._id)}
+              >
+                Buy Now
+              </Button>
             </Box>
           </Grid>
         </Grid>
@@ -199,7 +238,7 @@ const ProductPage = () => {
           message="Added to cart"
           key="bottomright"
         />
-      </Container>
+      </StyledContainer>
     </>
   );
 };

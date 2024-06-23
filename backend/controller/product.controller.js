@@ -22,7 +22,7 @@ const {
 
 exports.fetchProductData = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
-  const limit = parseInt(req.query.limit) || 8;
+  const limit = parseInt(req.query.limit) || 12;
   const skip = (page - 1) * limit;
   try {
     const productData = await Product.find({}).skip(skip).limit(limit);

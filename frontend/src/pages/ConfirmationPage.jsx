@@ -1,24 +1,57 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import { Container, Typography, Box, Divider, Grid, Paper } from '@mui/material';
-import { useNavigate } from 'react-router';
+import { Container, Typography, Grid, Box, Divider, Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import PaymentForm from '../components/PaymentForm';
-import receiptTexture from '../images/texture.jpg';
 import { MESSAGES } from '../constant/messages.constant';
+import thanksImage from '../images/confirmation.2jpg.jpg';
+// Styled Components
+const StyledContainer = styled(Container)({
+  padding: '2rem',
+  marginTop: '2rem',
+});
+
+const StyledTitle = styled(Typography)({
+  textAlign: 'center',
+  marginBottom: '2rem',
+  fontSize: '2rem',
+  fontWeight: 'bold',
+});
+
+const StyledBillingPaper = styled(Paper)({
+  padding: '2rem',
+  // boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+  background: '#fff',
+});
+
+const StyledOrderDetails = styled(Box)({
+  marginBottom: '1rem',
+});
+
+const StyledItemDetails = styled(Box)({
+  marginBottom: '0.5rem',
+  padding: '0.5rem',
+  background: '#f0f0f0',
+  borderRadius: '4px',
+});
+
+const StyledTotalAmount = styled(Typography)({
+  marginTop: '1rem',
+  fontWeight: 'bold',
+  fontSize: '1.2rem',
+});
 
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
   const cartData = useSelector((state) => state.cart.items);
-  const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     if (!orderDetails || !cartData.length) {
       enqueueSnackbar(MESSAGES.ERROR.NO_ORDER_DETAILS, { variant: 'warning' });
-      navigate('/cart');
     }
-  }, [orderDetails, cartData, navigate, enqueueSnackbar]);
+  }, [orderDetails, cartData, enqueueSnackbar]);
 
   const calculateTotal = () => {
     return cartData.reduce(
@@ -34,47 +67,59 @@ const ConfirmationPage = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom className="text-center mb-3 bg-light text-black">
+    <StyledContainer>
+      <StyledTitle variant="h4" gutterBottom>
         {MESSAGES.INFO.ORDER_CONFIRMATION}
-      </Typography>
+      </StyledTitle>
       <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <Paper
-            sx={{
-              padding: 3,
-              boxShadow: 3,
-              backgroundImage: `linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)), url(${receiptTexture})`,
-            }}
-            className="bg-light text-center"
-          >
+        <Grid item xs={12}>
+          <StyledBillingPaper>
             <Typography variant="h6" gutterBottom>
-              Billing Details
+              Bill To:
             </Typography>
-            <Typography>Name: {orderDetails?.name}</Typography>
-            <Typography>Address: {orderDetails?.address}</Typography>
-            <Divider sx={{ my: 2 }} />
+            <StyledOrderDetails>
+              <Typography variant="body1">
+                <strong>Name:</strong> {orderDetails?.name}
+              </Typography>
+              <Typography variant="body1">
+                <strong>Address:</strong> {orderDetails?.address}
+              </Typography>
+            </StyledOrderDetails>
+            <Divider sx={{ my: '1rem' }} />
             <Typography variant="h6" gutterBottom>
-              Order Details
+              Order Details:
             </Typography>
             {cartData.map((item) => (
-              <Box key={item._id} mb={1}>
-                <Typography>Product: {item.productName}</Typography>
-                <Typography>Quantity: {item.quantity}</Typography>
-                <Typography>Price: ${item.sellingPrice}</Typography>
-              </Box>
+              <StyledItemDetails key={item._id}>
+                <Typography variant="body1">
+                  <strong>Product:</strong> {item.productName}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Quantity:</strong> {item.quantity}
+                </Typography>
+                <Typography variant="body1">
+                  <strong>Price:</strong> ${item.sellingPrice}
+                </Typography>
+              </StyledItemDetails>
             ))}
-            <Divider sx={{ my: 2 }} />
-            <Typography variant="h5" gutterBottom>
-              Total Amount: ${totalAmount}
-            </Typography>
-          </Paper>
+            <StyledTotalAmount variant="h5">
+              Total Amount: ${totalAmount.toFixed(2)}
+            </StyledTotalAmount>
+          </StyledBillingPaper>
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={6}>
           <PaymentForm totalAmount={totalAmount} orderDetails={orderDetails} cartData={cartData} />
         </Grid>
+        <Grid item xs={6}>
+          <Box
+            component="img"
+            src={thanksImage}
+            alt="Thanks"
+            style={{ width: '100%', height: 'auto' }}
+          />
+        </Grid>
       </Grid>
-    </Container>
+    </StyledContainer>
   );
 };
 

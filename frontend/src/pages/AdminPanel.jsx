@@ -8,24 +8,25 @@ import PeopleIcon from '@mui/icons-material/People';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import Drawer from '@mui/material/Drawer';
 import { Container } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { useTheme } from '@mui/material/styles';
 import MenuIcon from '@mui/icons-material/Menu';
 import Header from '../components/Header';
 import AllUsers from '../components/AllUsers';
 import AllProducts from '../components/AllProducts';
 import OrderDetails from '../components/OrderDetails';
+import { useTheme } from '@mui/material/styles';
+import { StyledDrawer, StyledIconButton, StyledContainer } from '../css/styles/adminPanel.style';
 import { MESSAGES } from '../constant/messages.constant';
 
 const AdminPanel = () => {
   const theme = useTheme();
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isDrawerOpen, setDrawerOpen] = useState(false);
 
   const handleListItemClick = (index) => {
     setSelectedIndex(index);
+    setDrawerOpen(false);
   };
 
   const sidebarItems = [
@@ -62,61 +63,43 @@ const AdminPanel = () => {
     }
   };
 
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
   return (
     <>
       <Header />
       <Container>
         <Box sx={{ display: 'flex' }}>
-          <Drawer
-            variant="permanent"
-            open
-            sx={{
-              width: '20%',
-              flexShrink: 0,
-              '& .MuiDrawer-paper': {
-                width: '20%',
-                boxSizing: 'border-box',
-                zIndex: theme.zIndex.drawer,
-                paddingTop: '4%',
-              },
-            }}
-          >
-            {renderSidebar()}
-          </Drawer>
-          <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+          {/* Permanent Drawer */}
+          <StyledDrawer>{renderSidebar()}</StyledDrawer>
+
+          {/* Main Content */}
+          <StyledContainer component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 {renderContent()}
               </Grid>
             </Grid>
-          </Box>
-          <IconButton
-            color="primary"
-            edge="start"
-            onClick={() => setDrawerOpen(!isDrawerOpen)}
-            sx={{
-              display: { sm: 'none' },
-              position: 'fixed',
-              top: '16px',
-              left: '16px',
-              zIndex: theme.zIndex.drawer + 1,
-            }}
-          >
+          </StyledContainer>
+
+          {/* Mobile Drawer Toggle */}
+          <StyledIconButton color="primary" edge="start" onClick={toggleDrawer}>
             <MenuIcon />
-          </IconButton>
-          <Drawer
+          </StyledIconButton>
+
+          {/* Temporary Drawer for Mobile */}
+          <StyledDrawer
             variant="temporary"
-            open={isDrawerOpen}
-            onClose={() => setDrawerOpen(false)}
+            open={drawerOpen}
+            onClose={toggleDrawer}
             ModalProps={{
               keepMounted: true,
             }}
-            sx={{
-              '& .MuiDrawer-paper': { width: '20%', zIndex: theme.zIndex.drawer + 1 },
-            }}
           >
             {renderSidebar()}
-          </Drawer>
+          </StyledDrawer>
         </Box>
       </Container>
     </>

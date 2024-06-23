@@ -10,6 +10,7 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
+  Avatar,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -63,11 +64,18 @@ const OrderDetails = () => {
               <Box mt={2}>
                 <Typography variant="h6">Items</Typography>
                 {order.items.map((item) => (
-                  <Box key={item._id} mb={1} paddingLeft={2}>
-                    <Typography>Product: {item.productName}</Typography>
-                    <Typography>Quantity: {item.quantity}</Typography>
-                    <Typography>Price: ${item.sellingPrice}</Typography>
-                    <Divider />
+                  <Box key={item._id} mb={2} display="flex" alignItems="center">
+                    <Avatar
+                      variant="square"
+                      alt={`Product Image ${item.productName}`}
+                      src={item.productImage[0]} // Assuming productImage is an array and you want the first image
+                      sx={{ width: 100, height: 100, marginRight: 2 }}
+                    />
+                    <Box>
+                      <Typography variant="subtitle1">{item.productName}</Typography>
+                      <Typography>Quantity: {item.quantity}</Typography>
+                      <Typography>Price: ${item.sellingPrice}</Typography>
+                    </Box>
                   </Box>
                 ))}
               </Box>

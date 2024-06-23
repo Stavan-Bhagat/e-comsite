@@ -1,4 +1,4 @@
-import { styled } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import {
   AppBar,
   Box,
@@ -6,13 +6,10 @@ import {
   IconButton,
   Typography,
   Menu,
-  MenuItem,
-  Badge,
   Modal,
   InputBase,
   Button,
 } from '@mui/material';
-
 export const StyledNavbar = styled('nav')({
   paddingLeft: '2vw',
   paddingRight: '2vw',
@@ -33,11 +30,11 @@ export const UserIconButton = styled(IconButton)({
   marginRight: '1.5vw',
 });
 
-export const StyledAppBar = styled(AppBar)({
+export const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: '1100',
-  backgroundColor: '#ffffff',
+  backgroundColor: '#fefefe',
   padding: '0 2vw',
-});
+}));
 
 export const StyledToolbar = styled(Toolbar)({
   justifyContent: 'space-between',
@@ -60,6 +57,9 @@ export const SearchModal = styled(Modal)({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  minWidth: '50%',
+  maxWidth: '50%',
+  margin: 'auto',
 });
 
 export const SearchInput = styled(InputBase)({
@@ -79,18 +79,18 @@ export const SuggestionList = styled(Box)({
   borderRadius: '0.4vw',
 });
 
-export const SuggestionItem = styled(Box)({
+export const SuggestionItem = styled(Box)(({ theme }) => ({
   padding: '0.8vw',
   cursor: 'pointer',
   '&:hover': {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.palette.background.default,
   },
-});
+}));
 
-export const IconButtonStyled = styled(IconButton)({
-  color: '#333',
-});
+export const IconButtonStyled = styled(IconButton)(({ theme }) => ({
+  color: theme.palette.mode === 'light' ? theme.palette.primary.main : 'black',
+}));
 
 export const StyledMenu = styled(Menu)({
-  zIndex: '1200',
+  zIndex: '1100',
 });

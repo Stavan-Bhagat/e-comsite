@@ -4,6 +4,7 @@ import { Box, Typography, Link } from '@mui/material';
 export const FooterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
   padding: theme.spacing(4, 0),
+  textAlign: 'center',
 }));
 
 export const FooterTitle = styled(Typography)({
@@ -16,6 +17,7 @@ export const FooterLink = styled(Link)({
   marginBottom: '0.8rem',
   color: '#6c757d',
   textDecoration: 'none',
+  display: 'block',
   '&:hover': {
     color: '#0056b3',
   },

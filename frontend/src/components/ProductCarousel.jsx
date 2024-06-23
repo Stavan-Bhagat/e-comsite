@@ -1,5 +1,3 @@
-// ProductCarousel.js
-
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useSnackbar } from 'notistack';
@@ -7,8 +5,7 @@ import 'react-multi-carousel/lib/styles.css';
 import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import { fetchProductsByCategory } from '../utils/services/product.service';
 import { MESSAGES } from '../constant/messages.constant';
-import { Typography, Container, Card, CardContent, Skeleton } from '@mui/material';
-import Carousel from 'react-multi-carousel';
+import { Typography, Container, Skeleton } from '@mui/material';
 import {
   StyledContainer,
   StyledCard,
@@ -18,26 +15,10 @@ import {
   StyledProductPrice,
   StyledLink,
   StyledCarousel,
+  responsive,
+  CustomLeftArrow,
+  CustomRightArrow,
 } from '../css/styles/productCarousel.style';
-
-const responsive = {
-  superLargeDesktop: {
-    breakpoint: { max: 4000, min: 3000 },
-    items: 5,
-  },
-  desktop: {
-    breakpoint: { max: 3000, min: 1024 },
-    items: 5,
-  },
-  tablet: {
-    breakpoint: { max: 1024, min: 464 },
-    items: 2,
-  },
-  mobile: {
-    breakpoint: { max: 464, min: 0 },
-    items: 1,
-  },
-};
 
 const ProductCarousel = ({ category }) => {
   const { enqueueSnackbar } = useSnackbar();
@@ -73,7 +54,12 @@ const ProductCarousel = ({ category }) => {
         Popular {category}
       </Typography>
       <Container>
-        <StyledCarousel showDots responsive={responsive}>
+        <StyledCarousel
+          showDots
+          responsive={responsive}
+          customLeftArrow={<CustomLeftArrow />}
+          customRightArrow={<CustomRightArrow />}
+        >
           {loading
             ? Array.from(new Array(5)).map((_, index) => (
                 <StyledCard key={`Skeleton${index + 1}`}>

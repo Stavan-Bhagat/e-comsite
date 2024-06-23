@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Grid, Box, Typography, CardContent, CardMedia, Skeleton } from '@mui/material';
+import { Container, Grid, Box, CardMedia, Skeleton } from '@mui/material';
 import { fetchCategoryProducts } from '../utils/services/product.service';
 import {
   CategoryCard,
@@ -8,7 +8,7 @@ import {
   CategoryTitle,
   CategoryCardContent,
 } from '../css/styles/categoryListStyle';
-import genz from '../images/shopping.jpg';
+import genz from '../images/shopping1.jpg';
 
 const CategoryList = () => {
   const [categoryProduct, setCategoryProduct] = useState([]);
@@ -35,7 +35,7 @@ const CategoryList = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: '64px' }}>
+    <Container maxWidth="lg" sx={{ marginTop: '6%' }}>
       {loading ? (
         <Skeleton variant="rectangular" width="100%" height={400} />
       ) : (
@@ -52,7 +52,9 @@ const CategoryList = () => {
                       alt={category.productName}
                     />
                     <CategoryCardContent>
-                      <CategoryTitle variant="body1">{category.category}</CategoryTitle>
+                      <CategoryTitle align="center" variant="body1">
+                        {category.category}
+                      </CategoryTitle>
                     </CategoryCardContent>
                   </CategoryCard>
                 </Grid>

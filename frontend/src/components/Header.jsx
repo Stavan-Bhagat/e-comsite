@@ -251,7 +251,7 @@ const Header = () => {
         <MenuItem>
           <ThemeToggle />
         </MenuItem>
-        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        {isAuthenticated && <MenuItem onClick={handleLogout}>Logout</MenuItem>}
       </Menu>
 
       {profile && <Profile />}

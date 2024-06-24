@@ -1,17 +1,30 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import Card from '@mui/material/Card';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import {
+  Typography,
+  Box,
+  TextField,
+  Snackbar,
+  Alert,
+  IconButton,
+  NativeSelect,
+  CircularProgress,
+  Backdrop,
+} from '@mui/material';
 import EditRoundedIcon from '@mui/icons-material/EditRounded';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
-import Avatar from '@mui/material/Avatar';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { updateUser } from '../redux/Slice/authSlice';
 import { updateUserData } from '../utils/services/user.service';
+import {
+  StyledContainer,
+  StyledCard,
+  StyledAvatar,
+  StyledForm,
+  StyledIconButton,
+  StyledButton,
+  StyledBackdrop,
+  StyledLoadingMessage,
+} from '../css/styles/profile.style';
 
 const Profile = () => {
   const user = useSelector((state) => state.auth.user);
@@ -21,10 +34,14 @@ const Profile = () => {
     name: user ? user.name : '',
     email: user ? user.email : '',
     role: user ? user.role : '',
+    imageUrl: user ? user.imageUrl : '',
   });
 
   const [editMode, setEditMode] = useState(false);
   const [showSubmitButton, setShowSubmitButton] = useState(true);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleEdit = () => {
     setEditMode(!editMode);
@@ -39,13 +56,28 @@ const Profile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await updateUserData(user._id, formData);
+    setLoading(true);
+
+    const finalFormData = new FormData();
+    finalFormData.append('name', formData.name);
+    finalFormData.append('email', formData.email);
+    finalFormData.append('role', formData.role);
+    if (formData.image) {
+      finalFormData.append('image', formData.image);
+    }
+
+    const response = await updateUserData(user._id, finalFormData);
+    setLoading(false);
+
     if (response) {
-      dispatch(updateUser(response));
+      dispatch(updateUser(response.updatedUser));
       setEditMode(false);
       setShowSubmitButton(true);
+      setSnackbarMessage('Profile updated successfully!');
+      setOpenSnackbar(true);
     } else {
-      return 'unable to change the profile!';
+      setSnackbarMessage('Unable to change the profile!');
+      setOpenSnackbar(true);
     }
   };
 
@@ -54,6 +86,7 @@ const Profile = () => {
       name: user ? user.name : '',
       email: user ? user.email : '',
       role: user ? user.role : '',
+      imageUrl: user ? user.imageUrl : '',
     });
 
     setEditMode(false);
@@ -61,36 +94,33 @@ const Profile = () => {
   };
 
   const handleImageUpload = (e) => {
-    console.error(e);
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({
+        ...formData,
+        image: file,
+        imageUrl: URL.createObjectURL(file),
+      });
+    }
   };
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      position="relative"
-      pb={4}
-      bgcolor="transparent"
-    >
-      <Card sx={{ position: 'relative', zIndex: 2, background: 'none' }}>
+    <StyledContainer>
+      <StyledCard>
         <Box p={3}>
           <Box display="flex" justifyContent="center" mb={2}>
-            <Avatar
-              alt={user ? user.name : ''}
-              src={user ? user.imageUrl : ''}
-              sx={{ width: 120, height: 120 }}
-            />
+            <StyledAvatar alt={user ? user.name : ''} src={formData.imageUrl} />
             {editMode && (
-              <IconButton aria-label="change-image" component="label" sx={{ marginLeft: 2 }}>
+              <StyledIconButton aria-label="change-image" component="label">
                 <PhotoCameraIcon />
                 <input type="file" accept="image/*" hidden onChange={handleImageUpload} />
-              </IconButton>
+              </StyledIconButton>
             )}
           </Box>
-          <Typography variant="h6">Profile Information</Typography>
-          <form onSubmit={handleSubmit}>
+          <Typography variant="h6" gutterBottom>
+            Profile Information
+          </Typography>
+          <StyledForm onSubmit={handleSubmit}>
             <Box mb={2}>
               <TextField
                 label="Name"
@@ -115,60 +145,55 @@ const Profile = () => {
             </Box>
             {user?.role === 'Admin' && (
               <Box mb={2}>
-                <TextField
-                  label="Role"
-                  name="role"
+                <NativeSelect
                   value={formData.role}
                   onChange={handleChange}
+                  inputProps={{
+                    name: 'role',
+                    id: 'role-select',
+                  }}
                   fullWidth
-                  variant="outlined"
                   disabled={!editMode}
-                />
+                >
+                  <option value={'Admin'}>Admin</option>
+                  <option value={'User'}>User</option>
+                </NativeSelect>
               </Box>
             )}
-            {!editMode ? (
-              <Box display="flex" justifyContent="flex-end">
-                <IconButton
-                  aria-label="edit"
-                  onClick={handleEdit}
-                  sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    zIndex: 1,
-                    color: 'primary.main',
-                  }}
-                >
+            <Box display="flex" justifyContent="flex-end">
+              {!editMode ? (
+                <IconButton aria-label="edit" onClick={handleEdit}>
                   <EditRoundedIcon />
                 </IconButton>
-              </Box>
-            ) : (
-              <Box display="flex" justifyContent="flex-end">
-                {showSubmitButton && (
-                  <Button type="submit" variant="contained" mr={2}>
-                    Submit
-                  </Button>
-                )}
-                <Button type="button" variant="outlined" onClick={handleCancel}>
-                  Cancel
-                </Button>
-              </Box>
-            )}
-          </form>
+              ) : (
+                <>
+                  {showSubmitButton && (
+                    <StyledButton type="submit" variant="contained">
+                      Submit
+                    </StyledButton>
+                  )}
+                  <StyledButton type="button" variant="outlined" onClick={handleCancel}>
+                    Cancel
+                  </StyledButton>
+                </>
+              )}
+            </Box>
+          </StyledForm>
         </Box>
-      </Card>
-      <Paper
-        sx={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          width: '100%',
-          height: '40%',
-          backdropFilter: 'blur(5px)',
-          zIndex: 1,
-        }}
-      />
-    </Box>
+      </StyledCard>
+      <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={() => setOpenSnackbar(false)}>
+        <Alert onClose={() => setOpenSnackbar(false)} severity="info">
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
+      <Backdrop open={loading} style={{ zIndex: 1200, color: '#fff' }}>
+        <Box textAlign="center">
+          <CircularProgress color="inherit" />
+          <StyledLoadingMessage>Updating Profile...</StyledLoadingMessage>
+        </Box>
+      </Backdrop>
+      <StyledBackdrop />
+    </StyledContainer>
   );
 };
 

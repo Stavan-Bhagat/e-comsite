@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Typography, Container, Card, CardMedia, Box } from '@mui/material';
+import { TextField, Button, Typography, Container, Card, CardMedia } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
 import CryptoJS from 'crypto-js';
@@ -17,6 +17,12 @@ import loginImage from '../images/login.avif';
 import Header from '../components/Header';
 import { addToCart } from '../redux/Slice/cartSlice';
 import { MESSAGES } from '../constant/messages.constant';
+import {
+  StyledContainer,
+  StyledImage,
+  StyledModalContainer,
+  StyledGrid,
+} from '../css/styles/login.style';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -121,7 +127,7 @@ const Login = () => {
 
   if (loading) {
     return (
-      <Box
+      <StyledContainer
         display="flex"
         flexDirection="column"
         alignItems="center"
@@ -134,43 +140,20 @@ const Login = () => {
           {MESSAGES.INFO.PROCESSING_REQUEST}
           <SentimentVerySatisfiedIcon className="px-2" />
         </Typography>
-      </Box>
+      </StyledContainer>
     );
   }
 
   return (
     <>
       <Header />
-      <Container
-        sx={{
-          border: '1px solid #ccc',
-          borderRadius: '5px',
-          marginTop: '4%',
-          padding: '1%',
-          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-          overflow: 'hidden',
-          width: '70%',
-        }}
-      >
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
-            <Box
-              component="img"
-              src={loginImage}
-              sx={{ objectFit: 'cover', height: '100%', width: '100%' }}
-            />
+      <StyledContainer>
+        <StyledGrid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <StyledImage component="img" src={loginImage} />
           </Grid>
-          <Grid item xs={6}>
-            <Container
-              maxWidth="xs"
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginX: 7,
-              }}
-            >
+          <Grid item xs={12} sm={6}>
+            <StyledModalContainer>
               <Container maxWidth="xs">
                 {verificationSent ? (
                   <>
@@ -322,12 +305,7 @@ const Login = () => {
                       >
                         <CameraAltIcon sx={{ mr: 1 }} />
                         Upload Profile Picture
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleFileChange}
-                          hidden
-                        />{' '}
+                        <input type="file" accept="image/*" onChange={handleFileChange} hidden />
                       </Button>
                       <Button
                         type="submit"
@@ -349,10 +327,10 @@ const Login = () => {
                   </>
                 )}
               </Container>
-            </Container>
+            </StyledModalContainer>
           </Grid>
-        </Grid>
-      </Container>
+        </StyledGrid>
+      </StyledContainer>
     </>
   );
 };

@@ -34,6 +34,7 @@ export const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: '1100',
   backgroundColor: '#fefefe',
   padding: '0 2vw',
+  position: 'sticky',
 }));
 
 export const StyledToolbar = styled(Toolbar)({

@@ -35,7 +35,7 @@ const CategoryList = () => {
   }, []);
 
   return (
-    <Container maxWidth="lg" sx={{ marginTop: '6%' }}>
+    <Container maxWidth="lg" sx={{ marginTop: '2%' }}>
       {loading ? (
         <Skeleton variant="rectangular" width="100%" height={400} />
       ) : (

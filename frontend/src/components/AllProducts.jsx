@@ -250,6 +250,7 @@ const AllProducts = () => {
           startIcon={<AddIcon />}
           onClick={() => {
             resetForm();
+            reset();
             setOpen(true);
           }}
         >

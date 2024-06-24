@@ -37,7 +37,7 @@ export const LoginButton = styled(Button)({
 });
 
 export const UserIconButton = styled(IconButton)({
-  marginRight: '1.5vw',
+  // marginRight: '1.5vw',
 });
 
 export const StyledAppBar = styled(AppBar)(({ theme }) => ({
@@ -103,5 +103,5 @@ export const IconButtonStyled = styled(IconButton)(({ theme }) => ({
 }));
 
 export const StyledMenu = styled(Menu)({
-  zIndex: '1100',
+  zIndex: '1900',
 });

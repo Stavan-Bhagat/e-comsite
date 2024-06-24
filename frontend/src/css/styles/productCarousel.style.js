@@ -2,7 +2,6 @@ import { styled } from '@mui/material/styles';
 import { Typography, Card, CardContent, Skeleton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import Carousel from 'react-multi-carousel';
-import CurrencyRupeeIcon from '@mui/icons-material/CurrencyRupee';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
@@ -59,11 +58,13 @@ export const CustomRightArrow = ({ onClick }) => (
 );
 
 export const StyledContainer = styled('div')({
+  zIndex:'1100',
   margin: 'auto',
   padding: '1rem',
 });
 
 export const StyledCard = styled(Card)(({ theme }) => ({
+  zIndex:'100',
   margin: '3%',
   borderRadius: '10px',
   transition: 'transform 0.3s, box-shadow 0.3s',

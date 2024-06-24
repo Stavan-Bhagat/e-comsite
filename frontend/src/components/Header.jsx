@@ -1,19 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Box,
   Typography,
   Badge,
   Paper,
-  Popper,
-  Grow,
-  ClickAwayListener,
-  MenuList,
   MenuItem,
   Avatar,
   InputBase,
   IconButton,
+  Menu,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/SearchOutlined';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -60,14 +58,18 @@ const Header = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [profile, setProfile] = useState(false);
-  const [open, setOpen] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const anchorRef = useRef(null);
-  const prevOpen = useRef(open);
   const [modalOpen, setModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
 
-  const handleToggle = () => {
-    setOpen((prevVal) => !prevVal);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
   };
 
   const handlePanel = () => {
@@ -79,29 +81,6 @@ const Header = () => {
     setIsDrawerOpen(false);
     navigate('/');
   };
-
-  const handleClose = (event) => {
-    if (anchorRef.current && anchorRef.current.contains(event.target)) {
-      return;
-    }
-    setOpen(false);
-  };
-
-  const handleListKeyDown = (event) => {
-    if (event.key === 'Tab') {
-      event.preventDefault();
-      setOpen(false);
-    } else if (event.key === 'Escape') {
-      setOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    if (prevOpen.current === true && open === false) {
-      anchorRef.current.focus();
-    }
-    prevOpen.current = open;
-  }, [open]);
 
   const handleLogout = async () => {
     await addCartData(user._id, cart);
@@ -116,7 +95,7 @@ const Header = () => {
 
   const handleProfile = () => {
     setProfile((prev) => !prev);
-    setOpen(false);
+    setAnchorEl(null);
   };
 
   const handleSearchIconClick = () => {
@@ -192,10 +171,10 @@ const Header = () => {
                     alt="User Avatar"
                     src={user.imageUrl}
                     ref={anchorRef}
-                    onClick={handleToggle}
+                    onClick={handleProfile}
                   />
                 ) : (
-                  <LoginButton variant="outlined" ref={anchorRef} onClick={handleToggle}>
+                  <LoginButton variant="outlined" ref={anchorRef} onClick={handleClick}>
                     <AccountIcon /> User
                   </LoginButton>
                 )}
@@ -211,6 +190,9 @@ const Header = () => {
                 <ShoppingCartIcon />
               </Badge>
             </IconButtonStyled>
+            <IconButtonStyled aria-label="More" onClick={handleClick}>
+              <MoreVertIcon />
+            </IconButtonStyled>
           </Box>
         </StyledToolbar>
       </StyledAppBar>
@@ -221,10 +203,7 @@ const Header = () => {
             <Typography variant="h6">Search Products</Typography>
             <Box mt={2}>
               <form onSubmit={handleSearchSubmit}>
-                <StylePaper
-                  component="div"
-
-                >
+                <StylePaper component="div">
                   <InputBase
                     placeholder="Search"
                     value={search}
@@ -255,40 +234,25 @@ const Header = () => {
       </SearchModal>
 
       <NotificationModal open={modalOpen} handleClose={() => setModalOpen(false)} />
-      <Popper
+
+      <Menu
+        anchorEl={anchorEl}
         open={open}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
-        placement="bottom-end"
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
       >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin: placement === 'bottom-end' ? 'right top' : 'right bottom',
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList autoFocusItem={open} id="composition-menu" onKeyDown={handleListKeyDown}>
-                  <MenuItem onClick={handleProfile}>Profile</MenuItem>
-                  {location.pathname === '/admin-panel' ? (
-                    <MenuItem onClick={handleHome}>Home</MenuItem>
-                  ) : (
-                    user?.role === 'Admin' && <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
-                  )}
-                  <MenuItem>
-                    <ThemeToggle />
-                  </MenuItem>
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
+        {location.pathname === '/admin-panel' ? (
+          <MenuItem onClick={handleHome}>Home</MenuItem>
+        ) : (
+          user?.role === 'Admin' && <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
         )}
-      </Popper>
+        <MenuItem>
+          <ThemeToggle />
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      </Menu>
 
       {profile && <Profile />}
       {isDrawerOpen && <AdminPanel />}

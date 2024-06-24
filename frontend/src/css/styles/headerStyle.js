@@ -8,6 +8,7 @@ import {
   Menu,
   Modal,
   InputBase,
+  Paper,
   Button,
 } from '@mui/material';
 export const StyledNavbar = styled('nav')({
@@ -20,6 +21,15 @@ export const LogoImage = styled('img')({
   height: '2.5vw',
   maxWidth: '40px',
   maxHeight: '40px',
+});
+
+
+export const StylePaper = styled(Paper)({
+  display: 'flex',
+  alignItems: 'center',
+  padding: '2px 4px',
+  width: '100%',
+
 });
 
 export const LoginButton = styled(Button)({

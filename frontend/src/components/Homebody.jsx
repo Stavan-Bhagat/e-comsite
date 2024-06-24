@@ -8,9 +8,9 @@ const Body = () => {
   return (
     <>
       <CategoryList />
-      <HorizontalCategory category="electronics" />
-      <ProductCarousel category="fashion" />
-      <ProductCarousel category="skincare" />
+      <HorizontalCategory category="Electronics" />
+      <ProductCarousel category="Mobiles" />
+      <ProductCarousel category="Perfumes" />
     </>
   );
 };

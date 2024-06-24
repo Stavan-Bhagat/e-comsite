@@ -10,8 +10,8 @@ import {
   MenuList,
   MenuItem,
   Avatar,
-  Button,
-  Divider,
+  InputBase,
+  IconButton,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/SearchOutlined';
 import PersonIcon from '@mui/icons-material/Person';
@@ -36,12 +36,12 @@ import {
   LoginButton,
   UserIconButton,
   SearchModal,
-  SearchInput,
   SuggestionList,
   SuggestionItem,
   StyledAppBar,
   StyledToolbar,
   Logo,
+  StylePaper,
   LogoText,
   IconButtonStyled,
 } from '../css/styles/headerStyle';
@@ -221,17 +221,21 @@ const Header = () => {
             <Typography variant="h6">Search Products</Typography>
             <Box mt={2}>
               <form onSubmit={handleSearchSubmit}>
-                <SearchInput
-                  placeholder="Search"
-                  value={search}
-                  onChange={handleSearchChange}
-                  autoFocus
-                />
-                <Box mt={2} display="flex" justifyContent="flex-end">
-                  <Button variant="outlined" onClick={handleSearchSubmit}>
-                    Search
-                  </Button>
-                </Box>
+                <StylePaper
+                  component="div"
+
+                >
+                  <InputBase
+                    placeholder="Search"
+                    value={search}
+                    onChange={handleSearchChange}
+                    autoFocus
+                    style={{ marginLeft: 8, flex: 1 }}
+                  />
+                  <IconButton type="submit" aria-label="search" onClick={handleSearchSubmit}>
+                    <SearchIcon />
+                  </IconButton>
+                </StylePaper>
               </form>
             </Box>
             {suggestions.length > 0 && (

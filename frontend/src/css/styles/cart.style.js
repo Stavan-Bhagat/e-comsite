@@ -11,7 +11,6 @@ export const StyledEmptyCartMessage = styled(Box)({
 
 export const StyledCartContainer = styled(Container)({
   padding: '2rem',
-  marginTop: '3rem',
 });
 
 export const StyledCartItem = styled(Grid)(({ theme }) => ({

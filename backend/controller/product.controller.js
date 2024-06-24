@@ -1,7 +1,5 @@
 const socket = require('../socket');
 const Product = require('../model/product.model.js');
-const Order = require('../model/order.model');
-const { io } = require('../socket');
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -89,7 +87,7 @@ exports.addProduct = async (req, res) => {
 
     res.status(STATUS_CREATED).json({ message: 'New product added', createdProduct });
   } catch (e) {
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error', error: e });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
   }
 };
 
@@ -164,7 +162,7 @@ exports.fetchCategoryProduct = async (_req, res) => {
 exports.fetchProductsByCategory = async (req, res) => {
   const { category } = req.query;
   try {
-    const limit = 10;
+    const limit = 8;
     const response = await Product.find({ category }).limit(limit);
     if (response.length > 0) {
       res.status(STATUS_SUCCESS).json({
@@ -226,9 +224,6 @@ exports.searchProducts = async (req, res) => {
     if (!query) {
       return res.status(400).json({ message: 'Query is required' });
     }
-
-    console.log('Received again query:', query);
-
     const searchRegex = new RegExp(query, 'i');
 
     const isCategory = await Product.exists({ category: searchRegex });
@@ -261,15 +256,11 @@ const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.payment = async (req, res) => {
   const { amount } = req.body;
-  console.log('amounttt', amount);
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       amount,
       currency: 'usd'
     });
-
-    console.log('paymentIntent', paymentIntent);
-    console.log('paymentIntent.client_secret', paymentIntent.client_secret);
 
     res.status(200).json({
       clientSecret: paymentIntent.client_secret

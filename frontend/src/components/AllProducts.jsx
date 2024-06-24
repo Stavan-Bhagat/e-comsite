@@ -14,6 +14,7 @@ import {
   FormHelperText,
   Pagination,
   FormControl,
+  CircularProgress,
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import EditNoteIcon from '@mui/icons-material/EditNote';
@@ -22,6 +23,7 @@ import RupeeIcon from '@mui/icons-material/CurrencyRupee';
 import AddIcon from '@mui/icons-material/Add';
 import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
+import { green } from '@mui/material/colors';
 import {
   MultipleFileUpload,
   MultipleFileUploadMain,
@@ -68,6 +70,17 @@ const AllProducts = () => {
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const buttonSx = {
+    ...(success && {
+      bgcolor: green[500],
+      '&:hover': {
+        bgcolor: green[700],
+      },
+    }),
+  };
   const {
     register,
     handleSubmit,
@@ -75,14 +88,37 @@ const AllProducts = () => {
     reset,
   } = useForm();
 
+  const categoryList = [
+    'Bags',
+    'Baby',
+    'Books',
+    'Car & Moterbike',
+    'Clothing Men',
+    'Clothing Women',
+    'Electronics',
+    'Garden & Outdoors',
+    'Jwellery',
+    'Laptops',
+    'Mobiles',
+    'Perfumes',
+    'Shoes',
+    'Skincare',
+  ];
   const resetForm = () => {
-    reset();
+    reset({
+      productName: '',
+      brandName: '',
+      category: '',
+      description: '',
+      price: '',
+    });
     setSelectedFiles([]);
     setReadFileData([]);
     setShowStatus(false);
     setIsUpdateMode(false);
     setCurrentProduct(null);
   };
+
   const handleClose = () => {
     setOpen(false);
     resetForm();
@@ -111,6 +147,12 @@ const AllProducts = () => {
       setStatusIcon('danger');
     }
   }, [readFileData, selectedFiles]);
+
+  useEffect(() => {
+    if (!open) {
+      resetForm();
+    }
+  }, [open]);
 
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
@@ -168,36 +210,39 @@ const AllProducts = () => {
   };
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
+    if (!loading) {
+      setSuccess(false);
+      setLoading(true);
+      try {
+        const formData = new FormData();
 
-      formData.append('productName', data.productName);
-      formData.append('brandName', data.brandName);
-      formData.append('category', data.category);
-      formData.append('description', data.description);
-      formData.append('price', data.price);
-      formData.append('stock', data.stock);
-      formData.append('sellingPrice', data.sellingPrice);
+        formData.append('productName', data.productName);
+        formData.append('brandName', data.brandName);
+        formData.append('category', data.category);
+        formData.append('description', data.description);
+        formData.append('price', data.price);
+        formData.append('stock', data.stock);
+        formData.append('sellingPrice', data.sellingPrice);
 
-      Array.from(selectedFiles).forEach((file) => {
-        formData.append('images', file);
-      });
+        Array.from(selectedFiles).forEach((file) => {
+          formData.append('images', file);
+        });
 
-      if (isUpdateMode) {
-        formData.append('productId', currentProduct._id);
-        await updateProduct(formData);
-      } else {
-        await addProduct(formData);
+        if (isUpdateMode) {
+          formData.append('productId', currentProduct._id);
+          await updateProduct(formData);
+        } else {
+          await addProduct(formData);
+        }
+        setSuccess(true);
+        setLoading(false);
+        handleClose();
+        fetchProductsData(page);
+      } catch (error) {
+        enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, { variant: 'error' });
       }
-
-      handleClose();
-      fetchProductsData(page);
-      resetForm();
-    } catch (error) {
-      enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, { variant: 'error' });
     }
   };
-
   const handleUpdateProduct = async (productId) => {
     try {
       const product = await fetchProduct(productId);
@@ -211,6 +256,12 @@ const AllProducts = () => {
     }
   };
 
+  const handleAddProduct = () => {
+    setOpen(true);
+    setIsUpdateMode(false);
+    resetForm();
+  };
+
   const handleRemoveProduct = async (productId) => {
     confirmAlert({
       title: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.TITLE,
@@ -221,7 +272,7 @@ const AllProducts = () => {
           onClick: async () => {
             try {
               await deleteProduct(productId);
-              enqueueSnackbar(MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.DELETE_SUCCESS, {
+              enqueueSnackbar(MESSAGES.INFO.CRUD.SUCCESS.DELETED, {
                 variant: 'success',
               });
               fetchProductsData(page);
@@ -248,11 +299,7 @@ const AllProducts = () => {
           variant="contained"
           color="primary"
           startIcon={<AddIcon />}
-          onClick={() => {
-            resetForm();
-            reset();
-            setOpen(true);
-          }}
+          onClick={handleAddProduct}
         >
           Add Product
         </AddProductButton>
@@ -300,7 +347,6 @@ const AllProducts = () => {
       <StyledPaginationContainer>
         <Pagination count={totalPages} page={page} onChange={handlePageChange} />
       </StyledPaginationContainer>
-
       <StyledModal open={open} onClose={handleClose}>
         <StyledModalContent>
           <Box pb={2}>
@@ -323,7 +369,6 @@ const AllProducts = () => {
                   helperText={errors.productName ? 'Product Name is required' : ''}
                 />
               </Grid>
-
               <Grid item xs={6}>
                 <TextField
                   label="Brand Name"
@@ -334,7 +379,6 @@ const AllProducts = () => {
                   helperText={errors.brandName ? 'Brand Name is required' : ''}
                 />
               </Grid>
-
               <Grid item xs={6}>
                 <FormControl variant="outlined" fullWidth error={!!errors.category}>
                   <InputLabel>Category</InputLabel>
@@ -343,9 +387,11 @@ const AllProducts = () => {
                     {...register('category', { required: true })}
                     defaultValue=""
                   >
-                    <MenuItem value="Electronics">Electronics</MenuItem>
-                    <MenuItem value="Fashion">Fashion</MenuItem>
-                    <MenuItem value="Home">Home</MenuItem>
+                    {categoryList.map((item, index) => (
+                      <MenuItem value={item} key={`item${index + 1}`}>
+                        {item}
+                      </MenuItem>
+                    ))}
                   </Select>
                   {errors.category && <FormHelperText error>Category is required</FormHelperText>}
                 </FormControl>
@@ -373,7 +419,6 @@ const AllProducts = () => {
                   helperText={errors.description ? 'Description is required' : ''}
                 />
               </Grid>
-
               <Grid item xs={6}>
                 <TextField
                   label="Price"
@@ -385,7 +430,6 @@ const AllProducts = () => {
                   helperText={errors.price ? 'Price is required' : ''}
                 />
               </Grid>
-
               <Grid item xs={6}>
                 <TextField
                   label="Selling Price"
@@ -397,7 +441,6 @@ const AllProducts = () => {
                   helperText={errors.sellingPrice ? 'Selling Price is required' : ''}
                 />
               </Grid>
-
               <Grid item xs={12}>
                 <MultipleFileUpload onFileDrop={handleFileDrop}>
                   <Box sx={{ border: '1px dashed #ccc', padding: '1rem' }}>
@@ -437,9 +480,28 @@ const AllProducts = () => {
             </Grid>
 
             <Box mt={2} display="flex" justifyContent="flex-end">
-              <Button variant="contained" color="primary" type="submit">
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                sx={buttonSx}
+                disabled={loading}
+              >
                 {isUpdateMode ? 'Update' : 'Add'}
               </Button>
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: green[500],
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-12px',
+                    marginLeft: '-12px',
+                  }}
+                />
+              )}
             </Box>
           </StyledForm>
         </StyledModalContent>

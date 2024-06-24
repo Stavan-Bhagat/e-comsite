@@ -10,7 +10,6 @@ export const CategoryHeader = styled(Typography)({
 export const OuterContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
   padding: '1rem',
-  marginTop: '7%',
 }));
 
 export const sidebarContainer = styled(Box)(({ theme }) => ({

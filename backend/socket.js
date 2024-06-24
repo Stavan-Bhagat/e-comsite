@@ -5,8 +5,8 @@ const {
 } = require('./constant/errorMessage.constant');
 require('dotenv').config();
 
-// const socketCorsOrigins = process.env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
-const socketCorsOrigins = process.env.CLIENT_ORIGIN;
+const socketCorsOrigins = process.env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
+// const socketCorsOrigins = process.env.CLIENT_ORIGIN;
 console.log('socketCorsOrigins', socketCorsOrigins);
 module.exports = {
   init: (server) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -24,9 +24,17 @@ const AdminPanel = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  useEffect(() => {
+    const storedIndex = localStorage.getItem('adminPanelSelectedIndex');
+    if (storedIndex !== null) {
+      setSelectedIndex(parseInt(storedIndex));
+    }
+  }, []);
+
   const handleListItemClick = (index) => {
     setSelectedIndex(index);
     setDrawerOpen(false);
+    localStorage.setItem('adminPanelSelectedIndex', index);
   };
 
   const sidebarItems = [
@@ -59,7 +67,7 @@ const AdminPanel = () => {
       case 2:
         return <OrderDetails />;
       default:
-        return <AllProducts />;
+        return <AllUsers />;
     }
   };
 
@@ -72,10 +80,8 @@ const AdminPanel = () => {
       <Header />
       <Container>
         <Box sx={{ display: 'flex' }}>
-          {/* Permanent Drawer */}
           <StyledDrawer>{renderSidebar()}</StyledDrawer>
 
-          {/* Main Content */}
           <StyledContainer component="main" sx={{ flexGrow: 1, p: 3 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -84,12 +90,10 @@ const AdminPanel = () => {
             </Grid>
           </StyledContainer>
 
-          {/* Mobile Drawer Toggle */}
           <StyledIconButton color="primary" edge="start" onClick={toggleDrawer}>
             <MenuIcon />
           </StyledIconButton>
 
-          {/* Temporary Drawer for Mobile */}
           <StyledDrawer
             variant="temporary"
             open={drawerOpen}

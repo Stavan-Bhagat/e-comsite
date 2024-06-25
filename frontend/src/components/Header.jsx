@@ -187,15 +187,15 @@ const Header = () => {
                 </Box>
               </Tooltip>
             )}
-            {isAuthenticated &&
-            <Tooltip title="Notification">
-              <IconButtonStyled onClick={() => setModalOpen(true)}>
-                <Badge badgeContent={unreadCount} color="error">
-                  <NotificationsIcon className="text-warning" />
-                </Badge>
-              </IconButtonStyled>
-            </Tooltip>
-            }
+            {isAuthenticated && (
+              <Tooltip title="Notification">
+                <IconButtonStyled onClick={() => setModalOpen(true)}>
+                  <Badge badgeContent={unreadCount} color="error">
+                    <NotificationsIcon className="text-warning" />
+                  </Badge>
+                </IconButtonStyled>
+              </Tooltip>
+            )}
             <Tooltip title="Cart">
               <IconButtonStyled aria-label="cart" onClick={handleCart}>
                 <Badge badgeContent={cart.length}>

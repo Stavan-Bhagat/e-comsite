@@ -31,7 +31,7 @@ exports.createOrder = async (req, res) => {
     const user = await User.findById(userId);
     const orderDetails = {
       message: 'Order created',
-      order,
+      order
     };
     if (user.role !== 'Admin') {
       orderDetails.userName = 'User';
@@ -53,12 +53,54 @@ exports.createOrder = async (req, res) => {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
   }
 };
-
 exports.fetchOrder = async (req, res) => {
   try {
-    const orders = await Order.find();
-    res.status(STATUS_SUCCESS).json({ message: MSG_ORDERS_FETCHED, orders });
+    const { query = '', page = 1, limit = 10 } = req.query;
+    const skip = (page - 1) * limit;
+    let filter = {};
+
+    if (query.length > 0) {
+      filter = {
+        $or: [
+          { name: { $regex: query, $options: 'i' } },
+          { 'items.productName': { $regex: query, $options: 'i' } }
+        ]
+      };
+    }
+    // Fetch orders for the current page
+    const orders = await Order.find(filter).skip(skip).limit(parseInt(limit));
+    const totalOrders = await Order.countDocuments(filter);
+
+    // Fetch all orders for calculating most sold product
+    const allOrders = await Order.find();
+
+    // Calculate most sold product across all orders
+    const productSalesCount = {};
+    allOrders.forEach((order) => {
+      order.items.forEach((item) => {
+        if (productSalesCount[item.productName]) {
+          productSalesCount[item.productName] += item.quantity;
+        } else {
+          productSalesCount[item.productName] = item.quantity;
+        }
+      });
+    });
+
+    const mostSoldProduct = Object.entries(productSalesCount).reduce(
+      (max, [productName, count]) => (count > max.count ? { productName, count } : max),
+      { productName: '', count: 0 }
+    );
+
+    res.status(STATUS_SUCCESS).json({
+      message: MSG_ORDERS_FETCHED,
+      orders,
+      totalOrders,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(totalOrders / limit),
+      mostSoldProduct
+    });
   } catch (error) {
+    console.error('Error fetching orders:', error);
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };

@@ -47,7 +47,7 @@ const CategoryList = () => {
                   <CategoryCard onClick={() => handleChange(category.category)}>
                     <CategoryImage
                       component="img"
-                      height="140"
+                      height="5%"
                       image={category.productImage[0]}
                       alt={category.productName}
                     />

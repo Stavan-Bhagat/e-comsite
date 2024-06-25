@@ -9,7 +9,6 @@ export const CategoryCard = styled(Box)(({ theme }) => ({
     boxShadow: `1px 1px 1px ${theme.boxShadow.main}`,
   },
   boxShadow: `1px 1px 1px  ${theme.boxShadow.main}`,
-
   borderEndEndRadius: 3,
 }));
 

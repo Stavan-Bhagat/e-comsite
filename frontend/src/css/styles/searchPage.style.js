@@ -14,8 +14,6 @@ export const OuterContainer = styled(Box)(({ theme }) => ({
 
 export const sidebarContainer = styled(Box)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  //   padding: '1rem',
-  //   marginTop: '7%',
 }));
 
 export const StyledCard = styled(Card)(({ theme }) => ({

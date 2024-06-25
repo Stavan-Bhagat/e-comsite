@@ -8,17 +8,16 @@ export const StyledContainer = styled(Box)({
   minHeight: '100vh',
   position: 'relative',
   pb: '4rem',
-  bgcolor: '#f5f5f5', // Changed background color to a light grey
+  bgcolor: '#f5f5f5',
 });
 
-export const StyledCard = styled(Card)({
+export const StyledCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   zIndex: 2,
-  backgroundColor: '#fff', // Changed background color to white
-  boxShadow: '0 3px 5px rgba(0, 0, 0, 0.3)', // Added a shadow to the card
-  padding: '2rem', // Added padding to the card
-  borderRadius: '8px', // Added border radius to make the card corners rounded
-});
+  padding: '2rem',
+  borderRadius: '8px',
+  boxShadow: `1px 1px 2px 0px ${theme.boxShadow.main}`,
+}));
 
 export const StyledAvatar = styled(Avatar)({
   width: 120,
@@ -45,7 +44,6 @@ export const StyledBackdrop = styled(Paper)({
   height: '40%',
   backdropFilter: 'blur(5px)',
   zIndex: 1,
-  backgroundColor: 'rgba(255, 255, 255, 0.8)', // Made the backdrop slightly transparent white
 });
 
 export const StyledLoadingMessage = styled(Typography)({

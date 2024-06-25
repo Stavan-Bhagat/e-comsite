@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import AdminPanel from './pages/AdminPanel';
 import ProductPage from './pages/ProductPage';
@@ -34,9 +33,12 @@ const App = () => {
             <Route path="/product/:id" element={<ProductPage />} />
             <Route path="/product/search/:type/:term" element={<ProductSearch />} />
             <Route path="/product/cart/" element={<Cart />} />
-            <Route path="/checkout" element={<CheckOut />} />
-            <Route path="/paymentform" element={<PaymentForm />} />
-            <Route path="/confirmation" element={<ConfirmationPage />} />
+            <Route path="/checkout" element={isAuthenticated ? <CheckOut /> : <Login />} />
+            <Route path="/paymentform" element={isAuthenticated ? <PaymentForm /> : <Login />} />
+            <Route
+              path="/confirmation"
+              element={isAuthenticated ? <ConfirmationPage /> : <Login />}
+            />
           </Routes>
         </StripeProvider>
       </Router>

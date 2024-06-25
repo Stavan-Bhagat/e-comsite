@@ -1,22 +1,22 @@
 import { styled } from '@mui/material/styles';
 import { Box, Card, Avatar, IconButton, Button, Paper, Typography } from '@mui/material';
 
-export const StyledContainer = styled(Box)({
+export const StyledContainer = styled(Box)(({theme})=>({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
-  minHeight: '100vh',
+  minHeight: '90vh',
   position: 'relative',
-  pb: '4rem',
-  bgcolor: '#f5f5f5',
-});
+  backgroundColor:theme.palette.background.paper,
+}));
 
 export const StyledCard = styled(Card)(({ theme }) => ({
   position: 'relative',
   zIndex: 2,
   padding: '2rem',
   borderRadius: '8px',
-  boxShadow: `1px 1px 2px 0px ${theme.boxShadow.main}`,
+  boxShadow: `0px 1px 1px 1px ${theme.boxShadow.main}`,
+  backgroundColor:theme.palette.background.paper,
 }));
 
 export const StyledAvatar = styled(Avatar)({
@@ -30,6 +30,8 @@ export const StyledIconButton = styled(IconButton)({
 
 export const StyledForm = styled('form')({
   width: '100%',
+  // backgroundColor:theme.boxShadow.main,
+
 });
 
 export const StyledButton = styled(Button)({

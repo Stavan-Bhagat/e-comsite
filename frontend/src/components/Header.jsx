@@ -15,6 +15,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PersonIcon from '@mui/icons-material/Person';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import AccountIcon from '@mui/icons-material/AccountCircleOutlined';
+import Tooltip from '@mui/material/Tooltip';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -154,45 +155,59 @@ const Header = () => {
             <LogoText variant="h6">Fusion</LogoText>
           </Logo>
           <Box display="flex" alignItems="center">
-            <UserIconButton onClick={handleSearchIconClick}>
-              <IconButtonStyled>
-                <SearchIcon />
-              </IconButtonStyled>
-            </UserIconButton>
+            <Tooltip title="Search">
+              <UserIconButton onClick={handleSearchIconClick}>
+                <IconButtonStyled>
+                  <SearchIcon />
+                </IconButtonStyled>
+              </UserIconButton>
+            </Tooltip>
             {!isAuthenticated && (
-              <LoginButton variant="outlined" onClick={() => navigate('/login')}>
-                <PersonIcon /> Login
-              </LoginButton>
+              <Tooltip title="Login/Signup">
+                <IconButtonStyled aria-label="login" onClick={() => navigate('/login')}>
+                  <PersonIcon />
+                </IconButtonStyled>
+              </Tooltip>
             )}
             {user?._id && (
-              <Box>
-                {user?.imageUrl ? (
-                  <Avatar
-                    alt="User Avatar"
-                    src={user.imageUrl}
-                    ref={anchorRef}
-                    onClick={handleProfile}
-                  />
-                ) : (
-                  <LoginButton variant="outlined" ref={anchorRef} onClick={handleClick}>
-                    <AccountIcon /> User
-                  </LoginButton>
-                )}
-              </Box>
+              <Tooltip title="Profile">
+                <Box>
+                  {user?.imageUrl ? (
+                    <Avatar
+                      alt="User Avatar"
+                      src={user.imageUrl}
+                      ref={anchorRef}
+                      onClick={handleProfile}
+                    />
+                  ) : (
+                    <LoginButton variant="outlined" ref={anchorRef} onClick={handleClick}>
+                      <AccountIcon />
+                    </LoginButton>
+                  )}
+                </Box>
+              </Tooltip>
             )}
-            <IconButtonStyled onClick={() => setModalOpen(true)}>
-              <Badge badgeContent={unreadCount} color="error">
-                <NotificationsIcon className="text-warning" />
-              </Badge>
-            </IconButtonStyled>
-            <IconButtonStyled aria-label="cart" onClick={handleCart}>
-              <Badge badgeContent={cart.length}>
-                <ShoppingCartIcon />
-              </Badge>
-            </IconButtonStyled>
-            <IconButtonStyled aria-label="More" onClick={handleClick}>
-              <MoreVertIcon />
-            </IconButtonStyled>
+            {isAuthenticated &&
+            <Tooltip title="Notification">
+              <IconButtonStyled onClick={() => setModalOpen(true)}>
+                <Badge badgeContent={unreadCount} color="error">
+                  <NotificationsIcon className="text-warning" />
+                </Badge>
+              </IconButtonStyled>
+            </Tooltip>
+            }
+            <Tooltip title="Cart">
+              <IconButtonStyled aria-label="cart" onClick={handleCart}>
+                <Badge badgeContent={cart.length}>
+                  <ShoppingCartIcon />
+                </Badge>
+              </IconButtonStyled>
+            </Tooltip>
+            <Tooltip title="Options">
+              <IconButtonStyled aria-label="More" onClick={handleClick}>
+                <MoreVertIcon />
+              </IconButtonStyled>
+            </Tooltip>
           </Box>
         </StyledToolbar>
       </StyledAppBar>

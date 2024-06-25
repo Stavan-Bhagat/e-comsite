@@ -6,10 +6,9 @@ import { styled } from '@mui/material/styles';
 import PaymentForm from '../components/PaymentForm';
 import { MESSAGES } from '../constant/messages.constant';
 import thanksImage from '../images/confirmation.2jpg.jpg';
-// Styled Components
+
 const StyledContainer = styled(Container)({
   padding: '2rem',
-  marginTop: '2rem',
 });
 
 const StyledTitle = styled(Typography)({
@@ -21,7 +20,6 @@ const StyledTitle = styled(Typography)({
 
 const StyledBillingPaper = styled(Paper)({
   padding: '2rem',
-  // boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
   background: '#fff',
 });
 
@@ -44,27 +42,19 @@ const StyledTotalAmount = styled(Typography)({
 
 const ConfirmationPage = () => {
   const orderDetails = useSelector((state) => state.order.orderDetails);
-  const cartData = useSelector((state) => state.cart.items);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
-    if (!orderDetails || !cartData.length) {
+    if (!orderDetails) {
       enqueueSnackbar(MESSAGES.ERROR.NO_ORDER_DETAILS, { variant: 'warning' });
     }
-  }, [orderDetails, cartData, enqueueSnackbar]);
+  }, [orderDetails, enqueueSnackbar]);
 
-  const calculateTotal = () => {
-    return cartData.reduce(
-      (total, item) => total + (item.sellingPrice || 0) * (item.quantity || 0),
-      0
-    );
-  };
-
-  const totalAmount = calculateTotal();
-
-  if (!orderDetails || !cartData.length) {
+  if (!orderDetails) {
     return null;
   }
+
+  const { name, address, items, totalAmount } = orderDetails;
 
   return (
     <StyledContainer>
@@ -79,17 +69,17 @@ const ConfirmationPage = () => {
             </Typography>
             <StyledOrderDetails>
               <Typography variant="body1">
-                <strong>Name:</strong> {orderDetails?.name}
+                <strong>Name:</strong> {name}
               </Typography>
               <Typography variant="body1">
-                <strong>Address:</strong> {orderDetails?.address}
+                <strong>Address:</strong> {address}
               </Typography>
             </StyledOrderDetails>
             <Divider sx={{ my: '1rem' }} />
             <Typography variant="h6" gutterBottom>
               Order Details:
             </Typography>
-            {cartData.map((item) => (
+            {items.map((item) => (
               <StyledItemDetails key={item._id}>
                 <Typography variant="body1">
                   <strong>Product:</strong> {item.productName}
@@ -108,7 +98,7 @@ const ConfirmationPage = () => {
           </StyledBillingPaper>
         </Grid>
         <Grid item xs={6}>
-          <PaymentForm totalAmount={totalAmount} orderDetails={orderDetails} cartData={cartData} />
+          <PaymentForm totalAmount={totalAmount} orderDetails={orderDetails} />
         </Grid>
         <Grid item xs={6}>
           <Box

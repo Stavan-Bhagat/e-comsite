@@ -33,11 +33,13 @@ export const StylePaper = styled(Paper)({
 });
 
 export const LoginButton = styled(Button)({
-  marginRight: '1.5vw',
+  // marginRight: '1.5vw',
+   padding:'0%',
 });
 
 export const UserIconButton = styled(IconButton)({
   // marginRight: '1.5vw',
+
 });
 
 export const StyledAppBar = styled(AppBar)(({ theme }) => ({

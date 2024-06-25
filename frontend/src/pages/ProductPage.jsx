@@ -8,6 +8,7 @@ import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import { fetchProduct } from '../utils/services/product.service';
 import fallbackImage from '../images/ai.jpeg';
 import { addToCart } from '../redux/Slice/cartSlice';
+import { setBuyNowProduct } from '../redux/Slice/buyNowSlice';
 import Header from '../components/Header';
 import { MESSAGES } from '../constant/messages.constant';
 import {
@@ -21,6 +22,7 @@ import {
 const ProductPage = () => {
   const { id } = useParams();
   const cartData = useSelector((state) => state.cart.items);
+  const isAuthenticated = useSelector((state) => state?.auth?.isAuthenticated);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState(null);
   const [clickImage, setClickImage] = useState(null);
@@ -69,13 +71,13 @@ const ProductPage = () => {
 
   const handleBuyNow = (_id) => {
     const isProductInCart = cartData.find((item) => item._id === _id);
-
     if (isProductInCart) {
       navigate('/product/cart/');
     } else {
       if (product) {
-        dispatch(addToCart(product));
-        navigate('/product/cart/');
+        const productWithQuantity = { ...product, quantity: 1 };
+        dispatch(setBuyNowProduct(productWithQuantity));
+        navigate(`/checkout`);
       }
     }
   };
@@ -114,7 +116,6 @@ const ProductPage = () => {
     <>
       <Header />
       <StyledContainer>
-        {/* <StyledTitle variant="h4">Product Details</StyledTitle> */}
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <ProductImageWrapper>

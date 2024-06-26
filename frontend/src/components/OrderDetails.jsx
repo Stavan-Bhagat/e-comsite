@@ -10,6 +10,7 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Avatar,
+  Divider,
   InputBase,
   Paper,
   Pagination,
@@ -42,9 +43,7 @@ const StyledInputBase = styled(InputBase)({
   flex: 1,
 });
 
-const StyledIconButton = styled(IconButton)({
-  padding: '10px',
-});
+const StyledIconButton = styled(IconButton)({});
 
 const StyledBox = styled(Box)({
   display: 'flex',
@@ -55,8 +54,8 @@ const StyledBox = styled(Box)({
 const StyledListItem = styled(ListItem)({
   border: '1px solid #ccc',
   borderRadius: '4px',
-  padding: '16px',
-  marginBottom: '16px',
+  padding: '1%',
+  marginBottom: '1%',
 });
 
 const OrderDetails = () => {
@@ -169,37 +168,41 @@ const OrderDetails = () => {
 
       <List>
         {orders.map((order) => (
-          <StyledListItem key={order._id}>
-            <ListItemText
-              primary={`Order ID: ${order._id}`}
-              secondary={`Name: ${order.name} | Address: ${order.address} | Total Amount: ₹${order.totalAmount}`}
-            />
-            <ListItemSecondaryAction>
-              <IconButton edge="end" onClick={() => handleToggleExpand(order._id)}>
-                {expandedOrderId === order._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-              </IconButton>
-            </ListItemSecondaryAction>
+          <Box key={order._id} mb={2} border={1} borderRadius={4} padding={2}>
+            <ListItem>
+              <ListItemText
+                primary={`Order ID: ${order._id}`}
+                secondary={`Name: ${order.name} | Address: ${order.address} | Total Amount: $${order.totalAmount}`}
+              />
+              <ListItemSecondaryAction>
+                <IconButton edge="end" onClick={() => handleToggleExpand(order._id)}>
+                  {expandedOrderId === order._id ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                </IconButton>
+              </ListItemSecondaryAction>
+            </ListItem>
             {expandedOrderId === order._id && (
               <Box mt={2}>
                 <Typography variant="h6">Items</Typography>
                 {order.items.map((item) => (
-                  <Box key={item._id} mb={2} display="flex" alignItems="center">
-                    <Avatar
-                      variant="square"
-                      alt={`Product Image ${item.productName}`}
-                      src={item.productImage[0]}
-                      sx={{ width: 100, height: 100, marginRight: 2 }}
-                    />
-                    <Box>
-                      <Typography variant="subtitle1">{item.productName}</Typography>
+                  <Grid container>
+                    <Grid sm={1} md={1}>
+                      <Avatar
+                        variant="circle"
+                        alt={`Product Image ${item.productName}`}
+                        src={item.productImage[0]}
+                      />
+                    </Grid>
+                    <Grid sm={11} md={11}>
+                      <Typography>Product: {item.productName}</Typography>
                       <Typography>Quantity: {item.quantity}</Typography>
-                      <Typography>Price: ₹{item.sellingPrice}</Typography>
-                    </Box>
-                  </Box>
+                      <Typography>Price: ${item.sellingPrice}</Typography>
+                      <Divider />
+                    </Grid>
+                  </Grid>
                 ))}
               </Box>
             )}
-          </StyledListItem>
+          </Box>
         ))}
       </List>
 

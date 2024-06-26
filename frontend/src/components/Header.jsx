@@ -77,6 +77,9 @@ const Header = () => {
     setIsDrawerOpen(true);
     navigate('/admin-panel');
   };
+  const handleOrders = () => {
+    navigate('/user-panel');
+  };
 
   const handleHome = () => {
     setIsDrawerOpen(false);
@@ -262,6 +265,11 @@ const Header = () => {
           <MenuItem onClick={handleHome}>Home</MenuItem>
         ) : (
           user?.role === 'Admin' && <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
+        )}
+        {location.pathname === '/user-panel' ? (
+          <MenuItem onClick={handleHome}>Home</MenuItem>
+        ) : (
+          user?.role === 'User' && <MenuItem onClick={handleOrders}>Order Details</MenuItem>
         )}
         <MenuItem>
           <ThemeToggle />

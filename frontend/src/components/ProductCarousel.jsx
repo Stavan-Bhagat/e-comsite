@@ -76,12 +76,11 @@ const ProductCarousel = ({ category }) => {
                     <StyledCardImage src={item.productImage[0]} alt={item.productName} />
                     <StyledCardContent>
                       <StyledProductName>{item.productName}</StyledProductName>
-                      <StyledProductPrice variant="body1" color="textSecondary" component="span">
+                      <StyledProductPrice pr={1} variant="body1" color="textSecondary" component="span">
                         From
                       </StyledProductPrice>
                       <StyledProductPrice variant="body2" color="primary" component="span">
-                        <CurrencyRupeeIcon fontSize="small" />
-                        {item.price}
+                        {` ₹${item.price}`}
                       </StyledProductPrice>
                     </StyledCardContent>
                   </StyledCard>

@@ -37,7 +37,6 @@ const CardDetailsBox = styled(Box)(({ theme }) => ({
   marginTop: theme.spacing(1),
 }));
 
-
 const StyleDialogContent = styled('div')(({ theme }) => ({
   width: 'fit-content',
   display: 'flex',

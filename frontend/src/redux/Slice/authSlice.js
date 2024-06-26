@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 /* eslint-disable camelcase */
 
 import { createSlice } from '@reduxjs/toolkit';

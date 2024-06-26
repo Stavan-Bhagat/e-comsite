@@ -2,9 +2,10 @@
 import axios from 'axios';
 import { logout } from '../redux/Slice/authSlice';
 import store from '../redux/store/store';
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_BASEURL,
+  baseURL: baseUrl,
 });
 
 axiosInstance.interceptors.request.use(
@@ -48,8 +49,8 @@ axiosInstance.interceptors.response.use(
         }
 
         const refreshResponse = await axios.get(
-          // `${process.env.REACT_APP_BASEURL}/fusion/submit/refreshtoken`,
-          `http://localhost:5000/fusion/submit/refreshtoken`,
+          `${baseUrl}/fusion/submit/refreshtoken`,
+          // `http://localhost:5000/fusion/submit/refreshtoken`,
           {
             headers: { 'refresh-token': refreshToken },
           }

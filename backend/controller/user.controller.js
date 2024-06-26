@@ -107,7 +107,7 @@ exports.verify = async (req, res) => {
     }
     user.verified = true;
     await user.save();
-    res.redirect(`${process.env.CLIENT_URL}/verification-success`);
+    res.redirect(`${process.env.BASEURL}/verification-success`);
   } catch (error) {
     console.error('Verification error:', error);
     res.status(STATUS_BAD_REQUEST).json({ message: error.message });

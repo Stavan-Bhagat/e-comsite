@@ -67,15 +67,18 @@ const PaymentForm = ({ totalAmount, orderDetails }) => {
   const elements = useElements();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const baseURL = process.env.REACT_APP_BASEURL;
 
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const response = await axios.post(
-          'http://localhost:5000/fusion/product/create-payment-intent',
-          { amount: totalAmount }
+        const response = await axiosInstance.post(
+          `/fusion/product/create-payment-intent`,
+          {
+            amount: totalAmount,
+          }
         );
         setClientSecret(response.data.clientSecret);
       } catch (err) {

@@ -153,7 +153,13 @@ const Header = () => {
     <>
       <StyledAppBar position="fixed">
         <StyledToolbar>
-          <Logo onClick={() => navigate('/')} component="a">
+          <Logo
+            component="a"
+            onClick={() => {
+              navigate('/');
+              setProfile(false);
+            }}
+          >
             <LogoImage src={logo} alt="Logo" />
             <LogoText variant="h6">Fusion</LogoText>
           </Logo>

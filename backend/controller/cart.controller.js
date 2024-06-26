@@ -37,11 +37,9 @@ exports.addToCart = async (req, res) => {
     if (!cart) {
       cart = new Cart({ userId, items: [] });
     } else {
-      // Clear existing items if the cart is to be reset
       cart.items = [];
     }
 
-    // Add items to cart only if they are not empty
     if (cartData && Array.isArray(cartData) && cartData.length > 0) {
       cartData.forEach((item) => {
         if (!item._id || !item.productName || !item.sellingPrice) {
@@ -57,12 +55,10 @@ exports.addToCart = async (req, res) => {
       });
     }
 
-    // Only save the cart if it has items
     if (cart.items.length > 0) {
       await cart.save();
       res.status(201).json({ message: 'Cart updated successfully', cart });
     } else {
-      // Optionally, remove the cart from the database if it's empty
       await Cart.deleteOne({ userId });
       res.status(204).json({ message: 'Cart is empty and has been removed' });
     }

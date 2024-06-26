@@ -132,7 +132,11 @@ exports.updateData = async (req, res) => {
   const { id } = req.query;
   try {
     const { name, email, role } = req.body;
-    const updateFields = { name, email, role };
+    let image;
+    if (req.file) {
+      image = req.file.path;
+    }
+    const updateFields = { name, email, role, imageUrl: image };
     if (role) {
       updateFields.role = role.value;
     }

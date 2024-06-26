@@ -56,11 +56,12 @@ exports.addToCart = async (req, res) => {
         });
       });
     }
-
+    // Only save the cart if it has items
     if (cart.items.length > 0) {
       await cart.save();
       res.status(201).json({ message: 'Cart updated successfully', cart });
     } else {
+      // Optionally, remove the cart from the database if it's empty
       await Cart.deleteOne({ userId });
       res.status(204).json({ message: 'Cart is empty and has been removed' });
     }

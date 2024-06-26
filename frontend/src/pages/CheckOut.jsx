@@ -1,17 +1,14 @@
-// src/components/BuyNowPage.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography, TextField, Button, Box, Paper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useForm, Controller } from 'react-hook-form';
 import { placeOrder } from '../redux/Slice/orderSlice';
+import { MESSAGES } from '../constant/messages.constant';
 
 const CheckOut = () => {
   const cartItems = useSelector((state) => state.cart.items);
-  const totalAmount = useSelector((state) =>
-    state.cart.items.reduce((total, item) => total + item.sellingPrice * item.quantity, 0)
-  );
-
+  const buyNowProduct = useSelector((state) => state.buyNow.product);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -26,16 +23,48 @@ const CheckOut = () => {
     },
   });
 
+  useEffect(() => {
+    if (!cartItems.length && !buyNowProduct) {
+      navigate('/');
+    }
+  }, [cartItems, buyNowProduct, navigate]);
+
+  const calculateTotal = () => {
+    if (buyNowProduct) {
+      return buyNowProduct.sellingPrice;
+    }
+    return cartItems.reduce((total, item) => total + item.sellingPrice * item.quantity, 0);
+  };
+
+  const totalAmount = calculateTotal();
+
   const onSubmit = (data) => {
     const orderDetails = {
       ...data,
-      items: cartItems,
+      items: buyNowProduct ? [buyNowProduct] : cartItems,
       totalAmount,
     };
-
     dispatch(placeOrder(orderDetails));
     navigate('/confirmation');
   };
+
+  if (!cartItems.length && !buyNowProduct) {
+    return (
+      <Container
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          padding: 4,
+        }}
+      >
+        <Typography variant="h5" color="error">
+          {MESSAGES.ERROR.NO_ORDER_DETAILS}
+        </Typography>
+      </Container>
+    );
+  }
 
   return (
     <Container
@@ -55,7 +84,7 @@ const CheckOut = () => {
           <Controller
             name="name"
             control={control}
-            rules={{ required: 'Name is required' }}
+            rules={{ required: MESSAGES.FORMS.VALIDATION.NAME_REQUIRED }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -70,7 +99,7 @@ const CheckOut = () => {
           <Controller
             name="address"
             control={control}
-            rules={{ required: 'Address is required' }}
+            rules={{ required: MESSAGES.FORMS.VALIDATION.ADDRESS_REQUIRED }}
             render={({ field }) => (
               <TextField
                 {...field}

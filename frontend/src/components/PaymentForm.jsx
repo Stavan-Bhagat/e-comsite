@@ -1,10 +1,8 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
 import React, { useState, useEffect } from 'react';
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import {
   Button,
@@ -18,15 +16,54 @@ import {
   DialogTitle,
   Paper,
 } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import image from '../images/success.gif';
 import { clearCart } from '../redux/Slice/cartSlice';
+import { clearBuyNowProduct } from '../redux/Slice/buyNowSlice';
 import axiosInstance from '../utils/axios';
 
-const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(3),
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  background: 'linear-gradient(135deg, #f5a623, #f76c6c, #f9d423, #3a7bd5)',
+}));
+
+const CardDetailsBox = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(2),
+  border: '1px solid #ccc',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: 'white',
+  marginTop: theme.spacing(1),
+}));
+
+
+const StyleDialogContent = styled('div')(({ theme }) => ({
+  width: 'fit-content',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+const Image = styled('img')({
+  maxWidth: '100%',
+  height: 'auto',
+});
+
+const FormTitle = styled(Typography)(({ theme }) => ({
+  color: theme.palette.common.white,
+}));
+
+const FormContainer = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+}));
+
+const PaymentForm = ({ totalAmount, orderDetails }) => {
   const userId = useSelector((state) => state?.auth?.user?._id);
+  const buyNowProduct = useSelector((state) => state.buyNow.product);
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [formError, setFormError] = useState('');
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -43,8 +80,8 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
           { amount: totalAmount }
         );
         setClientSecret(response.data.clientSecret);
-      } catch (error) {
-        setError('Failed to fetch client secret');
+      } catch (err) {
+        setFormError('Failed to fetch client secret');
       }
     };
 
@@ -54,14 +91,14 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+    const { error: stripeError, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
       payment_method: {
         card: elements.getElement(CardElement),
       },
     });
 
-    if (error) {
-      setError(error.message);
+    if (stripeError) {
+      setFormError(stripeError.message);
       setLoading(false);
     } else {
       const paymentData = {
@@ -75,19 +112,19 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
 
       const mergedData = {
         ...orderDetails,
-        items: cartData,
         totalAmount,
         paymentData,
         userId,
       };
 
       try {
+        console.log('merge', mergedData);
         const response = await axiosInstance.post('fusion/order/add-order', mergedData);
         if (response.status === 201) {
           setOpen(true);
         }
-      } catch (error) {
-        setError(`Failed to place the order: ${error.response?.data?.message || error.message}`);
+      } catch (err) {
+        setFormError(`Failed to place the order: ${err.response?.data?.message || err.message}`);
       } finally {
         setLoading(false);
       }
@@ -96,45 +133,35 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
 
   const handleCloseDialog = () => {
     setOpen(false);
-    dispatch(clearCart());
+    if (buyNowProduct) {
+      dispatch(clearBuyNowProduct());
+    } else {
+      dispatch(clearCart());
+    }
+
     navigate('/');
   };
 
   return (
-    <Paper
-      sx={{
-        padding: 3,
-        borderRadius: 2,
-        boxShadow: 3,
-        background: 'linear-gradient(135deg, #f5a623, #f76c6c, #f9d423, #3a7bd5)',
-      }}
-    >
+    <StyledPaper>
       <form onSubmit={handleSubmit}>
-        <Box mb={3}>
-          <Typography component="span" variant="h6" sx={{ color: '#ffffff' }}>
+        <FormContainer>
+          <FormTitle component="span" variant="h6">
             Card Details
-          </Typography>
-          <Typography component="span" variant="h6" sx={{ float: 'inline-end', color: '#ffffff' }}>
+          </FormTitle>
+          <FormTitle component="span" variant="h6" style={{ float: 'inline-end' }}>
             STRIPE
-          </Typography>
-          <Box
-            sx={{
-              padding: 2,
-              border: '1px solid #ccc',
-              borderRadius: 2,
-              backgroundColor: 'white',
-              marginTop: 1,
-            }}
-          >
+          </FormTitle>
+          <CardDetailsBox>
             <CardElement id="cardElement" />
-          </Box>
-        </Box>
-        {error && (
+          </CardDetailsBox>
+        </FormContainer>
+        {formError && (
           <Box mb={3}>
-            <Alert severity="error">{error}</Alert>
+            <Alert severity="error">{formError}</Alert>
           </Box>
         )}
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Box style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Button
             type="submit"
             variant="contained"
@@ -151,13 +178,13 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
         open={open}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
-        sx={{ borderRadius: '2%' }}
+        style={{ borderRadius: '2%' }}
       >
         <DialogTitle id="alert-dialog-title">Order Placed Successfully</DialogTitle>
         <DialogContent>
-          <div className="w-50 h-50">
-            <img src={image} alt="success" />
-          </div>
+          <styleDialogContent>
+            <Image src={image} alt="success" />
+          </styleDialogContent>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} autoFocus>
@@ -165,8 +192,25 @@ const PaymentForm = ({ totalAmount, orderDetails, cartData }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Paper>
+    </StyledPaper>
   );
 };
 
+PaymentForm.propTypes = {
+  totalAmount: PropTypes.number.isRequired,
+  orderDetails: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    address: PropTypes.string.isRequired,
+    items: PropTypes.arrayOf(
+      PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        productName: PropTypes.string.isRequired,
+        quantity: PropTypes.number.isRequired,
+        sellingPrice: PropTypes.number.isRequired,
+      })
+    ).isRequired,
+    totalAmount: PropTypes.number.isRequired,
+  }).isRequired,
+};
 export default PaymentForm;

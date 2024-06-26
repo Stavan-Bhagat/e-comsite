@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Container, Grid, Box, CardContent, CardMedia, Typography, Skeleton } from '@mui/material';
+import { Container, Grid, Box, CardMedia, Skeleton } from '@mui/material';
 import { fetchCategoryProducts } from '../utils/services/product.service';
-import '../css/homeBody.css';
-import genz from '../images/sale.jpg';
+import {
+  CategoryCard,
+  CategoryImage,
+  CategoryTitle,
+  CategoryCardContent,
+} from '../css/styles/categoryListStyle';
+import genz from '../images/shopping1.jpg';
 
 const CategoryList = () => {
   const [categoryProduct, setCategoryProduct] = useState([]);
@@ -16,7 +21,7 @@ const CategoryList = () => {
       const response = await fetchCategoryProducts();
       setCategoryProduct(response.data.slice(0, 12));
     } catch (error) {
-      console.error('Failed to fetch categories', error);
+      console.error('Error fetching category products:', error);
     }
     setLoading(false);
   };
@@ -30,7 +35,7 @@ const CategoryList = () => {
   }, []);
 
   return (
-    <Container sx={{ padding: 2 }}>
+    <Container maxWidth="lg" sx={{ marginTop: '2%' }}>
       {loading ? (
         <Skeleton variant="rectangular" width="100%" height={400} />
       ) : (
@@ -39,39 +44,19 @@ const CategoryList = () => {
             <Grid container spacing={2}>
               {categoryProduct.map((category) => (
                 <Grid item xs={12} sm={6} md={4} lg={3} key={category._id}>
-                  <Box
-                    onClick={() => handleChange(category.category)}
-                    sx={{
-                      cursor: 'pointer',
-                      transition: 'transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out',
-                      '&:hover': {
-                        transform: 'scale(1.05)',
-                        boxShadow: '0px 8px 16px rgba(0, 0, 0, 0.15 )',
-                      },
-                    }}
-                  >
-                    <CardMedia
+                  <CategoryCard onClick={() => handleChange(category.category)}>
+                    <CategoryImage
                       component="img"
-                      height="140"
+                      height="5%"
                       image={category.productImage[0]}
                       alt={category.productName}
-                      sx={{ padding: '10%' }}
                     />
-                    <CardContent sx={{ padding: 0 }}>
-                      <Typography
-                        className="text-center"
-                        sx={{
-                          fontFamily: 'IBM Plex Serif,serif,',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          overflow: 'hidden',
-                          px: '5%',
-                        }}
-                      >
+                    <CategoryCardContent>
+                      <CategoryTitle align="center" variant="body1">
                         {category.category}
-                      </Typography>
-                    </CardContent>
-                  </Box>
+                      </CategoryTitle>
+                    </CategoryCardContent>
+                  </CategoryCard>
                 </Grid>
               ))}
             </Grid>
@@ -83,7 +68,7 @@ const CategoryList = () => {
                 component="img"
                 height="100%"
                 image={genz}
-                alt="Descriptive text for the image"
+                alt="Image description"
                 sx={{ objectFit: 'cover', height: '100%', width: '100%' }}
               />
             </Box>

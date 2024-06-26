@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
-// eslint-disable-next-line import/no-unresolved
 import 'react-confirm-alert/src/react-confirm-alert.css';
-
 import {
   Box,
   Typography,
   Button,
-  Card,
-  CardContent,
-  Pagination,
-  CardMedia,
   CardActionArea,
   Grid,
+  TextField,
+  InputLabel,
+  Select,
+  MenuItem,
+  FormHelperText,
+  Pagination,
+  FormControl,
+  CircularProgress,
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import EditNoteIcon from '@mui/icons-material/EditNote';
+import DeleteIcon from '@mui/icons-material/Delete';
 import RupeeIcon from '@mui/icons-material/CurrencyRupee';
-import { Form, Container, Col } from 'react-bootstrap';
-import Modal from 'react-bootstrap/Modal';
-import { useForm } from 'react-hook-form';
 import AddIcon from '@mui/icons-material/Add';
+import { useForm } from 'react-hook-form';
 import { useSnackbar } from 'notistack';
+import { green } from '@mui/material/colors';
 import {
   MultipleFileUpload,
   MultipleFileUploadMain,
@@ -36,6 +40,23 @@ import {
   updateProduct,
   addProduct,
 } from '../utils/services/product.service';
+import { MESSAGES } from '../constant/messages.constant';
+import {
+  StyledContainer,
+  StyledHeader,
+  StyleTypography,
+  OverflowTypography,
+  StyledCard,
+  StyledCardContent,
+  StyledCardMedia,
+  StyledModal,
+  StyledModalContent,
+  StyledForm,
+  StyledFormControl,
+  StyledGrid,
+  StyledPaginationContainer,
+  AddProductButton,
+} from '../css/styles/allProducts.style';
 
 const AllProducts = () => {
   const [products, setProducts] = useState([]);
@@ -49,6 +70,17 @@ const AllProducts = () => {
   const [isUpdateMode, setIsUpdateMode] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
   const { enqueueSnackbar } = useSnackbar();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const buttonSx = {
+    ...(success && {
+      bgcolor: green[500],
+      '&:hover': {
+        bgcolor: green[700],
+      },
+    }),
+  };
   const {
     register,
     handleSubmit,
@@ -56,8 +88,30 @@ const AllProducts = () => {
     reset,
   } = useForm();
 
+  const categoryList = [
+    'Bags',
+    'Baby',
+    'Books',
+    'Car & Moterbike',
+    'Clothing Men',
+    'Clothing Women',
+    'Electronics',
+    'Garden & Outdoors',
+    'Jwellery',
+    'Laptops',
+    'Mobiles',
+    'Perfumes',
+    'Shoes',
+    'Skincare',
+  ];
   const resetForm = () => {
-    reset();
+    reset({
+      productName: '',
+      brandName: '',
+      category: '',
+      description: '',
+      price: '',
+    });
     setSelectedFiles([]);
     setReadFileData([]);
     setShowStatus(false);
@@ -76,7 +130,7 @@ const AllProducts = () => {
       setProducts(response.data);
       setTotalPages(response.totalPages);
     } catch (error) {
-      enqueueSnackbar(`Error Fetching product: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_FAILED} ${error.message}`, { variant: 'error' });
     }
   };
 
@@ -94,9 +148,16 @@ const AllProducts = () => {
     }
   }, [readFileData, selectedFiles]);
 
+  useEffect(() => {
+    if (!open) {
+      resetForm();
+    }
+  }, [open]);
+
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
   const removeFiles = (namesOfFilesToRemove) => {
     const newCurrentFiles = selectedFiles.filter(
       (currentFile) => !namesOfFilesToRemove.some((fileName) => fileName === currentFile.name)
@@ -149,33 +210,37 @@ const AllProducts = () => {
   };
 
   const onSubmit = async (data) => {
-    try {
-      const formData = new FormData();
+    if (!loading) {
+      setSuccess(false);
+      setLoading(true);
+      try {
+        const formData = new FormData();
 
-      formData.append('productName', data.productName);
-      formData.append('brandName', data.brandName);
-      formData.append('category', data.category);
-      formData.append('description', data.description);
-      formData.append('price', data.price);
-      formData.append('stock', data.stock);
-      formData.append('sellingPrice', data.sellingPrice);
+        formData.append('productName', data.productName);
+        formData.append('brandName', data.brandName);
+        formData.append('category', data.category);
+        formData.append('description', data.description);
+        formData.append('price', data.price);
+        formData.append('stock', data.stock);
+        formData.append('sellingPrice', data.sellingPrice);
 
-      Array.from(selectedFiles).forEach((file) => {
-        formData.append('images', file);
-      });
+        Array.from(selectedFiles).forEach((file) => {
+          formData.append('images', file);
+        });
 
-      if (isUpdateMode) {
-        formData.append('productId', currentProduct._id);
-        await updateProduct(formData);
-      } else {
-        await addProduct(formData);
+        if (isUpdateMode) {
+          formData.append('productId', currentProduct._id);
+          await updateProduct(formData);
+        } else {
+          await addProduct(formData);
+        }
+        setSuccess(true);
+        setLoading(false);
+        handleClose();
+        fetchProductsData(page);
+      } catch (error) {
+        enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, { variant: 'error' });
       }
-
-      handleClose();
-      fetchProductsData(page);
-      resetForm();
-    } catch (error) {
-      enqueueSnackbar(`Error submitting product: ${error.message}`, { variant: 'error' });
     }
   };
   const handleUpdateProduct = async (productId) => {
@@ -187,315 +252,261 @@ const AllProducts = () => {
       setOpen(true);
       reset(product.data);
     } catch (error) {
-      enqueueSnackbar(`Error submitting product: ${error.message}`, { variant: 'error' });
+      enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, { variant: 'error' });
     }
   };
+
+  const handleAddProduct = () => {
+    setOpen(true);
+    setIsUpdateMode(false);
+    resetForm();
+  };
+
   const handleRemoveProduct = async (productId) => {
     confirmAlert({
-      title: 'Confirm to delete',
-      message: 'Are you sure you want to delete it?',
+      title: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.TITLE,
+      message: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.MESSAGE,
       buttons: [
         {
-          label: 'No',
-          onClick: () => {
-            enqueueSnackbar('Deletion canceled', { variant: 'info' });
-          },
-        },
-        {
-          label: 'Yes',
+          label: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.YES,
           onClick: async () => {
             try {
               await deleteProduct(productId);
-              await fetchProductsData(page);
-              enqueueSnackbar('Deleted Successfully', { variant: 'success' });
+              enqueueSnackbar(MESSAGES.INFO.CRUD.SUCCESS.DELETED, {
+                variant: 'success',
+              });
+              fetchProductsData(page);
             } catch (error) {
-              enqueueSnackbar(
-                `Failed to delete the data. Please try again later. ${error.message}`,
-                { variant: 'error' }
-              );
+              enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, {
+                variant: 'error',
+              });
             }
           },
+        },
+        {
+          label: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.NO,
+          onClick: () => {},
         },
       ],
     });
   };
 
-  const successfullyReadFileCount = readFileData.filter(
-    (fileData) => fileData.loadResult === 'success'
-  ).length;
   return (
-    <>
-      <Box display="flex">
-        <Typography variant="h5">All Products</Typography>
-        <Button
+    <StyledContainer>
+      <StyledHeader variant="h5">
+        Product List
+        <AddProductButton
           variant="contained"
-          sx={{ marginLeft: 'auto' }}
-          onClick={() => {
-            setOpen(true);
-            setIsUpdateMode(false);
-            resetForm();
-          }}
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleAddProduct}
         >
-          <AddIcon fontSize="small" sx={{ marginRight: 1 }} /> Add Product
-        </Button>
-      </Box>
-
-      <Modal show={open} onHide={handleClose} size="lg" centered style={{ zIndex: '9999' }}>
-        <Box
-          sx={{
-            background: '#f5f5f5',
-            borderTopLeftRadius: 5,
-            borderTopRightRadius: 5,
-          }}
-        >
-          <Modal.Header closeButton>
-            <Typography variant="h5" color="#0d47a1">
-              {isUpdateMode ? 'Update Product' : 'Add Product'}
-            </Typography>
-          </Modal.Header>
-        </Box>
-        <Container className="p-4">
-          <Form onSubmit={handleSubmit(onSubmit)} className="row g-3">
-            <Form.Label column sm={2}>
-              Product Name
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="text"
-                placeholder="Enter product name"
-                {...register('productName', { required: true })}
-              />
-              {errors.productName && (
-                <Form.Text className="text-danger">Product name is required.</Form.Text>
-              )}
-            </Col>
-
-            <Form.Label column sm={2}>
-              Brand Name
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="text"
-                placeholder="Enter brand name"
-                {...register('brandName', { required: true })}
-              />
-              {errors.brandName && (
-                <Form.Text className="text-danger">Brand name is required.</Form.Text>
-              )}
-            </Col>
-
-            <Form.Label column sm={2}>
-              Category
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="text"
-                placeholder="Enter category"
-                {...register('category', { required: true })}
-              />
-              {errors.category && (
-                <Form.Text className="text-danger">Category is required.</Form.Text>
-              )}
-            </Col>
-
-            <Form.Label column sm={2}>
-              Stock
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="number"
-                placeholder="Enter stock"
-                {...register('stock', { required: true })}
-              />
-              {errors.stock && <Form.Text className="text-danger">Stock is required.</Form.Text>}
-            </Col>
-            <Form.Label column sm={2}>
-              Description
-            </Form.Label>
-            <Col sm={10}>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                placeholder="Enter description"
-                {...register('description', { required: true })}
-              />
-              {errors.description && (
-                <Form.Text className="text-danger">Description is required.</Form.Text>
-              )}
-            </Col>
-
-            <Form.Label column sm={2}>
-              Price
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="number"
-                placeholder="Enter price"
-                {...register('price', { required: true })}
-              />
-              {errors.price && <Form.Text className="text-danger">Price is required.</Form.Text>}
-            </Col>
-            <Form.Label column sm={2}>
-              Selling Price
-            </Form.Label>
-            <Col sm={4}>
-              <Form.Control
-                type="number"
-                placeholder="Enter selling price"
-                {...register('sellingPrice')}
-              />
-            </Col>
-
-            <Form.Label column sm={2}>
-              Upload Images
-            </Form.Label>
-            <Col sm={10}>
-              <MultipleFileUpload
-                onFileDrop={handleFileDrop}
-                dropzoneProps={{
-                  accept: {
-                    'image/jpeg': ['.jpg', '.jpeg'],
-                    'application/msword': ['.doc'],
-                    'application/pdf': ['.pdf'],
-                    'image/png': ['.png'],
-                  },
-                }}
-              >
-                <Box sx={{ border: 1, borderColor: 'grey.500' }}>
-                  <MultipleFileUploadMain
-                    titleIcon={<UploadIcon />}
-                    titleText="Drag and drop files here"
-                    titleTextSeparator="or"
-                    infoText="Accepted file types: JPEG, Doc, PDF, PNG"
-                  />
-                </Box>
-                {showStatus && (
-                  <MultipleFileUploadStatus
-                    statusToggleText={`${successfullyReadFileCount} of ${selectedFiles.length} files uploaded`}
-                    statusToggleIcon={statusIcon}
-                    aria-label="Current uploads"
-                  >
-                    {selectedFiles.map((file) => (
-                      <MultipleFileUploadStatusItem
-                        file={file}
-                        key={file.name}
-                        onClearClick={() => removeFiles([file.name])}
-                        onReadSuccess={handleReadSuccess}
-                        onReadFail={handleReadFail}
-                        progressHelperText={createHelperText(file)}
-                      />
-                    ))}
-                  </MultipleFileUploadStatus>
-                )}
-              </MultipleFileUpload>
-            </Col>
-            <Modal.Footer>
-              <Button variant="contained" color="secondary" onClick={handleClose} className="mx-2">
-                Close
-              </Button>
-              <Button variant="contained" color="success" type="submit">
-                Save Changes
-              </Button>
-            </Modal.Footer>
-          </Form>
-        </Container>
-      </Modal>
-      <Grid container spacing={2}>
+          Add Product
+        </AddProductButton>
+      </StyledHeader>
+      <StyledGrid container spacing={2}>
         {products.map((product) => (
-          <Grid item xs={3} key={product._id}>
-            <Card sx={{ maxWidth: 175, width: '100%' }}>
+          <Grid item xs={12} sm={4} md={3} lg={2} key={product._id}>
+            <StyledCard>
               <CardActionArea>
-                <CardMedia
-                  component="img"
-                  height="100"
-                  image={product.productImage[0]}
-                  alt={product.productName}
-                />
-                <CardContent>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    sx={{
-                      color: '#009688',
-                      fontSize: '0.875rem',
-                      overflow: 'hidden',
-                      whiteSpace: 'nowrap',
-                      textOverflow: 'ellipsis',
-                      maxWidth: '100%',
-                    }}
-                    title={product.productName}
-                  >
+                <StyledCardMedia image={product.productImage[0]} title={product.productName} />
+                <StyledCardContent>
+                  <StyleTypography gutterBottom variant="h6" component="h2">
                     {product.productName}
+                  </StyleTypography>
+                  <OverflowTypography variant="body2" color="textSecondary" component="p">
+                    {product.brandName}
+                  </OverflowTypography>
+                  <Typography variant="body2" color="textSecondary" component="p">
+                    <RupeeIcon fontSize="small" /> {product.price}
                   </Typography>
-
-                  <Box sx={{ display: 'flex' }}>
-                    <div>
-                      <Typography
-                        variant="h5"
-                        gutterBottom
-                        sx={{ display: 'flex', alignItems: 'center' }}
-                      >
-                        <RupeeIcon fontSize="small" /> {product.sellingPrice}
-                      </Typography>
-                      <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          sx={{ marginRight: '8px' }}
-                        >
-                          M.R.P
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          color="text.secondary"
-                          sx={{ textDecoration: 'line-through' }}
-                        >
-                          {product.price}
-                        </Typography>
-                      </div>
-                    </div>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mt: 2,
-                    }}
-                  >
+                  <Box mt={2} display={'flex'} justifyContent={'space-between'}>
                     <Button
+                      size="medium"
                       variant="contained"
-                      color="secondary"
-                      size="small"
+                      color="primary"
                       onClick={() => handleUpdateProduct(product._id)}
-                      className="mx-1"
                     >
-                      Update
+                      <EditNoteIcon />
                     </Button>
                     <Button
+                      size="medium"
                       variant="outlined"
-                      color="error"
-                      size="small"
+                      color="secondary"
                       onClick={() => handleRemoveProduct(product._id)}
                     >
-                      Remove
+                      <DeleteIcon />
                     </Button>
                   </Box>
-                </CardContent>
+                </StyledCardContent>
               </CardActionArea>
-            </Card>
+            </StyledCard>
           </Grid>
         ))}
-      </Grid>
+      </StyledGrid>
+      <StyledPaginationContainer>
+        <Pagination count={totalPages} page={page} onChange={handlePageChange} />
+      </StyledPaginationContainer>
+      <StyledModal open={open} onClose={handleClose}>
+        <StyledModalContent>
+          <Box pb={2}>
+            <Typography component="block" variant="h6" color={'primary'} gutterBottom>
+              {isUpdateMode ? 'Update Product' : 'Add Product'}
+            </Typography>
+            <CloseIcon onClick={handleClose} sx={{ float: 'right' }}>
+              Close
+            </CloseIcon>
+          </Box>
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
+              <Grid item xs={6}>
+                <TextField
+                  label="Product Name"
+                  variant="outlined"
+                  fullWidth
+                  {...register('productName', { required: true })}
+                  error={!!errors.productName}
+                  helperText={errors.productName ? 'Product Name is required' : ''}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Brand Name"
+                  variant="outlined"
+                  fullWidth
+                  {...register('brandName', { required: true })}
+                  error={!!errors.brandName}
+                  helperText={errors.brandName ? 'Brand Name is required' : ''}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl variant="outlined" fullWidth error={!!errors.category}>
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    label="Category"
+                    {...register('category', { required: true })}
+                    defaultValue=""
+                  >
+                    {categoryList.map((item, index) => (
+                      <MenuItem value={item} key={`item${index + 1}`}>
+                        {item}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.category && <FormHelperText error>Category is required</FormHelperText>}
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Stock"
+                  variant="outlined"
+                  fullWidth
+                  type="number"
+                  {...register('stock', { required: true })}
+                  error={!!errors.stock}
+                  helperText={errors.stock ? 'Stock is required' : ''}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  label="Description"
+                  variant="outlined"
+                  fullWidth
+                  multiline
+                  rows={4}
+                  {...register('description', { required: true })}
+                  error={!!errors.description}
+                  helperText={errors.description ? 'Description is required' : ''}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Price"
+                  variant="outlined"
+                  fullWidth
+                  type="number"
+                  {...register('price', { required: true })}
+                  error={!!errors.price}
+                  helperText={errors.price ? 'Price is required' : ''}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  label="Selling Price"
+                  variant="outlined"
+                  fullWidth
+                  type="number"
+                  {...register('sellingPrice', { required: true })}
+                  error={!!errors.sellingPrice}
+                  helperText={errors.sellingPrice ? 'Selling Price is required' : ''}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <MultipleFileUpload onFileDrop={handleFileDrop}>
+                  <Box sx={{ border: '1px dashed #ccc', padding: '1rem' }}>
+                    <MultipleFileUploadMain
+                      titleText="Drag and drop files here or click to browse"
+                      infoText="Accepted file formats: jpg, png"
+                      titleIcon={<UploadIcon style={{ color: '#1976d2' }} />}
+                    />
+                  </Box>
+                  {showStatus && (
+                    <MultipleFileUploadStatus
+                      statusToggleText="Show status"
+                      statusToggleTextExpanded="Hide status"
+                      dropzoneProps={{
+                        accept: '.jpg,.png',
+                      }}
+                    >
+                      {selectedFiles.map((file, index) => (
+                        <MultipleFileUploadStatusItem
+                          key={index}
+                          file={file}
+                          handleReadSuccess={(data) => handleReadSuccess(data, file)}
+                          handleReadFail={(error) => handleReadFail(error, file)}
+                          icon={statusIcon}
+                          spinnerAriaValueText="Loading"
+                          progressValue={0}
+                          filename={file.name}
+                          fileSize={file.size}
+                          helperText={createHelperText(file)}
+                          onClearClick={() => removeFiles([file.name])}
+                        />
+                      ))}
+                    </MultipleFileUploadStatus>
+                  )}
+                </MultipleFileUpload>
+              </Grid>
+            </Grid>
 
-      <Pagination
-        count={totalPages}
-        page={page}
-        onChange={handlePageChange}
-        color="primary"
-        sx={{ marginTop: 2 }}
-      />
-    </>
+            <Box mt={2} display="flex" justifyContent="flex-end">
+              <Button
+                color="primary"
+                variant="contained"
+                type="submit"
+                sx={buttonSx}
+                disabled={loading}
+              >
+                {isUpdateMode ? 'Update' : 'Add'}
+              </Button>
+              {loading && (
+                <CircularProgress
+                  size={24}
+                  sx={{
+                    color: green[500],
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    marginTop: '-12px',
+                    marginLeft: '-12px',
+                  }}
+                />
+              )}
+            </Box>
+          </StyledForm>
+        </StyledModalContent>
+      </StyledModal>
+    </StyledContainer>
   );
 };
 

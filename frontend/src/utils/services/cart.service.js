@@ -1,17 +1,8 @@
-/* eslint-disable no-shadow */
-/* eslint-disable no-console */
-/* eslint-disable camelcase */
-/* eslint-disable no-unused-vars */
 import axiosInstance from '../axios';
 
 export const fetchCartData = async (userId) => {
-  try {
-    const response = await axiosInstance.get(`/fusion/cart/fetch-cart?userId=${userId}`);
-    return response.data.cart;
-  } catch (error) {
-    console.error('Failed to add cart data', error);
-    throw error;
-  }
+  const response = await axiosInstance.get(`/fusion/cart/fetch-cart?userId=${userId}`);
+  return response.data.cart;
 };
 
 export const addCartData = async (userId, cartData) => {
@@ -20,7 +11,6 @@ export const addCartData = async (userId, cartData) => {
       cartData,
     });
     return response.data;
-    // return cartData;
   } catch (error) {
     console.error('Failed to add cart data', error);
     throw error;

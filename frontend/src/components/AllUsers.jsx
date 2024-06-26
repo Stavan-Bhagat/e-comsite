@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useEffect, useState, useRef } from 'react';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
@@ -6,24 +5,19 @@ import { useSnackbar } from 'notistack';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-quartz.css';
-import { Container, IconButton, TextField, Box, Button, Typography, Modal } from '@mui/material';
+import { Container, TextField, Typography, Modal } from '@mui/material';
 import Select from 'react-select';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useForm, Controller } from 'react-hook-form';
 import { fetchUserData, updateUserData, deleteUserData } from '../utils/services/user.service';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  bgcolor: 'background.paper',
-  borderRadius: 2,
-  boxShadow: 24,
-  p: 4,
-};
+import { MESSAGES } from '../constant/messages.constant';
+import {
+  StyledModalContainer,
+  StyledForm,
+  StyledButton,
+  StyledIconButton,
+} from '../css/styles/allUser.style';
 
 const AllUsers = () => {
   const [rowData, setRowData] = useState(null);
@@ -56,7 +50,7 @@ const AllUsers = () => {
       }));
       setRowData(rowDataWithId);
     } catch (error) {
-      enqueueSnackbar(`Failed to fetch the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.ERROR.FETCH_ORDERS_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }
@@ -72,8 +66,8 @@ const AllUsers = () => {
 
   const handleDeleteClick = async (deleteData) => {
     confirmAlert({
-      title: 'Confirm to delete',
-      message: 'Are you sure you want to delete it?',
+      title: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.TITLE,
+      message: MESSAGES.CONSTANT_NAME.DELETE_CONFIRMATION.MESSAGE,
       buttons: [
         {
           label: 'Yes',
@@ -81,38 +75,38 @@ const AllUsers = () => {
             try {
               await deleteUserData(deleteData._id);
               await fetchData();
-              enqueueSnackbar('Deleted Successfully', { variant: 'success' });
+              enqueueSnackbar(MESSAGES.INFO.CRUD.DELETED, { variant: 'success' });
             } catch (error) {
-              enqueueSnackbar(
-                `Failed to delete the data. Please try again later. ${error.message}`,
-                { variant: 'error' }
-              );
+              enqueueSnackbar(`${MESSAGES.INFO.CRUD.FAILED.CREATE} ${error.message}`, {
+                variant: 'error',
+              });
             }
           },
         },
         {
           label: 'No',
           onClick: () => {
-            enqueueSnackbar('Deletion canceled', { variant: 'info' });
+            enqueueSnackbar(MESSAGES.INFO.CRUD.CANCELLED.DELETE, { variant: 'info' });
           },
         },
       ],
     });
   };
 
-  // eslint-disable-next-line react/no-unstable-nested-components
   const ActionRenderer = ({ data }) => (
     <div>
-      <IconButton onClick={() => handleEditClick(data)}>
+      <StyledIconButton onClick={() => handleEditClick(data)}>
         <EditIcon />
-      </IconButton>
-      <IconButton onClick={() => handleDeleteClick(data)} disabled={currentUser._id === data._id}>
+      </StyledIconButton>
+      <StyledIconButton
+        onClick={() => handleDeleteClick(data)}
+        disabled={currentUser._id === data._id}
+      >
         <DeleteIcon />
-      </IconButton>
+      </StyledIconButton>
     </div>
   );
 
-  // eslint-disable-next-line react/no-unstable-nested-components
   const ImageRenderer = ({ value }) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <img src={value} alt="User" style={{ height: 50, width: 50 }} />
@@ -125,7 +119,7 @@ const AllUsers = () => {
       handleClose();
       fetchData();
     } catch (error) {
-      enqueueSnackbar(`Failed to submit the data. Please try again later. ${error.message}`, {
+      enqueueSnackbar(`${MESSAGES.FORMS.SUBMIT_FAILED} ${error.message}`, {
         variant: 'error',
       });
     }
@@ -157,7 +151,7 @@ const AllUsers = () => {
 
   return (
     <Container maxWidth="xl">
-      <div className="ag-theme-quartz" style={{ height: 500, width: '100%' }}>
+      <div className="ag-theme-quartz custom-ag-theme" style={{ height: 500, width: '100%' }}>
         <AgGridReact rowData={rowData} columnDefs={colDefs} ref={gridRef} />
       </div>
       <Modal
@@ -166,11 +160,11 @@ const AllUsers = () => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <StyledModalContainer>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Edit User
           </Typography>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <StyledForm onSubmit={handleSubmit(onSubmit)}>
             <TextField
               fullWidth
               margin="normal"
@@ -189,7 +183,7 @@ const AllUsers = () => {
                 required: 'Email is required',
                 pattern: {
                   value: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-                  message: 'Invalid email address',
+                  message: MESSAGES.FORMS.VALIDATION.EMAIL_INVALID,
                 },
               })}
               error={!!errors.email}
@@ -209,18 +203,11 @@ const AllUsers = () => {
                 />
               )}
             />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              size="large"
-              sx={{ mt: 2 }}
-            >
+            <StyledButton type="submit" variant="contained" color="primary" fullWidth size="large">
               Save
-            </Button>
-          </form>
-        </Box>
+            </StyledButton>
+          </StyledForm>
+        </StyledModalContainer>
       </Modal>
     </Container>
   );

@@ -67,14 +67,22 @@ const NotificationModal = ({ open, handleClose }) => {
                           ) : (
                             <span className="text-primary">Order Placed</span>
                           )}
-                          {notification.items[0].productName}
+
+                          {notification.items.map((item) => (
+                            <>
+                              <div key={item._id}>
+                                {item.productName} x {item.quantity}
+                              </div>
+                            </>
+                          ))}
                         </>
                       }
-                      secondary={`Price: ₹ ${notification.items[0].sellingPrice}, Quantity: ${notification.items[0].quantity}`}
+                      secondary={`Total Price: ₹ ${notification.totalAmount}`}
                     />
                   </>
                 )}
               </ListItem>
+
               {index < notifications.length - 1 && <Divider />}
             </React.Fragment>
           ))}

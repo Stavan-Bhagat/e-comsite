@@ -1,52 +1,59 @@
 import React from 'react';
-import { Container, Row, Col, Nav } from 'react-bootstrap';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { Container, Grid, Typography } from '@mui/material';
+import { Facebook, Twitter, Instagram, LinkedIn } from '@mui/icons-material';
+import {
+  FooterContainer,
+  FooterTitle,
+  FooterLink,
+  FooterIconLink,
+  FooterText,
+} from '../css/styles/footerStyle';
 
 const Footer = () => {
   return (
-    <footer className="footer">
+    <FooterContainer component="footer">
       <Container>
-        <Row className="text-center text-md-left">
-          <Col xs={12} md={4} className="mb-3">
-            <h5>Quick Links</h5>
-            <Nav className="flex-column align-items-center align-items-md-start">
-              <Nav.Link href="#">Home</Nav.Link>
-              <Nav.Link href="#">About Us</Nav.Link>
-              <Nav.Link href="#">Contact Us</Nav.Link>
-              <Nav.Link href="#">FAQ</Nav.Link>
-            </Nav>
-          </Col>
-          <Col xs={12} md={4} className="mb-3">
-            <h5>Follow Us</h5>
-            <Nav className="justify-content-center justify-content-md-start">
-              <Nav.Link href="#">
-                <FaFacebook size={24} />
-              </Nav.Link>
-              <Nav.Link href="#">
-                <FaTwitter size={24} />
-              </Nav.Link>
-              <Nav.Link href="#">
-                <FaInstagram size={24} />
-              </Nav.Link>
-              <Nav.Link href="#">
-                <FaLinkedin size={24} />
-              </Nav.Link>
-            </Nav>
-          </Col>
-          <Col xs={12} md={4} className="mb-3">
-            <h5>Contact Us</h5>
-            <p>Email: info@zenfusion.com</p>
-            <p>Phone: (123) 456-7890</p>
-            <p>Address: 123 E-commerce St, Shopville</p>
-          </Col>
-        </Row>
-        <Row>
-          <Col className="text-center mt-3">
-            <p>&copy; {new Date().getFullYear()} Zen Fusion. All rights reserved.</p>
-          </Col>
-        </Row>
+        <Grid container spacing={3} justifyContent="center">
+          <Grid item xs={12} md={4}>
+            <FooterTitle variant="h5">Quick Links</FooterTitle>
+            <nav>
+              <FooterLink href="#">Home</FooterLink>
+              <FooterLink href="#">About Us</FooterLink>
+              <FooterLink href="#">Contact Us</FooterLink>
+              <FooterLink href="#">FAQ</FooterLink>
+            </nav>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <FooterTitle variant="h5">Follow Us</FooterTitle>
+            <nav>
+              <FooterIconLink href="#">
+                <Facebook />
+              </FooterIconLink>
+              <FooterIconLink href="#">
+                <Twitter />
+              </FooterIconLink>
+              <FooterIconLink href="#">
+                <Instagram />
+              </FooterIconLink>
+              <FooterIconLink href="#">
+                <LinkedIn />
+              </FooterIconLink>
+            </nav>
+          </Grid>
+          <Grid item xs={12} md={4}>
+            <FooterTitle variant="h5">Contact Us</FooterTitle>
+            <FooterText>Email: info@zenfusion.com</FooterText>
+            <FooterText>Phone: (123) 456-7890</FooterText>
+            <FooterText>Address: 123 E-commerce St, Shopville</FooterText>
+          </Grid>
+        </Grid>
+        <Grid container justifyContent="center">
+          <Typography variant="body2" className="text-center mt-3">
+            &copy; {new Date().getFullYear()} Zen Fusion. All rights reserved.
+          </Typography>
+        </Grid>
       </Container>
-    </footer>
+    </FooterContainer>
   );
 };
 

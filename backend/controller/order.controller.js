@@ -10,6 +10,7 @@ const {
 } = require('../constant/errorMessage.constant');
 
 exports.createOrder = async (req, res) => {
+  const io = socket.getIo();
   try {
     const { name, street, city, state, postalCode, items, totalAmount, paymentData, userId } =
       req.body;
@@ -39,11 +40,8 @@ exports.createOrder = async (req, res) => {
     };
     if (user.role !== 'Admin') {
       orderDetails.userName = 'User';
+      io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
     }
-
-    const io = socket.getIo();
-
-    io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
 
     const admins = await User.find({ role: 'Admin' });
 

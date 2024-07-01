@@ -58,7 +58,7 @@ const FormContainer = styled(Box)(({ theme }) => ({
 }));
 
 const PaymentForm = ({ totalAmount, orderDetails }) => {
-  const userId = useSelector((state) => state?.auth?.user?._id);
+  const user = useSelector((state) => state?.auth?.user);
   const buyNowProduct = useSelector((state) => state.buyNow.product);
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
@@ -74,12 +74,9 @@ const PaymentForm = ({ totalAmount, orderDetails }) => {
   useEffect(() => {
     const fetchClientSecret = async () => {
       try {
-        const response = await axiosInstance.post(
-          `/fusion/product/create-payment-intent`,
-          {
-            amount: totalAmount,
-          }
-        );
+        const response = await axiosInstance.post(`/fusion/product/create-payment-intent`, {
+          amount: totalAmount,
+        });
         setClientSecret(response.data.clientSecret);
       } catch (err) {
         setFormError('Failed to fetch client secret');
@@ -115,7 +112,8 @@ const PaymentForm = ({ totalAmount, orderDetails }) => {
         ...orderDetails,
         totalAmount,
         paymentData,
-        userId,
+        userId: user?._id,
+        role: user?.role,
       };
 
       try {

@@ -80,6 +80,12 @@ export const MESSAGES = {
       STOCK_REQUIRED: 'Stock is required.',
       DESCRIPTION_REQUIRED: 'Description is required.',
       PRICE_REQUIRED: 'Price is required.',
+      //checkout
+      STREET_REQUIRED:'Street is required.',
+      CITY_REQUIRED:'City is required.',
+      STATE_REQUIRED:'State is required.',
+      POSTAL_CODE_REQUIRED:'Postal Code is required.',
+
     },
   },
   CONSTANT_NAME: {

@@ -166,7 +166,13 @@ const CheckOut = () => {
           <Controller
             name="postalCode"
             control={control}
-            rules={{ required: MESSAGES.FORMS.VALIDATION.POSTAL_CODE_REQUIRED }}
+            rules={{
+              required: MESSAGES.FORMS.VALIDATION.POSTAL_CODE_REQUIRED,
+              pattern: {
+                value: /^[0-9]+$/,
+                message: 'Postal code must contain only numbers',
+              },
+            }}
             render={({ field }) => (
               <TextField
                 {...field}
@@ -175,10 +181,14 @@ const CheckOut = () => {
                 margin="normal"
                 error={!!errors.postalCode}
                 helperText={errors.postalCode ? errors.postalCode.message : ''}
+                inputProps={{
+                  inputMode: 'numeric',
+                  pattern: '[0-9]*',
+                  maxLength: 6,
+                }}
               />
             )}
           />
-
           <Box sx={{ textAlign: 'center', mt: 2 }}>
             <Button variant="contained" color="primary" type="submit" size="large">
               Submit

@@ -32,7 +32,7 @@ app.use('*', (req, res) => {
 const io = socket.init(server);
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a user connected',socket.id);
 
   socket.on('disconnect', () => {
     console.log('user disconnected');

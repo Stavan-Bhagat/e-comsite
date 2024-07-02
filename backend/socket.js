@@ -6,7 +6,7 @@ const {
 require('dotenv').config();
 
 const socketCorsOrigins = process.env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
-
+console.log('socket', socketCorsOrigins);
 module.exports = {
   init: (server) => {
     if (!server) {

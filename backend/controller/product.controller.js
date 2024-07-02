@@ -17,6 +17,7 @@ const {
   MSG_CATEGORY_PRODUCTS_FETCHED,
   MSG_CATEGORY_NOT_FOUND
 } = require('../constant/errorMessage.constant.js');
+
 exports.addProduct = async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
@@ -49,7 +50,6 @@ exports.addProduct = async (req, res) => {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
   }
 };
-
 
 exports.fetchProductData = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -89,7 +89,6 @@ exports.fetchProduct = async (req, res) => {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
-
 
 exports.updateProduct = async (req, res) => {
   try {

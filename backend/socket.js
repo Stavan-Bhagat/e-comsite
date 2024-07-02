@@ -1,5 +1,7 @@
 const socketIo = require('socket.io');
 require('dotenv').config();
+const socketCorsOrigins = process.env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
+console.log('socket', socketCorsOrigins);
 
 let io;
 
@@ -12,7 +14,7 @@ const startSocket = (server) => {
     server,
     {
       cors: {
-        origin: '*',
+        origin: socketCorsOrigins,
         methods: ['GET', 'POST']
       }
     },

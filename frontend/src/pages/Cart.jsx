@@ -76,6 +76,7 @@ const Cart = () => {
                     type="number"
                     value={item.quantity}
                     min="1"
+                    max="15"
                     onChange={(e) => handleQuantityChange(item._id, parseInt(e.target.value, 10))}
                   />
                 </Grid>

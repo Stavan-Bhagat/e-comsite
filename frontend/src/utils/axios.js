@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import axios from 'axios';
 import { logout } from '../redux/Slice/authSlice';
 import store from '../redux/store/store';
@@ -20,18 +19,16 @@ axiosInstance.interceptors.request.use(
     if (refreshToken) {
       newConfig.headers['refresh-token'] = refreshToken;
     }
-    console.log('Request Interceptor:', newConfig);
+
     return newConfig;
   },
   (error) => {
-    console.error('Request Interceptor Error:', error);
     return Promise.reject(error);
   }
 );
 
 axiosInstance.interceptors.response.use(
   (response) => {
-    console.log('Response Interceptor:', response);
     const newAccessToken = response.data.accessToken;
     if (newAccessToken) {
       localStorage.setItem('accessToken', newAccessToken);

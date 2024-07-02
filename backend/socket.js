@@ -8,12 +8,16 @@ const startSocket = (server) => {
     throw new Error('Server instance is required to initialize Socket.IO');
   }
 
-  io = socketIo(server, {
-    cors: {
-      origin: '*',
-      methods: ['GET', 'POST']
+  io = socketIo(
+    server,
+    {
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST']
+      }
     },
-  });
+    { transports: ['websocket'] }
+  );
 
   io.on('connection', (socket) => {
     console.log('A user connected');
@@ -32,7 +36,6 @@ const startSocket = (server) => {
 };
 
 module.exports = { startSocket, io };
-
 
 // let io;
 // const {
@@ -81,4 +84,3 @@ module.exports = { startSocket, io };
 //     return io;
 //   }
 // };
-

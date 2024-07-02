@@ -1,4 +1,4 @@
-const { io } = require('../socket');
+const { io } = require('../socket.js');
 const Product = require('../model/product.model.js');
 const {
   STATUS_SUCCESS,

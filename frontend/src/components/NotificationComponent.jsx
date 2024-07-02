@@ -4,7 +4,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
-import socketIOClient from 'socket.io-client';
+import io from 'socket.io-client';
 import { addNotification } from '../redux/Slice/notificationSlice';
 import notification from '../images/notification.svg';
 import { MESSAGES } from '../constant/messages.constant';
@@ -36,7 +36,7 @@ const NotificationComponent = () => {
       requestNotificationPermission();
     }
 
-    const socket = socketIOClient(SOCKET_SERVER_URL);
+    const socket = io(`${SOCKET_SERVER_URL}`, { transports:['websocket'] });
 
     if (userId) {
       socket.emit('joinRoom', userId);

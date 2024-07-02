@@ -15,10 +15,10 @@ module.exports = {
 
     const socketIo = require('socket.io')(server, {
       cors: {
-        origin: socketCorsOrigins,
+        origin: '*',
         methods: ['GET', 'POST']
-      }
-    });
+      },
+    }, { transports : ['websocket'] });
 
     io = socketIo;
     io.on('connection', (socket) => {

@@ -19,6 +19,7 @@ import {
   CardContent,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { useSelector } from 'react-redux';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import SearchIcon from '@mui/icons-material/Search';
 import { fetchOrders } from '../utils/services/order.service';
@@ -59,6 +60,7 @@ const StyledListItem = styled(ListItem)({
 });
 
 const OrderDetails = () => {
+  const user = useSelector((state) => state?.auth?.user);
   const [orders, setOrders] = useState([]);
   const [expandedOrderId, setExpandedOrderId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,7 +81,10 @@ const OrderDetails = () => {
   useEffect(() => {
     const delayedFetchOrders = debounce(async () => {
       try {
-        const response = await fetchOrders(searchQuery, currentPage);
+        const response = await fetchOrders(searchQuery, currentPage, {
+          role: user.role,
+          _id: user._id,
+        });
         const { orders, totalOrders, totalPages, mostSoldProduct } = response;
         setOrders(orders);
         setTotalOrders(totalOrders);
@@ -172,7 +177,7 @@ const OrderDetails = () => {
             <ListItem>
               <ListItemText
                 primary={`Order ID: ${order._id}`}
-                secondary={`Name: ${order.name} | Address: ${order.address} | Total Amount: $${order.totalAmount}`}
+                secondary={`Name: ${order.name} | Address: ${order.address} | Total Amount:  ₹${order.totalAmount}`}
               />
               <ListItemSecondaryAction>
                 <IconButton edge="end" onClick={() => handleToggleExpand(order._id)}>
@@ -195,7 +200,7 @@ const OrderDetails = () => {
                     <Grid sm={11} md={11}>
                       <Typography>Product: {item.productName}</Typography>
                       <Typography>Quantity: {item.quantity}</Typography>
-                      <Typography>Price: ${item.sellingPrice}</Typography>
+                      <Typography>Price: ₹{item.sellingPrice}</Typography>
                       <Divider />
                     </Grid>
                   </Grid>

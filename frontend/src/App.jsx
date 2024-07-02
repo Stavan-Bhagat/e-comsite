@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import AdminPanel from './pages/AdminPanel';
+import UserPanel from './pages/UserPanel';
 import ProductPage from './pages/ProductPage';
 import ProductSearch from './pages/ProductSearch';
 import CheckOut from './pages/CheckOut';
@@ -30,6 +31,7 @@ const App = () => {
             <Route path="/login" element={isAuthenticated ? <Home /> : <Login />} />
             <Route path="/verification-success" element={<VerificationSuccess />} />
             <Route path="/admin-panel" element={isAuthenticated ? <AdminPanel /> : <Home />} />
+            <Route path="/user-panel" element={isAuthenticated ? <UserPanel /> : <Home />} />
             <Route path="/product/:id" element={<ProductPage />} />
             <Route path="/product/search/:type/:term" element={<ProductSearch />} />
             <Route path="/product/cart/" element={<Cart />} />

@@ -54,7 +54,7 @@ const ConfirmationPage = () => {
     return null;
   }
 
-  const { name, address, items, totalAmount } = orderDetails;
+  const { name, city, street, state, postalCode, items, totalAmount } = orderDetails;
 
   return (
     <StyledContainer>
@@ -72,7 +72,7 @@ const ConfirmationPage = () => {
                 <strong>Name:</strong> {name}
               </Typography>
               <Typography variant="body1">
-                <strong>Address:</strong> {address}
+                <strong>Address:</strong> {`${street} | ${city} | ${state} | ${postalCode}`}
               </Typography>
             </StyledOrderDetails>
             <Divider sx={{ my: '1rem' }} />
@@ -88,12 +88,12 @@ const ConfirmationPage = () => {
                   <strong>Quantity:</strong> {item.quantity}
                 </Typography>
                 <Typography variant="body1">
-                  <strong>Price:</strong> ${item.sellingPrice}
+                  <strong>Price:</strong> ₹{item.sellingPrice}
                 </Typography>
               </StyledItemDetails>
             ))}
             <StyledTotalAmount variant="h5">
-              Total Amount: ${totalAmount.toFixed(2)}
+              Total Amount: ₹{totalAmount.toFixed(2)}
             </StyledTotalAmount>
           </StyledBillingPaper>
         </Grid>

@@ -1,7 +1,3 @@
-/* eslint-disable import/no-cycle */
-/* eslint-disable no-param-reassign */
-/* eslint-disable camelcase */
-
 import { createSlice } from '@reduxjs/toolkit';
 import {
   set_session_user,

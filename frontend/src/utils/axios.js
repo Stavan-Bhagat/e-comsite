@@ -2,9 +2,10 @@
 import axios from 'axios';
 import { logout } from '../redux/Slice/authSlice';
 import store from '../redux/store/store';
+const baseUrl = process.env.REACT_APP_BASEURL;
 
 const axiosInstance = axios.create({
-  baseURL: process.env.REACT_APP_BASEURL,
+  baseURL: baseUrl,
 });
 
 axiosInstance.interceptors.request.use(
@@ -47,14 +48,9 @@ axiosInstance.interceptors.response.use(
           throw new Error('No refresh token available');
         }
 
-        const refreshResponse = await axios.get(
-          // `${process.env.REACT_APP_BASEURL}/fusion/submit/refreshtoken`,
-          `https://e-comsite.onrender.com/fusion/submit/refreshtoken`,
-          // `http://localhost:5000/fusion/submit/refreshtoken`,
-          {
-            headers: { 'refresh-token': refreshToken },
-          }
-        );
+        const refreshResponse = await axios.get(`${baseUrl}/fusion/submit/refreshtoken`, {
+          headers: { 'refresh-token': refreshToken },
+        });
 
         const newAccessToken = refreshResponse.data.accessToken;
 

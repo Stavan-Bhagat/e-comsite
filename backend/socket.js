@@ -6,7 +6,7 @@ const {
 require('dotenv').config();
 
 const socketCorsOrigins = process.env.CLIENT_ORIGIN.split(',').map((origin) => origin.trim());
-console.log('socketCorsOrigins', socketCorsOrigins);
+
 module.exports = {
   init: (server) => {
     if (!server) {
@@ -23,7 +23,6 @@ module.exports = {
     io = socketIo;
     io.on('connection', (socket) => {
       console.log('A user connected');
-
       socket.on('joinRoom', (roomId) => {
         socket.join(roomId);
         console.log(`User with ID: ${roomId} joined room: ${roomId}`);

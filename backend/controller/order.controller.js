@@ -5,14 +5,15 @@ const {
   STATUS_SUCCESS,
   STATUS_CREATED,
   STATUS_INTERNAL_SERVER_ERROR,
-  MSG_ORDER_CREATED,
   MSG_ORDERS_FETCHED,
   MSG_INTERNAL_SERVER_ERROR
 } = require('../constant/errorMessage.constant');
 
 exports.createOrder = async (req, res) => {
+  const io = socket.getIo();
   try {
-    const { name, address, items, totalAmount, paymentData, userId } = req.body;
+    const { name, street, city, state, postalCode, items, totalAmount, paymentData, userId } =
+      req.body;
     const paymentInfo = {
       ...paymentData,
       created: new Date(paymentData.created * 1000)
@@ -20,10 +21,14 @@ exports.createOrder = async (req, res) => {
 
     const order = new Order({
       name,
-      address,
+      street,
+      city,
+      state,
+      postalCode,
       items,
       totalAmount,
-      paymentInfo
+      paymentInfo,
+      user_id: userId
     });
 
     await order.save();
@@ -35,11 +40,8 @@ exports.createOrder = async (req, res) => {
     };
     if (user.role !== 'Admin') {
       orderDetails.userName = 'User';
+      io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
     }
-
-    const io = socket.getIo();
-
-    io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
 
     const admins = await User.find({ role: 'Admin' });
 
@@ -56,10 +58,9 @@ exports.createOrder = async (req, res) => {
 
 exports.fetchOrder = async (req, res) => {
   try {
-    const { query = '', page = 1, limit = 10 } = req.query;
+    const { query = '', page = 1, limit = 10, user } = req.query;
     const skip = (page - 1) * limit;
     let filter = {};
-
     if (query.length > 0) {
       filter = {
         $or: [
@@ -68,38 +69,46 @@ exports.fetchOrder = async (req, res) => {
         ]
       };
     }
-    // Fetch orders for the current page
-    const orders = await Order.find(filter).skip(skip).limit(parseInt(limit));
-    const totalOrders = await Order.countDocuments(filter);
+    if (user.role === 'User') {
+      filter.user_id = user._id;
 
-    // Fetch all orders for calculating most sold product
-    const allOrders = await Order.find();
-
-    // Calculate most sold product across all orders
-    const productSalesCount = {};
-    allOrders.forEach((order) => {
-      order.items.forEach((item) => {
-        if (productSalesCount[item.productName]) {
-          productSalesCount[item.productName] += item.quantity;
-        } else {
-          productSalesCount[item.productName] = item.quantity;
-        }
+      const orders = await Order.find(filter).skip(skip).limit(parseInt(limit));
+      res.status(STATUS_SUCCESS).json({
+        message: MSG_ORDERS_FETCHED,
+        orders,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(orders / limit)
       });
-    });
+    } else {
+      const orders = await Order.find(filter).skip(skip).limit(parseInt(limit));
+      const totalOrders = await Order.countDocuments(filter);
+      const allOrders = await Order.find();
 
-    const mostSoldProduct = Object.entries(productSalesCount).reduce(
-      (max, [productName, count]) => (count > max.count ? { productName, count } : max),
-      { productName: '', count: 0 }
-    );
+      const productSalesCount = {};
+      allOrders.forEach((order) => {
+        order.items.forEach((item) => {
+          if (productSalesCount[item.productName]) {
+            productSalesCount[item.productName] += item.quantity;
+          } else {
+            productSalesCount[item.productName] = item.quantity;
+          }
+        });
+      });
 
-    res.status(STATUS_SUCCESS).json({
-      message: MSG_ORDERS_FETCHED,
-      orders,
-      totalOrders,
-      currentPage: parseInt(page),
-      totalPages: Math.ceil(totalOrders / limit),
-      mostSoldProduct
-    });
+      const mostSoldProduct = Object.entries(productSalesCount).reduce(
+        (max, [productName, count]) => (count > max.count ? { productName, count } : max),
+        { productName: '', count: 0 }
+      );
+
+      res.status(STATUS_SUCCESS).json({
+        message: MSG_ORDERS_FETCHED,
+        orders,
+        totalOrders,
+        currentPage: parseInt(page),
+        totalPages: Math.ceil(totalOrders / limit),
+        mostSoldProduct
+      });
+    }
   } catch (error) {
     console.error('Error fetching orders:', error);
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });

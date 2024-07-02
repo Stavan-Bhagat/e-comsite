@@ -2,14 +2,28 @@ const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema(
   {
+    user_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     name: {
       type: String,
       required: true
     },
-    address: {
+    street: {
       type: String,
       required: true
     },
+    city: {
+      type: String,
+      required: true
+    },
+    state: {
+      type: String,
+      required: true
+    },
+    postalCode: {
+      type: Number,
+      required: true
+    },
+
     items: [
       {
         productName: {

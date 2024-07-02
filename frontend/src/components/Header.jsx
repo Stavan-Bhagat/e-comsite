@@ -79,6 +79,9 @@ const Header = () => {
     setIsDrawerOpen(true);
     navigate('/admin-panel');
   };
+  const handleOrders = () => {
+    navigate('/user-panel');
+  };
 
   const handleHome = () => {
     setIsDrawerOpen(false);
@@ -152,7 +155,13 @@ const Header = () => {
     <>
       <StyledAppBar position="fixed">
         <StyledToolbar>
-          <Logo onClick={() => navigate('/')} component="a">
+          <Logo
+            component="a"
+            onClick={() => {
+              navigate('/');
+              setProfile(false);
+            }}
+          >
             <LogoImage src={logo} alt="Logo" />
             <LogoText variant="h6">Fusion</LogoText>
           </Logo>
@@ -264,6 +273,11 @@ const Header = () => {
           <MenuItem onClick={handleHome}>Home</MenuItem>
         ) : (
           user?.role === 'Admin' && <MenuItem onClick={handlePanel}>Admin Panel</MenuItem>
+        )}
+        {location.pathname === '/user-panel' ? (
+          <MenuItem onClick={handleHome}>Home</MenuItem>
+        ) : (
+          user?.role === 'User' && <MenuItem onClick={handleOrders}>Order Details</MenuItem>
         )}
         <MenuItem>
           <ThemeToggle />

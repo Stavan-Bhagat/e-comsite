@@ -1,4 +1,4 @@
-const socket = require('../socket');
+const { io } = require('../socket');
 const Product = require('../model/product.model.js');
 const {
   STATUS_SUCCESS,
@@ -17,6 +17,39 @@ const {
   MSG_CATEGORY_PRODUCTS_FETCHED,
   MSG_CATEGORY_NOT_FOUND
 } = require('../constant/errorMessage.constant.js');
+exports.addProduct = async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(STATUS_BAD_REQUEST).json({ message: MSG_BAD_REQUEST });
+    }
+
+    const { productName, brandName, category, description, price, sellingPrice, stock } = req.body;
+    const imageUrl = req.files.map((file) => file.path);
+
+    const newProduct = new Product({
+      productName,
+      brandName,
+      category,
+      description,
+      price,
+      sellingPrice,
+      stock,
+      productImage: imageUrl
+    });
+
+    const createdProduct = await newProduct.save();
+
+    io.emit('newProduct', {
+      message: 'New product added',
+      product: createdProduct
+    });
+
+    res.status(STATUS_CREATED).json({ message: 'New product added', createdProduct });
+  } catch (e) {
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
+  }
+};
+
 
 exports.fetchProductData = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
@@ -57,39 +90,6 @@ exports.fetchProduct = async (req, res) => {
   }
 };
 
-exports.addProduct = async (req, res) => {
-  try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(STATUS_BAD_REQUEST).json({ message: MSG_BAD_REQUEST });
-    }
-
-    const { productName, brandName, category, description, price, sellingPrice, stock } = req.body;
-    const imageUrl = req.files.map((file) => file.path);
-
-    const newProduct = new Product({
-      productName,
-      brandName,
-      category,
-      description,
-      price,
-      sellingPrice,
-      stock,
-      productImage: imageUrl
-    });
-
-    const createdProduct = await newProduct.save();
-
-    const io = socket.getIo();
-    io.emit('newProduct', {
-      message: 'New product added',
-      product: createdProduct
-    });
-
-    res.status(STATUS_CREATED).json({ message: 'New product added', createdProduct });
-  } catch (e) {
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
-  }
-};
 
 exports.updateProduct = async (req, res) => {
   try {

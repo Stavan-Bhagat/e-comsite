@@ -1,6 +1,6 @@
 const Order = require('../model/order.model');
 const User = require('../model/user.model');
-const socket = require('../socket');
+const { io } = require('../socket');
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -10,7 +10,6 @@ const {
 } = require('../constant/errorMessage.constant');
 
 exports.createOrder = async (req, res) => {
-  const io = socket.getIo();
   try {
     const { name, street, city, state, postalCode, items, totalAmount, paymentData, userId } =
       req.body;
@@ -55,7 +54,6 @@ exports.createOrder = async (req, res) => {
     res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
   }
 };
-
 exports.fetchOrder = async (req, res) => {
   try {
     const { query = '', page = 1, limit = 10, user } = req.query;

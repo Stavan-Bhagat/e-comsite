@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
-const { startSocket, io } = require('./socket.js');
+const { startSocket, getIo } = require('./socket.js');
 const database = require('./database/connection');
 const allRoutes = require('./router/allRoutes');
 require('dotenv').config();
@@ -34,7 +34,7 @@ server.listen(port, () => {
   startSocket(server);
 });
 
-module.exports = { app, server, io };
+module.exports = { app, server, getIo };
 
 // const express = require('express');
 // const http = require('http');

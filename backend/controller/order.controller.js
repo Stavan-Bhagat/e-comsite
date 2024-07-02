@@ -1,6 +1,6 @@
 const Order = require('../model/order.model');
 const User = require('../model/user.model');
-const { io } = require('../socket');
+const { getIo } = require('../socket.js');
 const {
   STATUS_SUCCESS,
   STATUS_CREATED,
@@ -37,21 +37,27 @@ exports.createOrder = async (req, res) => {
       message: 'Order created',
       order
     };
-    if (user.role !== 'Admin') {
-      orderDetails.userName = 'User';
-      io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
+
+    const io = getIo();
+    if (io) {
+      if (user.role !== 'Admin') {
+        orderDetails.userName = 'User';
+        io.to(userId).emit(`orderCreated:${userId}`, orderDetails);
+      }
+
+      const admins = await User.find({ role: 'Admin' });
+
+      admins.forEach((admin) => {
+        io.to('adminRoom').emit('orderCreated', orderDetails);
+      });
+    } else {
+      console.warn('Socket.io not initialized. Order creation events not emitted.');
     }
-
-    const admins = await User.find({ role: 'Admin' });
-
-    admins.forEach((admin) => {
-      io.to('adminRoom').emit('orderCreated', orderDetails);
-    });
 
     res.status(STATUS_CREATED).json({ message: 'Order created', order });
   } catch (error) {
     console.error('Error creating order:', error);
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: 'Internal server error' });
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR });
   }
 };
 exports.fetchOrder = async (req, res) => {

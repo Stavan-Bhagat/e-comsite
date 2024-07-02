@@ -1,4 +1,4 @@
-const { io } = require('../socket.js');
+const { getIo } = require('../socket.js');
 const Product = require('../model/product.model.js');
 const {
   STATUS_SUCCESS,
@@ -40,17 +40,25 @@ exports.addProduct = async (req, res) => {
 
     const createdProduct = await newProduct.save();
 
-    io.emit('newProduct', {
-      message: 'New product added',
-      product: createdProduct
-    });
+    const io = getIo();
+    if (io) {
+      io.emit('newProduct', {
+        message: 'New product added',
+        product: createdProduct
+      });
+    } else {
+      console.warn('Socket.io not initialized. New product event not emitted.');
+    }
 
     res.status(STATUS_CREATED).json({ message: 'New product added', createdProduct });
   } catch (e) {
-    res.status(STATUS_INTERNAL_SERVER_ERROR).json({ message: MSG_INTERNAL_SERVER_ERROR, error: e });
+    console.error('Error adding product:', e);
+    res.status(STATUS_INTERNAL_SERVER_ERROR).json({
+      message: MSG_INTERNAL_SERVER_ERROR,
+      error: e.message
+    });
   }
 };
-
 exports.fetchProductData = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 12;

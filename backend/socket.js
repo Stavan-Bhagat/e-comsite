@@ -37,7 +37,10 @@ const startSocket = (server) => {
   console.log('Socket.IO initialized');
 };
 
-module.exports = { startSocket, io };
+module.exports = {
+  startSocket,
+  getIo: () => io
+};
 
 // let io;
 // const {

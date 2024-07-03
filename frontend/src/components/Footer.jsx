@@ -20,7 +20,7 @@ const Footer = () => {
               <FooterLink href="#">Home</FooterLink>
               <FooterLink href="#">About Us</FooterLink>
               <FooterLink href="#">Contact Us</FooterLink>
-              <FooterLink href="#">FAQ</FooterLink>
+              <FooterLink href="/faq">Help Center</FooterLink>
             </nav>
           </Grid>
           <Grid item xs={12} md={4}>

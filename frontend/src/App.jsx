@@ -15,6 +15,7 @@ import PaymentForm from './components/PaymentForm';
 import Login from './pages/login';
 import Home from './pages/Home';
 import Cart from './pages/Cart';
+import Faq from './components/help';
 import VerificationSuccess from './components/VerificationSuccess';
 
 const App = () => {
@@ -41,6 +42,7 @@ const App = () => {
               path="/confirmation"
               element={isAuthenticated ? <ConfirmationPage /> : <Login />}
             />
+            <Route path="/faq" element={<Faq />} />
           </Routes>
         </StripeProvider>
       </Router>

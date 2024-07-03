@@ -78,12 +78,10 @@ const AdminPanel = () => {
   return (
     <>
       <Header />
-      <Container>
-        <Box sx={{ display: 'flex' }}>
+      <Container >
           <StyledDrawer>{renderSidebar()}</StyledDrawer>
-
-          <StyledContainer component="main" sx={{ flexGrow: 1, p: 3 }}>
-            <Grid container spacing={2}>
+          <StyledContainer component="main">
+            <Grid container spacing={1}>
               <Grid item xs={12}>
                 {renderContent()}
               </Grid>
@@ -104,7 +102,6 @@ const AdminPanel = () => {
           >
             {renderSidebar()}
           </StyledDrawer>
-        </Box>
       </Container>
     </>
   );

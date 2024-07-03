@@ -29,6 +29,7 @@ const lightTheme = createTheme({
     main: 'rgba(81, 104, 83, 0.3)',
     secondary: 'rgba(255, 255, 255, 0.5)',
   },
+
 });
 
 const darkTheme = createTheme({
@@ -55,6 +56,7 @@ const darkTheme = createTheme({
   },
   typography: {
     fontFamily: 'Roboto, Arial, sans-serif',
+
     h1: {
       fontSize: '2.5rem',
       fontWeight: 600,
@@ -64,6 +66,7 @@ const darkTheme = createTheme({
     main: 'rgba(255, 255, 255, 0.5)',
     secondary: 'rgba(81, 104, 83, 0.3)',
   },
+
 });
 
 export { lightTheme, darkTheme };

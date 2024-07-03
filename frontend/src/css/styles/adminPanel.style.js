@@ -23,4 +23,6 @@ export const StyledIconButton = styled(IconButton)(({ theme }) => ({
 
 export const StyledContainer = styled(Box)({
   // marginTop: '5%',
+  padding:'0%',
+  margin:'0%'
 });

@@ -25,6 +25,7 @@ export const ProductBox = styled(Box)({
   borderTop: 0,
   borderLeft: 0,
   borderRadius: '5%',
+
 });
 
 export const ProductImage = styled('img')({
@@ -43,14 +44,15 @@ export const ProductName = styled(Typography)({
   fontFamily: 'Hedvig Letters Serif, serif',
 });
 
-export const ProductPrice = styled(Typography)({
+export const ProductPrice = styled(Box)({
   display: 'flex',
   alignItems: 'center',
+  justifyComponent:'center',
   color: '#009688',
-  marginTop: '8px',
+  marginTop: '0.5rem',
 });
 
-export const StrikedPrice = styled('span')({
+export const StrikedPrice = styled(Typography)({
   textDecoration: 'line-through',
   marginLeft: '2px',
   color: '#e53935',

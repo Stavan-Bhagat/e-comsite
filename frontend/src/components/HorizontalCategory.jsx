@@ -71,8 +71,9 @@ const HorizontalCategory = ({ category }) => {
                       <ProductImage src={product.productImage[0]} alt={product.productName} />
                       <ProductName>{product.productName}</ProductName>
                       <ProductPrice>
-                        <CurrencyRupeeIcon fontSize="small" />
-                        {product.sellingPrice}
+                        <Typography>
+                        ₹{product.sellingPrice}
+                        </Typography>
                         <StrikedPrice>{product.price}</StrikedPrice>
                       </ProductPrice>
                     </ProductBox>

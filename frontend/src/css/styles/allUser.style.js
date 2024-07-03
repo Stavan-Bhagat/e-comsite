@@ -6,21 +6,21 @@ export const StyledModalContainer = styled(Box)(({ theme }) => ({
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 400,
+  width: '25rem',
   borderRadius: 2,
   boxShadow: 24,
-  padding: '16px',
+  padding: '0.9rem',
   backgroundColor: theme.palette.background.paper,
 }));
 
 export const StyledForm = styled('form')({
   display: 'flex',
   flexDirection: 'column',
-  gap: '16px',
+  gap: '0.9rem',
 });
 
 export const StyledButton = styled(Button)({
-  marginTop: '16px',
+  marginTop: '0.9rem',
 });
 
 export const StyledIconButton = styled(IconButton)({

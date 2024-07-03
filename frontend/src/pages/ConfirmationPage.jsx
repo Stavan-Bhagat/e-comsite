@@ -97,10 +97,10 @@ const ConfirmationPage = () => {
             </StyledTotalAmount>
           </StyledBillingPaper>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <PaymentForm totalAmount={totalAmount} orderDetails={orderDetails} />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} md={6}>
           <Box
             component="img"
             src={thanksImage}

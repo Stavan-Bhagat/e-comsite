@@ -60,17 +60,17 @@ const Cart = () => {
           >
             Shopping Cart
           </Typography>
-          <Grid container mt={2} spacing={2}>
+          <Grid container mt={2} spacing={2} >
             {cartItems.map((item) => (
               <StyledCartItem container item spacing={2} key={item._id}>
-                <Grid item xs={3}>
-                  <StyledProductImage src={item.productImage[0]} alt={item.productName} />
+                <Grid item xs={12} sm={3}>
+                  <StyledProductImage src={item.productImage[0]} alt={item.productName} justifyContent="center" alignItems="center"/>
                 </Grid>
-                <Grid item xs={3}>
-                  <Typography variant="buttton">{item.productName}</Typography>
+                <Grid item xs={12} sm={3}>
+                  <Typography variant="button">{item.productName}</Typography>
                   <Typography variant="body2">Price: ${item.sellingPrice}</Typography>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={12} sm={3}>
                   <Typography variant="body1">Quantity:</Typography>
                   <StyledQuantityInput
                     type="number"
@@ -80,10 +80,10 @@ const Cart = () => {
                     onChange={(e) => handleQuantityChange(item._id, parseInt(e.target.value, 10))}
                   />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={12} sm={2}>
                   <Typography variant="h6">${item.sellingPrice * item.quantity}</Typography>
                 </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={12} sm={1}>
                   <IconButton onClick={() => handleRemoveItem(item._id)}>
                     <DeleteIcon />
                   </IconButton>
@@ -91,7 +91,7 @@ const Cart = () => {
               </StyledCartItem>
             ))}
           </Grid>
-          <Box mt={1}>
+          <Box mt={1} sx={{ textAlign: 'center' }}>
             <Typography variant="h5">Total: ${calculateTotal().toFixed(2)}</Typography>
             <Button variant="contained" color="primary" onClick={handleCheckout} sx={{ mt: 2 }}>
               Proceed to Checkout

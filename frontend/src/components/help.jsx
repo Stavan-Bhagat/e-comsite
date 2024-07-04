@@ -1,4 +1,3 @@
-// src/components/FAQChatbot.js
 import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import socket from '../utils/socket';
@@ -9,9 +8,23 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import chatBoat from '../images/chatbot.png';
-import { StyleContainer, ChatbotIcon } from '../css/styles/help.style';
+import chatBot from '../images/chatbot.png';
+import { StyleContainer, ChatbotIcon, HeaderTitle } from '../css/styles/help.style';
 import Header from '../components/Header';
+
+import Dialog from '@mui/material/Dialog';
+import ListItemText from '@mui/material/ListItemText';
+import ListItemButton from '@mui/material/ListItemButton';
+import Divider from '@mui/material/Divider';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const faqData = [
   {
@@ -21,8 +34,7 @@ const faqData = [
   },
   {
     question: 'What payment methods do you accept?',
-    answer:
-      'We accept major credit cards (Visa, MasterCard, American Express) and PayPal for online payments.',
+    answer: 'We accept stripe payment for online payments.',
   },
   {
     question: 'How can I track my order?',
@@ -36,6 +48,15 @@ const FAQChatbot = () => {
   const [input, setInput] = useState('');
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     socket.on('faqResponse', (response) => {
@@ -57,8 +78,11 @@ const FAQChatbot = () => {
     <>
       <Header />
       <StyleContainer>
+        <HeaderTitle align={'center'} variant="h6">
+          FAQ{' '}
+        </HeaderTitle>
         <Box>
-          {faqData.map((data) => {
+          {faqData.map((data) => (
             <Accordion>
               <AccordionSummary
                 expandIcon={<ArrowDownwardIcon />}
@@ -70,10 +94,40 @@ const FAQChatbot = () => {
               <AccordionDetails>
                 <Typography>{data.answer}</Typography>
               </AccordionDetails>
-            </Accordion>;
-          })}
+            </Accordion>
+          ))}
         </Box>
-        {/* <Box sx={{ padding: 2 }}>
+
+        <ChatbotIcon alt="chat-bot" src={chatBot} onClick={handleClickOpen} />
+      </StyleContainer>
+      <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
+        <AppBar sx={{ position: 'relative' }}>
+          <Toolbar>
+            <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
+              <CloseIcon />
+            </IconButton>
+            <Typography sx={{ ml: 2, flex: 1 }} variant="h6" component="div">
+              conversation
+            </Typography>
+            {/* <Button autoFocus color="inherit" onClick={handleClose}>
+              save
+            </Button> */}
+          </Toolbar>
+        </AppBar>
+        <List>
+          <ListItemButton>
+            <ListItemText primary="Phone ringtone" secondary="Titania" />
+          </ListItemButton>
+          <Divider />
+        </List>
+      </Dialog>
+    </>
+  );
+};
+
+export default FAQChatbot;
+{
+  /* <Box sx={{ padding: 2 }}>
         <Typography variant="h6">FAQ </Typography>
         <List>
           {messages.map((msg, index) => (
@@ -94,11 +148,5 @@ const FAQChatbot = () => {
             Send
           </Button>
         </Box>
-      </Box> */}
-        <ChatbotIcon alt="chat-bot" src={chatBoat} />
-      </StyleContainer>
-    </>
-  );
-};
-
-export default FAQChatbot;
+      </Box> */
+}

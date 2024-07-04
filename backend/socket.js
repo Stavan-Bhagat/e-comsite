@@ -23,7 +23,7 @@ const startSocket = (server) => {
 
   io.on('connection', (socket) => {
     console.log('A user connected');
-
+    console.log('socketbhai', socket);
     socket.on('joinRoom', (roomId) => {
       socket.join(roomId);
       console.log(`User with ID: ${roomId} joined room: ${roomId}`);
